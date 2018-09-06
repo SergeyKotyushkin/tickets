@@ -1,0 +1,17 @@
+{
+  "name": "tickets",
+  "version": "1.0.0",
+  "description": "The application for storing 6-digit bus tickets",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "Sergey Kotyshkin",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.16.3"
+  }
+}
