@@ -1,0 +1,6 @@
+{
+  "node": {
+    "env": "development"
+  },
+  "port": 3200
+}

@@ -1,0 +1,3 @@
+server: node server
+build-dev: webpack --mode development
+build-prod: webpack --mode production
