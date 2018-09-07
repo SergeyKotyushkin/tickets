@@ -5,6 +5,17 @@ const app = express();
 
 const distDirPath = path.join(__dirname, '..', 'dist');
 
+if (process.env.NODE_ENV === 'production') {
+  // use compressed js files in production
+  // html-webpack-plugin doesn't add .gz to js files in production
+  app.get('*/dist/*.js', function(req, res, next) {
+    req.url += '.gz';
+    res.set('Content-Encoding', 'gzip');
+    res.set('Content-Type', 'text/javascript');
+    next();
+  });
+}
+
 // static for loading scripts
 app.use('*/dist', express.static(distDirPath));
 

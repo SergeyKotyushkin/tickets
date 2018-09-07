@@ -2,14 +2,28 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
+  // sets webpack mode
+  mode: process.env.NODE_ENV == 'development'
+    ? 'development'
+    : 'production',
+
   // start point for the application scripts
-  entry: './src/index.js',
+  entry: process.env.NODE_ENV == 'development'
+    ? {
+      "bundle": './src/index.js'
+    }
+    : {
+      "bundle.min": './src/index.js'
+    },
 
   // built bundle options
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.join(__dirname, 'dist'),
     publicPath: '/dist/'
   },
@@ -21,8 +35,12 @@ module.exports = {
 
   // plugins are connected on some steps of the compilation process
   // and can do something
-  plugins: [// copies built bundles into the page
-    new HtmlWebpackPlugin({template: 'index.html'})],
+  plugins: [
+    // copies built bundles into the page
+    new HtmlWebpackPlugin({template: 'index.html'}),
+    //removes dist folder before build
+    new CleanWebpackPlugin(['dist'])
+  ],
 
   module: {
     // for files match with the test pattern the loader is used
@@ -35,7 +53,9 @@ module.exports = {
           options: {
             // rules for files convertation
             // for syntax support
-            presets: ['@babel/preset-env', '@babel/preset-react'],
+            presets: [
+              '@babel/preset-env', '@babel/preset-react'
+            ],
             // prevent code duplication
             plugins: ['@babel/plugin-transform-runtime']
           }
@@ -43,4 +63,35 @@ module.exports = {
       }
     ]
   }
+}
+
+if (process.env.NODE_ENV == 'production') {
+  if (!module.exports.optimization) {
+    module.exports.optimization = {};
+  }
+
+  if (!module.exports.optimization.minimizer) {
+    module.exports.optimization.minimizer = [];
+  }
+
+  module.exports.optimization.minimizer.push(new UglifyJsPlugin({
+    test: /\.min\.js$/,
+    uglifyOptions: {
+      ie8: false,
+      mangle: true,
+      output: {
+        comments: false,
+        beautify: false
+      },
+      compress: {
+        warnings: false, // Suppress uglification warnings
+        pure_getters: true,
+        unsafe: true,
+        unsafe_comps: true
+      },
+      warnings: false
+    }
+  }));
+
+  module.exports.plugins.push(new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true}));
 }

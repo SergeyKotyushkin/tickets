@@ -4,11 +4,8 @@
   "description": "The application for storing 6-digit bus tickets",
   "main": "index.js",
   "scripts": {
-    "start": "nf start build-dev && nf start server",
-    "start-dev": "nf start build-dev && nf start server",
-    "start-prod": "nf start build-prod && nf start server",
-    "build-dev": "nf start build-dev",
-    "build-prod": "nf start build-prod",
+    "start": "nf start build && nf start server",
+    "build": "nf start build",
     "server": "nf start server"
   },
   "keywords": [
@@ -22,9 +19,12 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.2",
+    "clean-webpack-plugin": "^0.1.19",
+    "compression-webpack-plugin": "^2.0.0",
     "express": "^4.16.3",
     "foreman": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "uglifyjs-webpack-plugin": "^1.3.0",
     "webpack": "^4.17.2",
     "webpack-cli": "^3.1.0"
   }
