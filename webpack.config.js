@@ -35,7 +35,7 @@ module.exports = {
           options: {
             // rules for files convertation
             // for syntax support
-            presets: ['@babel/preset-env'],
+            presets: ['@babel/preset-env', '@babel/preset-react'],
             // prevent code duplication
             plugins: ['@babel/plugin-transform-runtime']
           }

@@ -20,6 +20,7 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.2",
     "express": "^4.16.3",
     "foreman": "^3.0.1",
