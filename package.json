@@ -4,7 +4,8 @@
   "description": "The application for storing 6-digit bus tickets",
   "main": "index.js",
   "scripts": {
-    "start": "node server"
+    "start": "node server",
+    "build": "webpack --mode development"
   },
   "keywords": [
     "react"
@@ -12,6 +13,13 @@
   "author": "Sergey Kotyshkin",
   "license": "MIT",
   "devDependencies": {
-    "express": "^4.16.3"
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "express": "^4.16.3",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
   }
 }

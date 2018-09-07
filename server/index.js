@@ -1,10 +1,15 @@
-var path = require('path');
-var express = require('express');
+const path = require('path');
+const express = require('express');
 
-var app = express();
+const app = express();
+
+const distDirPath = path.join(__dirname, '..', 'dist');
+
+// static for loading scripts
+app.use('*/dist', express.static(distDirPath));
 
 app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(distDirPath, 'index.html'));
 });
 
 app.listen(3200, function(err) {
