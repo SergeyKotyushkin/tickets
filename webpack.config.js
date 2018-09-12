@@ -37,7 +37,7 @@ module.exports = {
   // something
   plugins: [
     // copies built bundles into the page
-    new HtmlWebpackPlugin({template: 'index.html'}),
+    new HtmlWebpackPlugin({template: 'index.html', favicon: 'favicon.ico'}),
     //removes dist folder before build
     new CleanWebpackPlugin(['dist'])
   ],
