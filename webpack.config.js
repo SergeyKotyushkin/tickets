@@ -33,8 +33,8 @@ module.exports = {
     ? 'source-map'
     : false,
 
-  // plugins are connected on some steps of the compilation process
-  // and can do something
+  // plugins are connected on some steps of the compilation process and can do
+  // something
   plugins: [
     // copies built bundles into the page
     new HtmlWebpackPlugin({template: 'index.html'}),
@@ -51,13 +51,12 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            // rules for files convertation
-            // for syntax support
+            // rules for files convertation for syntax support
             presets: [
               '@babel/preset-env', '@babel/preset-react'
             ],
             // prevent code duplication
-            plugins: ['@babel/plugin-transform-runtime']
+            plugins: ['@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
           }
         }
       }
@@ -66,7 +65,8 @@ module.exports = {
 
   resolve: {
     alias: {
-      components: path.resolve(__dirname, 'src', 'components')
+      components: path.resolve(__dirname, 'src', 'components'),
+      stores: path.resolve(__dirname, 'src', 'stores')
     }
   }
 }
@@ -99,5 +99,7 @@ if (process.env.NODE_ENV == 'production') {
     }
   }));
 
-  module.exports.plugins.push(new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true}));
+  module.exports.plugins.push(
+    new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true})
+  );
 }
