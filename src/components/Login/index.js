@@ -24,11 +24,11 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div>
+      <div class="flex-container">
         <div>Login</div>
         <div className="login-container">
           <div>
-            <span>E-Mail</span>
+            <span>Email</span>
           </div>
           <div>
             <input

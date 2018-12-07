@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   // sets webpack mode
@@ -39,7 +40,13 @@ module.exports = {
     // copies built bundles into the page
     new HtmlWebpackPlugin({template: 'index.html', favicon: 'favicon.ico'}),
     //removes dist folder before build
-    new CleanWebpackPlugin(['dist'])
+    new CleanWebpackPlugin(['dist']),
+    //copies static files
+    new CopyWebpackPlugin([
+      {
+        from: './src/static'
+      }
+    ])
   ],
 
   module: {
@@ -80,26 +87,33 @@ if (process.env.NODE_ENV == 'production') {
     module.exports.optimization.minimizer = [];
   }
 
-  module.exports.optimization.minimizer.push(new UglifyJsPlugin({
-    test: /\.min\.js$/,
-    uglifyOptions: {
-      ie8: false,
-      mangle: true,
-      output: {
-        comments: false,
-        beautify: false
-      },
-      compress: {
-        warnings: false, // Suppress uglification warnings
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true
-      },
-      warnings: false
-    }
-  }));
+  module
+    .exports
+    .optimization
+    .minimizer
+    .push(new UglifyJsPlugin({
+      test: /\.min\.js$/,
+      uglifyOptions: {
+        ie8: false,
+        mangle: true,
+        output: {
+          comments: false,
+          beautify: false
+        },
+        compress: {
+          warnings: false, // Suppress uglification warnings
+          pure_getters: true,
+          unsafe: true,
+          unsafe_comps: true
+        },
+        warnings: false
+      }
+    }));
 
-  module.exports.plugins.push(
-    new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true})
-  );
+  module
+    .exports
+    .plugins
+    .push(
+      new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true})
+    );
 }

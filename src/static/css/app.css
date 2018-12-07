@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+}
+
+body, html {
+    width: 100%;
+}
+
+.flex-container-row {
+    display: flex;
+}
+
+.flex-container-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header {
+    flex-grow: 1;
+    background-color: rgb(60, 85, 154, 0.7);
+}
+
+.app-header-title {
+    padding: 10px 5px;
+    border-bottom: 2px solid rgb(60, 85, 255, 0.9);
+}
+
+.app-header-menu {
+    justify-content: space-between;
+    padding: 2px 5px;
+    background-color: rgb(60, 85, 154, 0.3);
+    border-bottom: 2px solid rgb(60, 85, 255, 0.9);
+}
+
+.app-header-menu-link-container {
+    padding: 3px;
+    background-color: rgba(110, 68, 120, 0.7);
+    border: 1px solid rgba(110, 68, 120, 0.9);
+}
+
+.app-header-menu-link-container>a {
+    text-decoration: none;
+    color: rgba(245, 245, 245, 0.7);
+}
