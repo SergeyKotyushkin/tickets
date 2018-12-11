@@ -42,3 +42,9 @@ body, html {
     text-decoration: none;
     color: rgba(245, 245, 245, 0.7);
 }
+
+.app-content {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}

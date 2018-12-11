@@ -5,25 +5,32 @@ import {connect} from 'react-redux';
 import * as authActions from 'stores/auth/actions';
 
 class Home extends Component {
-
-  componentDidMount = () => {
-    this.props.authActions.logIn("Sergey");
-  }
-
-  isLoggedIn = (authStore) => authStore.userName && authStore.userName.length;
-
   render() {
-    const {authStore, authActions} = this.props;
     return (
       <div>
-        Home {
-          this.isLoggedIn(authStore) && <div>
-              <span>{authStore.userName}</span>
-              <button onClick={() => authActions.logOut(authStore.userName)}>log out</button>
-            </div>
-        }
+        Home {this._getIsLoggedIn() && this._renderLogOutMarkup()}
       </div>
     );
+  }
+
+  _renderLogOutMarkup() {
+    return (
+      <div>
+        <span>{this.props.authStore.userName}</span>
+        <button onClick={() => this._logOutClick()}>log out</button>
+      </div>
+    );
+  }
+
+  _getIsLoggedIn() {
+    return this.props.authStore.isLoggedIn;
+  }
+
+  _logOutClick() {
+    this
+      .props
+      .authActions
+      .logOut(this.props.authStore.userName);
   }
 }
 

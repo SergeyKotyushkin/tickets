@@ -1,0 +1,28 @@
+.login-container {
+    padding: 10px;
+    border: 1px solid rgba(120, 185, 232, 0.9);
+    border-radius: 4px;
+}
+
+.login-title-container {
+    text-align: center;
+}
+
+.login-inputs-container>div {
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+.login-inputs-container label {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.login-inputs-container label:after {
+    content: ':';
+    font-weight: bold;
+}
+
+.login-controls-container {
+    text-align: right;
+}
