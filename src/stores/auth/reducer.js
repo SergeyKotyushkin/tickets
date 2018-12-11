@@ -27,12 +27,9 @@ export default function auth(state = initialState, action) {
       return newState;
 
     case actionTypes.LOG_OUT:
-      var newState = _getDefautState(state);
-      newState.userName = state.userName === action.name
-        ? ''
-        : state.userName;
-
-      newState.isLoggedIn = _getIsLoggedIn(newState);
+      var newState = _getDefautState();
+      newState.userName = null;
+      newState.isLoggedIn = false;
       return newState;
 
     default:

@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
+
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux';
+
 import {BrowserRouter, Switch, Link, Route} from 'react-router-dom';
+
+import * as authActions from 'stores/auth/actions';
 
 import Home from 'components/Home';
 import Login from 'components/Login';
 
-export default class App extends Component {
+class App extends Component {
   render() {
     return (
       <BrowserRouter>
@@ -17,9 +23,8 @@ export default class App extends Component {
               <div className="app-header-menu-link-container">
                 <Link to="/">Home</Link>
               </div>
-              <div className="app-header-menu-link-container">
-                <Link to="/login">Login</Link>
-              </div>
+              {!this.props.authStore.isLoggedIn && this._renderLogInLink()}
+              {this.props.authStore.isLoggedIn && this._renderLogOutLink()}
             </div>
           </div>
           <div className="app-content">
@@ -31,5 +36,37 @@ export default class App extends Component {
         </div>
       </BrowserRouter>
     );
-  };
+  }
+
+  _renderLogInLink() {
+    return (
+      <div className="app-header-menu-link-container">
+        <Link to="/login">Log In</Link>
+      </div>
+    );
+  }
+
+  _renderLogOutLink() {
+    return (
+      <div className="app-header-menu-link-container">
+        <a href="javascript:void(0);" onClick={(event) => this._logOutClick(event)}>Log Out</a>
+      </div>
+    );
+  }
+
+  _logOutClick(event) {
+    event.stopPropagation();
+
+    this
+      .props
+      .authActions
+      .logOut();
+  }
 }
+
+export default connect(
+  (state, ownProps) => ({authStore: state.auth}),
+  (dispatch, ownProps) => ({
+    authActions: bindActionCreators(authActions, dispatch)
+  })
+)(App);
