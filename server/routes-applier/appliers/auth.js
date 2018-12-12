@@ -12,6 +12,8 @@ function _applyRoutes(expressApplication) {
   );
 
   expressApplication.get('/logout', _onLogOut);
+
+  expressApplication.get('/auth-status', _onAuthStatus);
 }
 
 function _afterLogInSuccess(req, res) {
@@ -26,4 +28,19 @@ function _onLogOut(req, res) {
 
   req.logout();
   res.json(true);
+}
+
+function _onAuthStatus(req, res) {
+  const isAuthenticated = req.isAuthenticated();
+  const status = {
+    isAuthenticated: isAuthenticated
+  };
+
+  if (isAuthenticated) {
+    status.user = {
+      username: req.user.username
+    };
+  }
+
+  res.json(status);
 }

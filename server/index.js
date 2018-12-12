@@ -13,9 +13,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(
   session({secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false})
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
-
 initPassportStrategy();
 
 routesApplier.apply(app);

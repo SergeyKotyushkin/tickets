@@ -13,6 +13,24 @@ import Home from 'components/Home';
 import Login from 'components/Login';
 
 class App extends Component {
+  componentDidMount() {
+    axios
+      .get('/auth-status')
+      .then((response) => {
+        const authStatus = response.data;
+        if (!authStatus.isAuthenticated) {
+          return;
+        }
+
+        this
+          .props
+          .authActions
+          .logIn(authStatus.user.username);
+      }, (error) => {
+        alert('Internal Server Error!');
+      });
+  }
+
   render() {
     return (
       <BrowserRouter>
