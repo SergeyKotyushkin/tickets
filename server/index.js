@@ -1,27 +1,24 @@
 const path = require('path');
 const express = require('express');
+const passport = require('passport');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const initPassportStrategy = require('./auth/passport');
+const routesApplier = require('./routes-applier');
 
 const app = express();
 
-const distDirPath = path.join(__dirname, '..', 'dist');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(
+  session({secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false})
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
-if (process.env.NODE_ENV === 'production') {
-  // use compressed js files in production
-  // html-webpack-plugin doesn't add .gz to js files in production
-  app.get('*/dist/*.js', function(req, res, next) {
-    req.url += '.gz';
-    res.set('Content-Encoding', 'gzip');
-    res.set('Content-Type', 'text/javascript');
-    next();
-  });
-}
+initPassportStrategy();
 
-// static for loading scripts
-app.use('*/dist', express.static(distDirPath));
-
-app.get('*', function(req, res) {
-  res.sendFile(path.join(distDirPath, 'index.html'));
-});
+routesApplier.apply(app);
 
 app.listen(process.env.PORT, function(err) {
   if (err) {

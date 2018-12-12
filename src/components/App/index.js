@@ -5,6 +5,8 @@ import {connect} from 'react-redux';
 
 import {BrowserRouter, Switch, Link, Route} from 'react-router-dom';
 
+import axios from 'axios';
+
 import * as authActions from 'stores/auth/actions';
 
 import Home from 'components/Home';
@@ -57,10 +59,16 @@ class App extends Component {
   _logOutClick(event) {
     event.stopPropagation();
 
-    this
-      .props
-      .authActions
-      .logOut();
+    axios
+      .get('/logout')
+      .then(() => {
+        this
+          .props
+          .authActions
+          .logOut();
+      }, (error) => {
+        alert('Internal Server Error!');
+      });
   }
 }
 

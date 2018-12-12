@@ -3,6 +3,8 @@ import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
+import axios from 'axios';
+
 import * as authActions from 'stores/auth/actions';
 
 class Login extends Component {
@@ -13,15 +15,6 @@ class Login extends Component {
       username: '',
       password: ''
     }
-
-    this.logInClickHandler = () => {
-      console.log('log in clicked', this.state, this.props.authStore);
-
-      this
-        .props
-        .authActions
-        .logIn(this.state.username);
-    };
 
     this.onInputChange = (event) => {
       this.setState({
@@ -66,7 +59,7 @@ class Login extends Component {
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={this.logInClickHandler}>Log In</button>
+          <button onClick={() => this._logInClick()}>Log In</button>
         </div>
       </div>
     );
@@ -87,6 +80,30 @@ class Login extends Component {
       ? this.renderLoggedInForm()
       : this.renderLogInForm();
     return markup;
+  }
+
+  _logInClick() {
+    console.log('log in clicked', this.state, this.props.authStore);
+
+    axios
+      .post('/login', {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(() => {
+        this
+          .props
+          .authActions
+          .logIn(this.state.username);
+      }, (error) => {
+        // todo: move to constants
+        if (error.response.status === 401) {
+          alert('Wrong credentials!');
+          return;
+        }
+
+        alert('Internal Server Error!');
+      });
   }
 }
 

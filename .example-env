@@ -2,5 +2,8 @@
   "node": {
     "env": "development"
   },
-  "port": 3200
+  "port": 3200,
+  "session": {
+    "secret": "some secret"
+  }
 }
