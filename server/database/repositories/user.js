@@ -1,7 +1,8 @@
 const UserModel = require('../models/user');
 
 module.exports = {
-  findUserByUsername: _findUserByUsername
+  findUserByUsername: _findUserByUsername,
+  createUser: _createUser
 };
 
 function _findUserByUsername(username, successCallback, errorCallback) {
@@ -10,6 +11,20 @@ function _findUserByUsername(username, successCallback, errorCallback) {
   }, function(error, user) {
     if (error) {
       errorCallback(error, null);
+      return;
+    }
+
+    successCallback(user);
+  });
+}
+
+function _createUser(user, successCallback, errorCallback) {
+  UserModel.create({
+    username: user.username,
+    password: user.password
+  }, function(error, user) {
+    if (error) {
+      errorCallback(error);
       return;
     }
 
