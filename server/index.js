@@ -5,6 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const initPassportStrategy = require('./auth/passport');
 const routesApplier = require('./routes-applier');
+const mongoConnector = require('./database/init');
 
 const app = express();
 
@@ -18,12 +19,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 initPassportStrategy();
 
-routesApplier.apply(app);
+mongoConnector.connect(_onMongoConnected);
 
-app.listen(process.env.PORT, function(err) {
-  if (err) {
-    return console.error('Server hasn\'t started', err);
-  }
+function _onMongoConnected() {
+  routesApplier.apply(app);
 
-  console.log(`Listening at http://localhost:${process.env.PORT}/`);
-});
+  app.listen(process.env.PORT, function(err) {
+    if (err) {
+      return console.error('Server hasn\'t started', err);
+    }
+
+    console.log(`Listening at http://localhost:${process.env.PORT}/`);
+  });
+}

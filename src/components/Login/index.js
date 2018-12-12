@@ -69,7 +69,7 @@ class Login extends Component {
     return (
       <div className="flex-container-column login-container">
         <div className="login-title-container">
-          <h2>{this.props.authStore.userName}, you are already logged in!</h2>
+          <h2>{this.props.authStore.username}, you are already logged in!</h2>
         </div>
       </div>
     );

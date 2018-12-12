@@ -16,7 +16,7 @@ class Home extends Component {
   _renderLogOutMarkup() {
     return (
       <div>
-        <span>{this.props.authStore.userName}</span>
+        <span>{this.props.authStore.username}</span>
         <button onClick={() => this._logOutClick()}>log out</button>
       </div>
     );
@@ -30,7 +30,7 @@ class Home extends Component {
     this
       .props
       .authActions
-      .logOut(this.props.authStore.userName);
+      .logOut(this.props.authStore.username);
   }
 }
 
