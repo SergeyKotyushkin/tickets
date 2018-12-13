@@ -3,16 +3,23 @@ import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
-import axios from 'axios';
-
 import * as authActions from 'stores/auth/actions';
+
+import AuthService from 'services/auth';
+import HistoryService from 'services/history';
+
+import messages from 'constants/messages';
+import routes from 'constants/routes';
 
 class Login extends Component {
   LOGIN_TYPE = 0;
   REGISTRATION_TYPE = 1;
 
   constructor(props) {
-    super();
+    super(props);
+
+    this._authService = new AuthService(props.dispatchedAuthActions);
+    this._historyService = new HistoryService(props.hitory);
 
     this.state = {
       login: {
@@ -26,20 +33,13 @@ class Login extends Component {
       },
       type: this.LOGIN_TYPE
     }
-
-    this.onInputChange = (event) => {
-      const copyOfState = JSON.parse(JSON.stringify(this.state));
-      copyOfState[event.target.dataset.type][event.target.name] = event.target.value;
-      this.setState(copyOfState);
-    };
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.authStore.isLoggedIn && this.props.authStore.isLoggedIn) {
       this
-        .props
-        .history
-        .push('/');
+        ._historyService
+        .push(routes.home);
     }
   }
 
@@ -58,7 +58,7 @@ class Login extends Component {
               name="username"
               data-type="login"
               value={this.state.login.username}
-              onChange={this.onInputChange}/>
+              onChange={(event) => this._onInputChange(event)}/>
           </div>
           <div className="login-password-container">
             <label htmlFor="login-password__input">Password</label>
@@ -68,7 +68,7 @@ class Login extends Component {
               name="password"
               data-type="login"
               value={this.state.login.password}
-              onChange={this.onInputChange}/>
+              onChange={(event) => this._onInputChange(event)}/>
           </div>
         </div>
         <div className="login-controls-container">
@@ -94,7 +94,7 @@ class Login extends Component {
               name="username"
               data-type="registration"
               value={this.state.registration.username}
-              onChange={this.onInputChange}/>
+              onChange={(event) => this._onInputChange(event)}/>
           </div>
           <div className="registration-password-container">
             <label htmlFor="registration-password__input">Password</label>
@@ -104,7 +104,7 @@ class Login extends Component {
               name="password"
               data-type="registration"
               value={this.state.registration.password}
-              onChange={this.onInputChange}/>
+              onChange={(event) => this._onInputChange(event)}/>
           </div>
           <div className="registration-conform-password-container">
             <label htmlFor="registration-conform-password__input">Confirm Password</label>
@@ -114,7 +114,7 @@ class Login extends Component {
               name="conformPassword"
               data-type="registration"
               value={this.state.registration.conformPassword}
-              onChange={this.onInputChange}/>
+              onChange={(event) => this._onInputChange(event)}/>
           </div>
         </div>
         <div className="login-controls-container">
@@ -147,55 +147,41 @@ class Login extends Component {
   _logInClick() {
     const login = this.state.login;
     if (!login.username || !login.password) {
-      alert('Fill all fields!');
+      alert(messages.notAllFieldsAreFilled);
       return;
     }
 
-    axios
-      .post('/login', {
-        username: login.username,
-        password: login.password
-      })
-      .then(() => {
-        this
-          .props
-          .authActions
-          .logIn(this.state.login.username);
-      }, (error) => {
-        // todo: move to constants
-        if (error.response.status === 401) {
-          alert('Wrong credentials!');
-          return;
-        }
-
-        alert('Internal Server Error!');
-      });
+    this
+      ._authService
+      .logIn(login.username, login.password);
   }
 
   _registerClick() {
     const registration = this.state.registration;
     if (!registration.username || !registration.password || !registration.conformPassword) {
-      alert('Fill all fields!');
+      alert(messages.notAllFieldsAreFilled);
       return;
     }
 
     if (registration.password !== registration.conformPassword) {
-      alert('Passwords are not equal!');
+      alert(messages.passwordsAreNotEqual);
       return;
     }
 
-    axios
-      .post('/register', {
-        username: registration.username,
-        password: registration.password,
-        conformPassword: registration.conformPassword
-      })
-      .then(() => {
-        alert('Registartion completed!');
-        this._switchType(this.LOGIN_TYPE);
-      }, (error) => {
-        alert('Registartion failed! Try again!');
-      });
+    this
+      ._authService
+      .register(
+        registration.username,
+        registration.password,
+        registration.conformPassword,
+        () => this._switchType(this.LOGIN_TYPE)
+      );
+  }
+
+  _onInputChange(event) {
+    const copyOfState = JSON.parse(JSON.stringify(this.state));
+    copyOfState[event.target.dataset.type][event.target.name] = event.target.value;
+    this.setState(copyOfState);
   }
 
   _switchType(type) {
@@ -206,6 +192,6 @@ class Login extends Component {
 export default connect(
   (state, ownProps) => ({authStore: state.auth}),
   (dispatch, ownProps) => ({
-    authActions: bindActionCreators(authActions, dispatch)
+    dispatchedAuthActions: bindActionCreators(authActions, dispatch)
   })
 )(Login);

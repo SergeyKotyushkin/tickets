@@ -5,30 +5,25 @@ import {connect} from 'react-redux';
 
 import {BrowserRouter, Switch, Link, Route} from 'react-router-dom';
 
-import axios from 'axios';
-
 import * as authActions from 'stores/auth/actions';
+
+import AuthService from 'services/auth';
 
 import Home from 'components/Home';
 import Login from 'components/Login';
+import Tickets from 'components/Tickets';
 
 class App extends Component {
-  componentDidMount() {
-    axios
-      .get('/auth-status')
-      .then((response) => {
-        const authStatus = response.data;
-        if (!authStatus.isAuthenticated) {
-          return;
-        }
+  constructor(props) {
+    super(props);
 
-        this
-          .props
-          .authActions
-          .logIn(authStatus.user.username);
-      }, (error) => {
-        alert('Internal Server Error!');
-      });
+    this._authService = new AuthService(props.dispatchedAuthActions);
+  }
+
+  componentDidMount() {
+    this
+      ._authService
+      .tryLogIn();
   }
 
   render() {
@@ -50,7 +45,8 @@ class App extends Component {
           <div className="app-content">
             <Switch>
               <Route exact={true} path="/" component={Home}></Route>
-              <Route path="/login" component={Login}></Route>
+              <Route exact={true} path="/tickets" component={Tickets}></Route>
+              <Route exact={true} path="/login" component={Login}></Route>
             </Switch>
           </div>
         </div>
@@ -77,22 +73,15 @@ class App extends Component {
   _logOutClick(event) {
     event.stopPropagation();
 
-    axios
-      .get('/logout')
-      .then(() => {
-        this
-          .props
-          .authActions
-          .logOut();
-      }, (error) => {
-        alert('Internal Server Error!');
-      });
+    this
+      ._authService
+      .logOut();
   }
 }
 
 export default connect(
   (state, ownProps) => ({authStore: state.auth}),
   (dispatch, ownProps) => ({
-    authActions: bindActionCreators(authActions, dispatch)
+    dispatchedAuthActions: bindActionCreators(authActions, dispatch)
   })
 )(App);

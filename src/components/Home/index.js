@@ -1,23 +1,37 @@
 import React, {Component} from 'react';
-import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
-import * as authActions from 'stores/auth/actions';
+import {Link} from 'react-router-dom';
 
 class Home extends Component {
   render() {
     return (
-      <div>
-        Home {this._getIsLoggedIn() && this._renderLogOutMarkup()}
+      <div className="flex-container-column home-container">
+        <div>
+          <span>Now you can store your bus tickets!</span>
+          {this._getIsLoggedIn() && this._renderTicketsLink()}
+          {!this._getIsLoggedIn() && this._renderLogInLink()}
+        </div>
       </div>
     );
   }
 
-  _renderLogOutMarkup() {
+  _renderTicketsLink() {
     return (
-      <div>
-        <span>{this.props.authStore.username}</span>
-        <button onClick={() => this._logOutClick()}>log out</button>
+      <div className="home-additional-info">
+        <span>You are ready for your&nbsp;
+          <Link to="/tickets">tickets</Link>
+          &nbsp;statistics!</span>
+      </div>
+    );
+  }
+
+  _renderLogInLink() {
+    return (
+      <div className="home-additional-info">
+        <span>You need to&nbsp;
+          <Link to="/login">log in</Link>
+          &nbsp;to start!</span>
       </div>
     );
   }
@@ -25,18 +39,6 @@ class Home extends Component {
   _getIsLoggedIn() {
     return this.props.authStore.isLoggedIn;
   }
-
-  _logOutClick() {
-    this
-      .props
-      .authActions
-      .logOut(this.props.authStore.username);
-  }
 }
 
-export default connect(
-  (state, ownProps) => ({authStore: state.auth}),
-  (dispatch, ownProps) => ({
-    authActions: bindActionCreators(authActions, dispatch)
-  })
-)(Home);
+export default connect((state, ownProps) => ({authStore: state.auth}))(Home);
