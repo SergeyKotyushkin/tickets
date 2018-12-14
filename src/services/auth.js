@@ -16,7 +16,7 @@ function _tryLogIn(dispatchedAuthActions, successCallback, failureCallback) {
   axios
     .get(routes.authStatus)
     .then(
-      _onAuthStatusSuccess.bind(null, dispatchedAuthActions, successCallback),
+      _onAuthStatusSuccess.bind(null, dispatchedAuthActions, successCallback, failureCallback),
       _onAuthStatusFailure.bind(null, failureCallback)
     );
 }
@@ -61,15 +61,21 @@ function _logOut(dispatchedAuthActions, successCallback, failureCallback) {
 }
 
 // local
-function _onAuthStatusSuccess(dispatchedAuthActions, callback, response) {
+function _onAuthStatusSuccess(
+  dispatchedAuthActions,
+  successCallback,
+  failureCallback,
+  response
+) {
   const authStatus = response.data;
   if (!authStatus.isAuthenticated) {
+    failureCallback && failureCallback();
     return;
   }
 
   dispatchedAuthActions.logIn(authStatus.user.username);
 
-  callback && callback();
+  successCallback && successCallback();
 }
 
 function _onAuthStatusFailure(callback, response) {

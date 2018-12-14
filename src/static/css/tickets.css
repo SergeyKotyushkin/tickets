@@ -1,0 +1,19 @@
+.ticket-digit-container {
+    padding: 3px;
+    text-align: center;
+}
+
+.ticket-digit {
+    border: 1px solid rgba(20, 38, 90, 0.6);
+    border-radius: 3px;
+    background-color: rgba(223, 241, 250, 0.9);
+    padding: 6px 3px;
+}
+
+.ticket-digit-button-top {
+    margin-bottom: 5px;
+}
+
+.ticket-digit-button-bottom {
+    margin-top: 5px;
+}

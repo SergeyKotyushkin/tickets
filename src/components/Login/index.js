@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import * as authActions from 'stores/auth/actions';
 
 import AuthService from 'services/auth';
-import HistoryService from 'services/history';
 
 import messages from 'constants/messages';
 import routes from 'constants/routes';
@@ -19,7 +18,6 @@ class Login extends Component {
     super(props);
 
     this._authService = new AuthService(props.dispatchedAuthActions);
-    this._historyService = new HistoryService(props.hitory);
 
     this.state = {
       login: {
@@ -38,7 +36,8 @@ class Login extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.authStore.isLoggedIn && this.props.authStore.isLoggedIn) {
       this
-        ._historyService
+        .props
+        .history
         .push(routes.home);
     }
   }
