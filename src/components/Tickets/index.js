@@ -16,7 +16,7 @@ import messages from 'constants/messages';
 
 class Tickets extends Component {
   _from = 0;
-  _size = 50;
+  _size = 1;
   _digits = [
     0,
     0,
@@ -96,17 +96,30 @@ class Tickets extends Component {
           <div className="flex-container-column">
             {ticketDatesMarkup}
           </div>
-
         </div>
       );
     }
+
+    if (this.state.total > tickets.length) {
+      ticketsMarkup.push(
+        <div key={tickets.length}>
+          <button onClick={() => this._loadNextTickets()}>Load more</button>
+        </div>
+      );
+    }
+
     return ticketsMarkup;
   }
+
   _getEmptyTicketsMarkup() {
     return <span>You don't have any ticket yet!</span>
   }
 
   _loadComponentData() {
+    this._loadNextTickets();
+  }
+
+  _loadNextTickets() {
     this
       ._ticketService
       .getMany(
@@ -142,6 +155,7 @@ class Tickets extends Component {
         tickets.push(ticket);
       });
 
+    this._from += data.tickets.length;
     this.setState({tickets, total: data.total});
   }
 
