@@ -17,3 +17,22 @@
 .ticket-digit-button-bottom {
     margin-top: 5px;
 }
+
+.tickets-container {
+    padding-right: 10px;
+    text-align: center;
+    border-right: 1px solid black;
+}
+
+.add-ticket-container {
+    padding-left: 10px;
+    text-align: center;
+}
+
+.add-ticket-container>div {
+    margin-bottom: 10px;
+}
+
+.ticket-number-date {
+    padding-left: 20px;
+}

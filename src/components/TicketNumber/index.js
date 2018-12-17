@@ -14,6 +14,10 @@ class TicketNumber extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      number: this.props.number
+    };
+
     this._authService = new AuthService(props.dispatchedAuthActions);
   }
 
@@ -38,14 +42,16 @@ class TicketNumber extends Component {
   }
 
   _createTicketNumberMarkup() {
-    var ticketNumber = [];
+    let ticketNumber = [];
+    let digits = this._getDigitsFromNumber(this.state.number);
     for (var i = 0; i < 6; i++) {
+      let value = digits && digits.length && digits[i] || 0;
       ticketNumber.push(
         <div className="ticket-digit-container" key={`ticket-digit-${i}`}>
           <div className="ticket-digit-button-top">
             <button data-top="true" onClick={(event) => this._onDigitChange(event)}>+</button>
           </div>
-          <div className="ticket-digit" data-position={i} data-value={0}>{0}</div>
+          <div className="ticket-digit" data-position={i} data-value={value}>{value}</div>
           <div className="ticket-digit-button-bottom">
             <button data-bottom="true" onClick={(event) => this._onDigitChange(event)}>-</button>
           </div>
@@ -79,8 +85,15 @@ class TicketNumber extends Component {
       newDigitValue = 0;
     }
 
-    digitNode.dataset.value = newDigitValue;
-    digitNode.innerHTML = newDigitValue.toString();
+    let mul = Math.pow(10, digitPosition);
+    let digits = this._getDigitsFromNumber(this.state.number);
+    digits[digitPosition] = newDigitValue;
+    let number = this._getNumberFromDigits(digits);
+
+    this.setState({number})
+    this.props.onDigitChange && this
+      .props
+      .onDigitChange(number);
   }
 
   _getDigitNodeInfo(button) {
@@ -91,6 +104,27 @@ class TicketNumber extends Component {
     let digitPosition = +digitNode.dataset.position;
 
     return {digitNode, digitValue, digitPosition};
+  }
+
+  _getNumberFromDigits(digits) {
+    let number = 0;
+    let mul = 1;
+    for (var i = 0; i < 6; i++) {
+      number += digits[5 - i] * mul;
+      mul *= 10;
+    }
+
+    return number;
+  }
+
+  _getDigitsFromNumber(number) {
+    let digits = [];
+    for (var i = 0; i < 6; i++) {
+      digits[5 - i] = number % 10;
+      number = Math.floor(number / 10);
+    }
+
+    return digits;
   }
 }
 

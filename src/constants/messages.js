@@ -4,5 +4,7 @@ module.exports = {
   notAllFieldsAreFilled: 'Not all fields are filled!',
   passwordsAreNotEqual: 'Passwords are not equal!',
   registrationIsComplete: 'Registration is complete!',
-  registrationFailed: 'Registration failed! Try again!'
+  registrationFailed: 'Registration failed! Try again!',
+  addTicketConfirm: 'Would you like to add this new ticket?',
+  fillDate: 'Date is not selected!'
 };

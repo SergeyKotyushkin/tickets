@@ -6,16 +6,22 @@ module.exports = function init() {
   passport.use(new LocalStrategy(_validateCredentials));
 
   passport.serializeUser((user, done) => {
-    done(null, user.username);
+    done(null, {
+      id: user._id,
+      username: user.username
+    });
   });
 
-  passport.deserializeUser((username, done) => {
-    if (!username) {
+  passport.deserializeUser((user, done) => {
+    if (!user) {
       done(null, null);
       return;
     }
 
-    done(null, {username: username});
+    done(null, {
+      id: user.id,
+      username: user.username
+    });
   });
 }
 

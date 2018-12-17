@@ -3,6 +3,9 @@ import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
 import * as authActions from 'stores/auth/actions';
 import AuthService from 'services/auth';
 import TicketService from 'services/ticket';
@@ -14,6 +17,14 @@ import messages from 'constants/messages';
 class Tickets extends Component {
   _from = 0;
   _size = 50;
+  _digits = [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ];
 
   constructor(props) {
     super(props);
@@ -23,7 +34,9 @@ class Tickets extends Component {
 
     this.state = {
       tickets: [],
-      total: 0
+      total: 0,
+      number: 0,
+      date: null
     };
   }
 
@@ -42,11 +55,26 @@ class Tickets extends Component {
   render() {
     return (
       <div>
-        <h2>_Tickets_</h2>
-        <div className="flex-container-column tickets-container">
-          {this._getTicketsMarkup()}
+        <h2>Tickets</h2>
+        <div className="flex-container-row">
+          <div className="flex-container-column tickets-container">
+            {!!this.state.tickets.length && this._getTicketsMarkup()}
+            {!this.state.tickets.length && this._getEmptyTicketsMarkup()}
+          </div>
+          <div className="add-ticket-container">
+            <div>
+              <TicketNumber
+                number={this.state.number}
+                onDigitChange={(number) => this._onDigitChange(number)}></TicketNumber>
+            </div>
+            <div><DatePicker
+              selected={this.state.date}
+              onChange={(date) => this._onDateChange(date)}/></div>
+            <div>
+              <button onClick={() => this._onAddticketClick()}>Add</button>
+            </div>
+          </div>
         </div>
-        <TicketNumber></TicketNumber>
       </div>
     );
   }
@@ -54,11 +82,28 @@ class Tickets extends Component {
   _getTicketsMarkup() {
     let tickets = this.state.tickets;
 
+    let ticketsMarkup = [];
     for (var i = 0; i < tickets.length; i++) {
-      <div key={i}>
-        <span>Number:&nbsp;{number}</span>
-      </div>
+      let ticketDatesMarkup = [];
+      for (var j = 0; j < tickets[i].dates.length; j++) {
+        let date = new Date(tickets[i].dates[j]).toLocaleDateString();
+        ticketDatesMarkup.push(<div key={j} className="ticket-number-date">{date}</div>);
+      }
+
+      ticketsMarkup.push(
+        <div key={i} className="ticket-number">
+          <span>Number:&nbsp;{this._fillLeftWithZero(tickets[i].number, 6)}</span>
+          <div className="flex-container-column">
+            {ticketDatesMarkup}
+          </div>
+
+        </div>
+      );
     }
+    return ticketsMarkup;
+  }
+  _getEmptyTicketsMarkup() {
+    return <span>You don't have any ticket yet!</span>
   }
 
   _loadComponentData() {
@@ -97,7 +142,30 @@ class Tickets extends Component {
         tickets.push(ticket);
       });
 
-    this.setState({tickets, total});
+    this.setState({tickets, total: data.total});
+  }
+
+  _onDateChange(date) {
+    this.setState({date});
+  }
+
+  _onAddticketClick() {
+    if (!this.state.date) {
+      alert(messages.fillDate);
+      return;
+    }
+
+    confirm(messages.addTicketConfirm) && this
+      ._ticketService
+      .add({number: this.state.number, date: this.state.date});
+  }
+
+  _onDigitChange(number) {
+    this.setState({number});
+  }
+
+  _fillLeftWithZero(num, len) {
+    return (Array(len).join("0") + num).slice(-len);
   }
 }
 
