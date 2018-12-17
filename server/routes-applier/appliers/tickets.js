@@ -9,6 +9,8 @@ function _applyRoutes(expressApplication) {
   expressApplication.post('/get-tickets', _onGetTickets);
 
   expressApplication.post('/add-ticket', _onAddTicket);
+
+  expressApplication.post('/delete-ticket-date', _onDeleteTicketDate);
 }
 
 function _onGetTickets(req, res) {
@@ -41,6 +43,33 @@ function _onAddTicket(req, res) {
     ).call(this, req.user.id, req.body.number, req.body.date, function() {
       res.json({});
     });
+  }, function(error) {
+    console.log('Internal Server Error');
+    res.json({error: true});
+  });
+}
+
+function _onDeleteTicketDate(req, res) {
+  if (!req.isAuthenticated()) {
+    console.log('Unauthenticated');
+    res.json({error: true, unauthenticated: true});
+    return;
+  }
+
+  ticketRepository.exists(req.user.id, req.body.number, function(result) {
+    if (!result) {
+      res.json({});
+      return;
+    }
+
+    ticketRepository.deleteDate(
+      req.user.id,
+      req.body.number,
+      req.body.date,
+      function() {
+        res.json({});
+      }
+    );
   }, function(error) {
     console.log('Internal Server Error');
     res.json({error: true});

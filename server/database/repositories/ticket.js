@@ -6,47 +6,21 @@ module.exports = {
   exists: _exists,
   getMany: _getMany,
   create: _create,
-  addDate: _addDate
+  addDate: _addDate,
+  deleteDate: _deleteDate
 };
 
 function _exists(userId, number, successCallback, errorCallback) {
   TicketModel.countDocuments({
     user: userId,
     number: number
-  }, function(error, count) {
-    if (error) {
-      errorCallback && errorCallback(error);
-      return;
-    }
-
-    successCallback && successCallback(count !== 0);
-  });
+  }, _onExistsExecuted.bind(null, successCallback, errorCallback));
 }
 
 function _getMany(from, size, successCallback, errorCallback) {
-  TicketModel.countDocuments(function(error, count) {
-    if (error) {
-      errorCallback && errorCallback(error);
-      return;
-    }
-
-    if (count === 0) {
-      successCallback && successCallback({total: count, tickets: []});
-      return;
-    }
-
-    TicketModel.find({}, null, {
-      skip: from,
-      limit: size
-    }, function(error, tickets) {
-      if (error) {
-        errorCallback && errorCallback(error);
-        return;
-      }
-
-      successCallback && successCallback({total: count, tickets});
-    })
-  });
+  TicketModel.countDocuments(
+    _onGetManyCountOffAllFound.bind(null, from, size, successCallback, errorCallback)
+  );
 }
 
 function _create(userId, number, date, successCallback, errorCallback) {
@@ -54,44 +28,164 @@ function _create(userId, number, date, successCallback, errorCallback) {
     user: userId,
     number: number,
     dates: [date]
-  }, function(error, ticket) {
-    if (error) {
-      errorCallback && errorCallback(error);
+  }, _onCreateExecuted.bind(null, successCallback, errorCallback));
+}
+
+function _addDate(userId, number, date, successCallback, errorCallback) {
+  TicketModel.findOne({
+    user: userId,
+    number: number
+  }, _onAddDateFoundTicket.bind(null, date, successCallback, errorCallback));
+}
+
+function _deleteDate(userId, number, date, successCallback, errorCallback) {
+  TicketModel.findOne({
+    user: userId,
+    number: number,
+    dates: date
+  }, _onDeleteDateFoundTicket.bind(null, date, successCallback, errorCallback));
+}
+
+// local
+function _onGetManyCountOffAllFound(
+  from,
+  size,
+  successCallback,
+  errorCallback,
+  error,
+  count
+) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  if (count === 0) {
+    successCallback && successCallback({total: count, tickets: []});
+    return;
+  }
+
+  TicketModel.find({}, null, {
+    skip: from,
+    limit: size
+  }, _onGetManyFound.bind(null, count, successCallback, errorCallback));
+}
+
+function _onGetManyFound(count, successCallback, errorCallback, error, tickets) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  successCallback && successCallback({total: count, tickets});
+}
+
+function _onCreateExecuted(successCallback, errorCallback, error, ticket) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  successCallback && successCallback(ticket);
+}
+
+function _onExistsExecuted(successCallback, errorCallback, error, count) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  successCallback && successCallback(count !== 0);
+}
+
+function _onAddDateFoundTicket(
+  addedDate,
+  successCallback,
+  errorCallback,
+  error,
+  ticket
+) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  if (!ticket) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  _addDateToTicket(ticket, addedDate);
+
+  _saveTicket(ticket, successCallback, errorCallback);
+}
+
+function _addDateToTicket(ticket, date) {
+  ticket.dates = ticket.dates
+    ? ticket.dates
+    : [];
+
+  ticket
+    .dates
+    .push(date);
+}
+
+function _onDeleteDateFoundTicket(
+  deletedDate,
+  successCallback,
+  errorCallback,
+  error,
+  ticket
+) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  if (!ticket) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  _deleteDateFromTicket(ticket, deletedDate);
+
+  if (!ticket.dates.length) {
+    _removeTicket(ticket, successCallback, errorCallback);
+    return;
+  }
+
+  _saveTicket(ticket, successCallback, errorCallback);
+}
+
+function _deleteDateFromTicket(ticket, date) {
+  for (var i = 0; i < ticket.dates.length; i++) {
+    if (ticket.dates[i].getTime() === new Date(date).getTime()) {
+      ticket
+        .dates
+        .splice(i, 1);
+      return;
+    }
+  }
+}
+
+function _removeTicket(ticket, successCallback, errorCallback) {
+  ticket.remove(function(deleteError) {
+    if (deleteError) {
+      errorCallback && errorCallback(deleteError);
+      return;
+    }
+
+    successCallback && successCallback();
+  });
+}
+
+function _saveTicket(ticket, successCallback, errorCallback) {
+  ticket.save(function(saveError) {
+    if (saveError) {
+      errorCallback && errorCallback(saveError);
       return;
     }
 
     successCallback && successCallback(ticket);
-  });
-}
-
-function _addDate(userId, number, date, successCallback, errorCallback) {
-  console.log('findOne ticket', {
-    user: userId,
-    number: number
-  });
-  TicketModel.findOne({
-    user: userId,
-    number: number
-  }, function(error, ticket) {
-    if (error) {
-      errorCallback && errorCallback(error);
-      return;
-    }
-
-    ticket.dates = ticket.dates
-      ? ticket.dates
-      : [];
-    ticket
-      .dates
-      .push(date);
-
-    ticket.save(function(saveError) {
-      if (saveError) {
-        errorCallback && errorCallback(saveError);
-        return;
-      }
-
-      successCallback && successCallback(ticket);
-    });
   });
 }

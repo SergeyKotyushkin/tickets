@@ -7,16 +7,17 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import * as authActions from 'stores/auth/actions';
-import AuthService from 'services/auth';
-import TicketService from 'services/ticket';
 
+import AuthService from 'services/auth';
+
+import TicketService from 'services/ticket';
 import TicketNumber from 'components/TicketNumber';
 
 import messages from 'constants/messages';
 
 class Tickets extends Component {
   _from = 0;
-  _size = 1;
+  _size = 10;
   _digits = [
     0,
     0,
@@ -28,10 +29,8 @@ class Tickets extends Component {
 
   constructor(props) {
     super(props);
-
     this._authService = new AuthService(props.dispatchedAuthActions);
     this._ticketService = new TicketService();
-
     this.state = {
       tickets: [],
       total: 0,
@@ -69,9 +68,10 @@ class Tickets extends Component {
             </div>
             <div><DatePicker
               selected={this.state.date}
+              dateFormat="dd.MM.yyyy"
               onChange={(date) => this._onDateChange(date)}/></div>
             <div>
-              <button onClick={() => this._onAddticketClick()}>Add</button>
+              <button onClick={() => this._onAddTicketClick()}>Add</button>
             </div>
           </div>
         </div>
@@ -87,7 +87,15 @@ class Tickets extends Component {
       let ticketDatesMarkup = [];
       for (var j = 0; j < tickets[i].dates.length; j++) {
         let date = new Date(tickets[i].dates[j]).toLocaleDateString();
-        ticketDatesMarkup.push(<div key={j} className="ticket-number-date">{date}</div>);
+        ticketDatesMarkup.push(
+          <div key={j} className="flex-container-row">
+            <div
+              className="ticket-number-date"
+              data-number={tickets[i].number}
+              data-date={tickets[i].dates[j]}>{date}</div>
+            <button onClick={(event) => this._onDateDelete(event)}>&times;</button>
+          </div>
+        );
       }
 
       ticketsMarkup.push(
@@ -160,18 +168,41 @@ class Tickets extends Component {
   }
 
   _onDateChange(date) {
-    this.setState({date});
+    let adjustedDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    this.setState({date: adjustedDate});
   }
 
-  _onAddticketClick() {
+  _onAddTicketClick() {
+    if (!confirm(messages.addTicketConfirm)) {
+      return;
+    }
+
     if (!this.state.date) {
       alert(messages.fillDate);
       return;
     }
 
-    confirm(messages.addTicketConfirm) && this
+    this
       ._ticketService
       .add({number: this.state.number, date: this.state.date});
+  }
+
+  _onDateDelete(event) {
+    if (!confirm(messages.deleteTicketDateConfirm)) {
+      return;
+    }
+
+    let button = event.target || event.srcElement;
+
+    let dateNode = button.previousSibling;
+
+    this
+      ._ticketService
+      .deleteDate({number: dateNode.dataset.number, date: dateNode.dataset.date});
   }
 
   _onDigitChange(number) {

@@ -5,6 +5,7 @@ import axios from 'axios';
 export default function AuthService(dispatchedAuthActions) {
   this.getMany = _getMany;
   this.add = _add;
+  this.deleteDate = _deleteDate;
 }
 
 // main
@@ -23,6 +24,15 @@ function _add(ticket, successCallback, failureCallback) {
     .then(
       _onAddSuccess.bind(null, successCallback, failureCallback),
       _onAddFailure.bind(null, failureCallback)
+    );
+}
+
+function _deleteDate(deleteDateData, successCallback, failureCallback) {
+  axios
+    .post(routes.deleteTicketDate, deleteDateData)
+    .then(
+      _onDeleteDateSuccess.bind(null, successCallback, failureCallback),
+      _onDeleteDateFailure.bind(null, failureCallback)
     );
 }
 
@@ -53,5 +63,18 @@ function _onAddSuccess(successCallback, failureCallback, response) {
 }
 
 function _onAddFailure(callback, response) {
+  callback && callback(response);
+}
+
+function _onDeleteDateSuccess(successCallback, failureCallback, response) {
+  if (response.data.error) {
+    failureCallback && failureCallback(data);
+    return;
+  }
+
+  successCallback && successCallback();
+}
+
+function _onDeleteDateFailure(callback, response) {
   callback && callback(response);
 }
