@@ -6,6 +6,7 @@ export default function AuthService(dispatchedAuthActions) {
   this.getMany = _getMany;
   this.add = _add;
   this.deleteDate = _deleteDate;
+  this.find = _find;
 }
 
 // main
@@ -33,6 +34,15 @@ function _deleteDate(deleteDateData, successCallback, failureCallback) {
     .then(
       _onDeleteDateSuccess.bind(null, successCallback, failureCallback),
       _onDeleteDateFailure.bind(null, failureCallback)
+    );
+}
+
+function _find(number, successCallback, failureCallback) {
+  axios
+    .post(routes.findTicket, number)
+    .then(
+      _onFindTicketSuccess.bind(null, successCallback, failureCallback),
+      _onFindTicketFailure.bind(null, failureCallback)
     );
 }
 
@@ -76,5 +86,18 @@ function _onDeleteDateSuccess(successCallback, failureCallback, response) {
 }
 
 function _onDeleteDateFailure(callback, response) {
+  callback && callback(response);
+}
+
+function _onFindTicketSuccess(successCallback, failureCallback, response) {
+  if (response.data.error) {
+    failureCallback && failureCallback(data);
+    return;
+  }
+
+  successCallback && successCallback(response.data);
+}
+
+function _onFindTicketFailure(callback, response) {
   callback && callback(response);
 }

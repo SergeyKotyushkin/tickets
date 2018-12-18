@@ -11,6 +11,7 @@ import * as authActions from 'stores/auth/actions';
 import AuthService from 'services/auth';
 
 import TicketService from 'services/ticket';
+import Ticket from 'components/Ticket';
 import TicketNumber from 'components/TicketNumber';
 
 import routes from 'constants/routes';
@@ -36,7 +37,9 @@ class Tickets extends Component {
       tickets: [],
       total: 0,
       number: 0,
-      date: null
+      date: null,
+      foundNumber: undefined,
+      searchNumber: 0
     };
   }
 
@@ -72,8 +75,11 @@ class Tickets extends Component {
           <div>
             <hr/>
           </div>
-          <div className="new-ticket-container flex-container-row">
-            <div className="flex-container-column">
+          <div className="ticket-actions-container flex-container-row">
+            <div className="new-ticket-container flex-container-column">
+              <div>
+                <h2>Add new ticket here:</h2>
+              </div>
               <div className="new-ticket-number-container">
                 <TicketNumber
                   number={this.state.number}
@@ -93,6 +99,29 @@ class Tickets extends Component {
               </div>
               <div className="new-ticket-add-button-container">
                 <button onClick={() => this._onAddTicketClick()}>Add</button>
+              </div>
+            </div>
+            <div className="search-ticket-container flex-container-column">
+              <div className="search-ticket-title-container">
+                <h2>Search for a ticket:</h2>
+              </div>
+              <div className="search-ticket-input-container">
+                <div>
+                  <label htmlFor="search-ticket__input">Ticket number:</label>
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    id="search-ticket__input"
+                    value={this.state.searchNumber}
+                    onChange={(event) => this._onSearchInputChange(event)}/>
+                </div>
+              </div>
+              <div className="find-ticket-button-container">
+                <button onClick={(event) => this._onSearchNumberClick(event)}>Find</button>
+              </div>
+              <div className="found-ticket-container flex-container-row">
+                <Ticket number={this.state.foundNumber}/>
               </div>
             </div>
           </div>
@@ -126,11 +155,9 @@ class Tickets extends Component {
         );
       }
 
-      let formattedNumber = this._fillLeftWithZero(tickets[i].number, 6);
-
       let x1 = (
         <div>
-          <span>{formattedNumber}</span>
+          <span>{tickets[i].number}</span>
           <div className="flex-container-column">
             {ticketDatesMarkup}
           </div>
@@ -138,16 +165,8 @@ class Tickets extends Component {
       );
 
       ticketsMarkup.push(
-        <div key={i} className="ticket">
-          <div className="ticket-outer-container">
-            <div className="ticket-inner-container flex-container-column">
-              <span className="ticket-header-text-container">...</span>
-              <span className="ticket-number-container">{formattedNumber}</span>
-              <span className="ticket-bus-label-container">bus</span>
-              <span className="ticket-ticket-label-container">ticket</span>
-              <span className="ticket-price-container">...</span>
-            </div>
-          </div>
+        <div key={i}>
+          <Ticket number={tickets[i].number}/>
         </div>
       );
     }
@@ -232,6 +251,10 @@ class Tickets extends Component {
     this.setState({date: adjustedDate});
   }
 
+  _onSearchInputChange(event) {
+    this.setState({searchNumber: event.target.value});
+  }
+
   _onAddTicketClick() {
     if (!confirm(messages.addTicketConfirm)) {
       return;
@@ -264,6 +287,14 @@ class Tickets extends Component {
       .deleteDate({number: dateNode.dataset.number, date: dateNode.dataset.date});
   }
 
+  _onSearchNumberClick() {
+    this
+      ._ticketService
+      .find({
+        number: this.state.searchNumber
+      }, this._onTicketFound.bind(this), () => alert(messages.internalServerError));
+  }
+
   _onTicketAdded(data) {
     if (this._handleError(data)) {
       return;
@@ -271,6 +302,18 @@ class Tickets extends Component {
 
     this._from = 0;
     this.setState({tickets: [], total: 0, number: 0, date: null});
+  }
+
+  _onTicketFound(data) {
+    if (this._handleError(data)) {
+      return;
+    }
+
+    this.setState({
+      foundNumber: data.ticket
+        ? data.ticket.number
+        : null
+    });
   }
 
   _onDigitChange(number) {

@@ -1,4 +1,4 @@
-.tickets-content hr {
+.tickets-content {
     text-align: center;
 }
 
@@ -36,7 +36,6 @@
 }
 
 .new-ticket-container {
-    padding: 10px 0px;
     border-radius: 2px;
     justify-content: center;
 }
@@ -49,10 +48,6 @@
 
 .new-ticket-number-container>div {
     justify-content: center;
-}
-
-.new-ticket-container>div {
-    margin-bottom: 10px;
 }
 
 .new-ticket-add-button-container {
@@ -114,4 +109,28 @@
 .ticket-price-container {
     font-size: 10px;
     text-transform: lowercase;
+}
+
+.search-ticket-container>div {
+    text-align: center;
+}
+
+.ticket-actions-container {
+    justify-content: space-around;
+}
+
+.found-ticket-container {
+    justify-content: center;
+}
+
+.find-ticket-button-container {
+    margin: 5px 0px;
+}
+
+.search-ticket-input-container {
+    margin-top: 5px;
+}
+
+.search-ticket-input-container input {
+    text-align: center;
 }
