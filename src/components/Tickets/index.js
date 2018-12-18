@@ -61,19 +61,35 @@ class Tickets extends Component {
             {!!this.state.tickets.length && this._getTicketsMarkup()}
             {!this.state.tickets.length && this._getEmptyTicketsMarkup()}
           </div>
-          <div className="add-ticket-container">
-            <div>
-              <TicketNumber
-                number={this.state.number}
-                onDigitChange={(number) => this._onDigitChange(number)}></TicketNumber>
+          <div>
+            <hr/>
+          </div>
+          <div className="new-ticket-container flex-container-row">
+            <div className="flex-container-column">
+              <div className="new-ticket-number-container">
+                <TicketNumber
+                  number={this.state.number}
+                  onDigitChange={(number) => this._onDigitChange(number)}></TicketNumber>
+              </div>
+              <div className="new-ticket-date-container">
+                <div>
+                  <label htmlFor="new-ticket-date__input">Date:&nbsp;</label>
+                </div>
+                <div>
+                  <DatePicker
+                    id="new-ticket-date__input"
+                    selected={this.state.date}
+                    dateFormat="dd.MM.yyyy"
+                    onChange={(date) => this._onDateChange(date)}></DatePicker>
+                </div>
+              </div>
+              <div className="new-ticket-add-button-container">
+                <button onClick={() => this._onAddTicketClick()}>Add</button>
+              </div>
             </div>
-            <div><DatePicker
-              selected={this.state.date}
-              dateFormat="dd.MM.yyyy"
-              onChange={(date) => this._onDateChange(date)}/></div>
-            <div>
-              <button onClick={() => this._onAddTicketClick()}>Add</button>
-            </div>
+          </div>
+          <div>
+            <hr/>
           </div>
         </div>
       </div>

@@ -1,20 +1,23 @@
-.ticket-digit-container {
-    padding: 3px;
+.ticket-digit-button {
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #d74c52;
+    background-color: #bcb9ab;
+    border: 1px solid #d74c52;
     text-align: center;
+    margin: 5px 2px;
+    cursor: pointer;
+    user-select: none;
 }
 
-.ticket-digit {
-    border: 1px solid rgba(20, 38, 90, 0.6);
-    border-radius: 3px;
-    background-color: rgba(223, 241, 250, 0.9);
-    padding: 6px 3px;
+.ticket-digit-button:hover {
+    background-color: #fffcef;
 }
 
-.ticket-digit-button-top {
-    margin-bottom: 5px;
-}
-
-.ticket-digit-button-bottom {
+.ticket-digit-button {
     margin-top: 5px;
 }
 
@@ -24,13 +27,28 @@
     justify-content: center;
 }
 
-.add-ticket-container {
-    padding-left: 10px;
+.new-ticket-container {
+    padding: 10px 0px;
+    border-radius: 2px;
+    justify-content: center;
+}
+
+.new-ticket-number-container,
+.new-ticket-date-container {
+    margin-bottom: 10px;
     text-align: center;
 }
 
-.add-ticket-container>div {
+.new-ticket-number-container>div {
+    justify-content: center;
+}
+
+.new-ticket-container>div {
     margin-bottom: 10px;
+}
+
+.new-ticket-add-button-container {
+    text-align: center;
 }
 
 .ticket-number-date {
