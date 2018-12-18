@@ -73,7 +73,10 @@ function _onGetManyCountOffAllFound(
     user: userId
   }, null, {
     skip: from,
-    limit: size
+    limit: size,
+    sort: {
+      number: 1
+    }
   }, _onGetManyFound.bind(null, count, successCallback, errorCallback));
 }
 

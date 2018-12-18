@@ -49,6 +49,7 @@ class App extends Component {
               <Route exact={true} path="/login" component={Login}></Route>
             </Switch>
           </div>
+          <div className="app-footer"></div>
         </div>
       </BrowserRouter>
     );
