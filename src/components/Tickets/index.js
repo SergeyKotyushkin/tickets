@@ -18,7 +18,7 @@ import messages from 'constants/messages';
 
 class Tickets extends Component {
   _from = 0;
-  _size = 10;
+  _size = 2;
   _digits = [
     0,
     0,
@@ -61,6 +61,7 @@ class Tickets extends Component {
             {!!this.state.tickets.length && this._getTicketsMarkup()}
             {!this.state.tickets.length && this._getEmptyTicketsMarkup()}
           </div>
+          {this.state.total > this.state.tickets.length && this._getLoadMoreMarkup()}
           <div>
             <hr/>
           </div>
@@ -144,14 +145,6 @@ class Tickets extends Component {
       );
     }
 
-    if (this.state.total > tickets.length) {
-      ticketsMarkup.push(
-        <div key={tickets.length}>
-          <button onClick={() => this._loadNextTickets()}>Load more</button>
-        </div>
-      );
-    }
-
     return ticketsMarkup;
   }
 
@@ -159,6 +152,17 @@ class Tickets extends Component {
     return (<div>
       <span>You don't have any ticket yet!</span>
     </div>);
+  }
+
+  _getLoadMoreMarkup() {
+    return (
+      <div className="tickets-load-more-container flex-container-column">
+        <div><hr/></div>
+        <div className="tickets-load-more-button-container">
+          <button onClick={() => this._loadNextTickets()}>Load more</button>
+        </div>
+      </div>
+    );
   }
 
   _loadComponentData() {

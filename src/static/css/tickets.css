@@ -55,6 +55,10 @@
     padding-left: 20px;
 }
 
+.tickets-load-more-button-container {
+    text-align: center;
+}
+
 /* ticket */
 .ticket {
     margin: 5px;
