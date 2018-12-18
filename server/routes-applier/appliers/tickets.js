@@ -20,12 +20,18 @@ function _onGetTickets(req, res) {
     return;
   }
 
-  ticketRepository.getMany(req.body.from, req.body.size, function(data) {
-    res.json(data);
-  }, function(error) {
-    console.log('Internal Server Error');
-    res.json({error: true});
-  });
+  ticketRepository.getMany(
+    req.user.id,
+    req.body.from,
+    req.body.size,
+    function(data) {
+      res.json(data);
+    },
+    function(error) {
+      console.log('Internal Server Error');
+      res.json({error: true});
+    }
+  );
 }
 
 function _onAddTicket(req, res) {

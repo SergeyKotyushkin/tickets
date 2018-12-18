@@ -65,7 +65,7 @@ class App extends Component {
   _renderLogOutLink() {
     return (
       <div className="app-header-menu-link-container">
-        <a href="javascript:void(0);" onClick={(event) => this._logOutClick(event)}>Log Out</a>
+        <a href="javascript:void(0);" onClick={(event) => this._logOutClick(event)}>{this.props.authStore.username}&nbsp;|&nbsp;Log Out</a>
       </div>
     );
   }

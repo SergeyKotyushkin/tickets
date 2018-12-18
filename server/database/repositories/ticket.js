@@ -17,9 +17,12 @@ function _exists(userId, number, successCallback, errorCallback) {
   }, _onExistsExecuted.bind(null, successCallback, errorCallback));
 }
 
-function _getMany(from, size, successCallback, errorCallback) {
+function _getMany(userId, from, size, successCallback, errorCallback) {
   TicketModel.countDocuments(
-    _onGetManyCountOffAllFound.bind(null, from, size, successCallback, errorCallback)
+    {
+      user: userId
+    },
+    _onGetManyCountOffAllFound.bind(null, userId, from, size, successCallback, errorCallback)
   );
 }
 
@@ -48,6 +51,7 @@ function _deleteDate(userId, number, date, successCallback, errorCallback) {
 
 // local
 function _onGetManyCountOffAllFound(
+  userId,
   from,
   size,
   successCallback,
@@ -65,7 +69,9 @@ function _onGetManyCountOffAllFound(
     return;
   }
 
-  TicketModel.find({}, null, {
+  TicketModel.find({
+    user: userId
+  }, null, {
     skip: from,
     limit: size
   }, _onGetManyFound.bind(null, count, successCallback, errorCallback));

@@ -18,7 +18,7 @@ import messages from 'constants/messages';
 
 class Tickets extends Component {
   _from = 0;
-  _size = 2;
+  _size = 10;
   _digits = [
     0,
     0,
