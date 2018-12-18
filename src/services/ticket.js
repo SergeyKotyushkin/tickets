@@ -59,7 +59,7 @@ function _onAddSuccess(successCallback, failureCallback, response) {
     return;
   }
 
-  successCallback && successCallback();
+  successCallback && successCallback(response.data);
 }
 
 function _onAddFailure(callback, response) {
@@ -72,7 +72,7 @@ function _onDeleteDateSuccess(successCallback, failureCallback, response) {
     return;
   }
 
-  successCallback && successCallback();
+  successCallback && successCallback(response.data);
 }
 
 function _onDeleteDateFailure(callback, response) {

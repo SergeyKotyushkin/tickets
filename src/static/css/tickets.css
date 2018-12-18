@@ -19,9 +19,9 @@
 }
 
 .tickets-container {
-    padding-right: 10px;
     text-align: center;
-    border-right: 1px solid black;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .add-ticket-container {
@@ -35,4 +35,48 @@
 
 .ticket-number-date {
     padding-left: 20px;
+}
+
+/* ticket */
+.ticket {
+    margin: 5px;
+}
+
+.ticket-outer-container {
+    padding: 5px;
+    background-color: #efebde;
+}
+
+.ticket-inner-container {
+    padding: 5px;
+    border: 1px solid #d74c52;
+    text-align: center;
+    color: #d74c52;
+}
+
+.ticket-header-text-container {
+    font-size: 12px;
+}
+
+.ticket-number-container {
+    font-family: 'Courier';
+    padding: 20px 0px;
+    font-size: 18px;
+    line-height: 18px;
+    color: #15140d;
+}
+
+.ticket-bus-label-container {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.ticket-ticket-label-container {
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.ticket-price-container {
+    font-size: 10px;
+    text-transform: lowercase;
 }

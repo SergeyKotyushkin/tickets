@@ -13,6 +13,7 @@ import AuthService from 'services/auth';
 import TicketService from 'services/ticket';
 import TicketNumber from 'components/TicketNumber';
 
+import routes from 'constants/routes';
 import messages from 'constants/messages';
 
 class Tickets extends Component {
@@ -55,8 +56,8 @@ class Tickets extends Component {
     return (
       <div>
         <h2>Tickets</h2>
-        <div className="flex-container-row">
-          <div className="flex-container-column tickets-container">
+        <div className="flex-container-column">
+          <div className="tickets-container flex-container-row">
             {!!this.state.tickets.length && this._getTicketsMarkup()}
             {!this.state.tickets.length && this._getEmptyTicketsMarkup()}
           </div>
@@ -80,7 +81,10 @@ class Tickets extends Component {
   }
 
   _getTicketsMarkup() {
-    let tickets = this.state.tickets;
+    let tickets = JSON.parse(JSON.stringify(this.state.tickets));
+    tickets.sort(function(x, y) {
+      return x.number - y.number;
+    });
 
     let ticketsMarkup = [];
     for (var i = 0; i < tickets.length; i++) {
@@ -98,11 +102,27 @@ class Tickets extends Component {
         );
       }
 
-      ticketsMarkup.push(
-        <div key={i} className="ticket-number">
-          <span>Number:&nbsp;{this._fillLeftWithZero(tickets[i].number, 6)}</span>
+      let formattedNumber = this._fillLeftWithZero(tickets[i].number, 6);
+
+      let x1 = (
+        <div>
+          <span>{formattedNumber}</span>
           <div className="flex-container-column">
             {ticketDatesMarkup}
+          </div>
+        </div>
+      );
+
+      ticketsMarkup.push(
+        <div key={i} className="ticket">
+          <div className="ticket-outer-container">
+            <div className="ticket-inner-container flex-container-column">
+              <span className="ticket-header-text-container">...</span>
+              <span className="ticket-number-container">{formattedNumber}</span>
+              <span className="ticket-bus-label-container">bus</span>
+              <span className="ticket-ticket-label-container">ticket</span>
+              <span className="ticket-price-container">...</span>
+            </div>
           </div>
         </div>
       );
@@ -120,7 +140,9 @@ class Tickets extends Component {
   }
 
   _getEmptyTicketsMarkup() {
-    return <span>You don't have any ticket yet!</span>
+    return (<div>
+      <span>You don't have any ticket yet!</span>
+    </div>);
   }
 
   _loadComponentData() {
@@ -146,13 +168,7 @@ class Tickets extends Component {
   }
 
   _onGetTicketsSuccess(data) {
-    if (data.error) {
-      if (data.unauthenticated) {
-        this._redirectToLogin();
-        return;
-      }
-
-      alert(messages.internalServerError);
+    if (this._handleError(data)) {
       return;
     }
 
@@ -163,7 +179,7 @@ class Tickets extends Component {
         tickets.push(ticket);
       });
 
-    this._from += data.tickets.length;
+    this._from = tickets.length;
     this.setState({tickets, total: data.total});
   }
 
@@ -188,7 +204,10 @@ class Tickets extends Component {
 
     this
       ._ticketService
-      .add({number: this.state.number, date: this.state.date});
+      .add({
+        number: this.state.number,
+        date: this.state.date
+      }, this._onTicketAdded.bind(this), () => alert(messages.internalServerError));
   }
 
   _onDateDelete(event) {
@@ -205,12 +224,34 @@ class Tickets extends Component {
       .deleteDate({number: dateNode.dataset.number, date: dateNode.dataset.date});
   }
 
+  _onTicketAdded(data) {
+    if (this._handleError(data)) {
+      return;
+    }
+
+    alert('added', data);
+  }
+
   _onDigitChange(number) {
     this.setState({number});
   }
 
   _fillLeftWithZero(num, len) {
     return (Array(len).join("0") + num).slice(-len);
+  }
+
+  _handleError(data) {
+    if (!data.error) {
+      return false;
+    }
+
+    if (data.unauthenticated) {
+      this._redirectToLogin();
+      return true;
+    }
+
+    alert(messages.internalServerError);
+    return true;
   }
 }
 

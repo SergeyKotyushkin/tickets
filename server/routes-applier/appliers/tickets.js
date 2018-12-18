@@ -36,13 +36,19 @@ function _onAddTicket(req, res) {
   }
 
   ticketRepository.exists(req.user.id, req.body.number, function(result) {
-    (
-      result
-        ? ticketRepository.addDate
-        : ticketRepository.create
-    ).call(this, req.user.id, req.body.number, req.body.date, function() {
-      res.json({});
-    });
+    var functionToExecute = result
+      ? ticketRepository.addDate
+      : ticketRepository.create;
+
+    functionToExecute.call(
+      this,
+      req.user.id,
+      req.body.number,
+      req.body.date,
+      function(ticket) {
+        res.json({ticket});
+      }
+    );
   }, function(error) {
     console.log('Internal Server Error');
     res.json({error: true});
