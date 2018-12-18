@@ -15,10 +15,6 @@ class TicketNumber extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      number: this.props.number
-    };
-
     this._authService = new AuthService(props.dispatchedAuthActions);
     this._ticketNumberService = new TicketNumberService();
 
@@ -52,7 +48,7 @@ class TicketNumber extends Component {
     let ticketNumber = [];
     let digits = this
       ._ticketNumberService
-      .getDigitsFromNumber(this.state.number);
+      .getDigitsFromNumber(this.props.number);
 
     for (var i = 0; i < 6; i++) {
       let value = digits && digits.length && digits[i] || 0;
@@ -126,7 +122,7 @@ class TicketNumber extends Component {
     let mul = Math.pow(10, digitPosition);
     let digits = this
       ._ticketNumberService
-      .getDigitsFromNumber(this.state.number);
+      .getDigitsFromNumber(this.props.number);
     digits[digitPosition] = newDigitValue;
     let number = this
       ._ticketNumberService

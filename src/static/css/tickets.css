@@ -51,11 +51,16 @@
     text-align: center;
 }
 
+.new-ticket-date-container input {
+    text-align: center;
+}
+
 .ticket-number-date {
     padding-left: 20px;
 }
 
-.tickets-load-more-button-container {
+.tickets-load-more-button-container,
+.tickets-total-text-container {
     text-align: center;
 }
 

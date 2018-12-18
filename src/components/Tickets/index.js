@@ -49,6 +49,12 @@ class Tickets extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.authStore.isLoggedIn && !this.props.authStore.isLoggedIn) {
       this._redirectToLogin();
+      return;
+    }
+
+    if (prevState.total > 0 && !this.state.total) {
+      this._loadNextTickets();
+      return;
     }
   }
 
@@ -62,6 +68,7 @@ class Tickets extends Component {
             {!this.state.tickets.length && this._getEmptyTicketsMarkup()}
           </div>
           {this.state.total > this.state.tickets.length && this._getLoadMoreMarkup()}
+          {this._getTotalMarkup()}
           <div>
             <hr/>
           </div>
@@ -165,6 +172,19 @@ class Tickets extends Component {
     );
   }
 
+  _getTotalMarkup() {
+    return (
+      <div className="tickets-total-container flex-container-column">
+        <div><hr/></div>
+        <div className="tickets-total-text-container">
+          <div>
+            <span>Total:&nbsp;{this.state.total}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   _loadComponentData() {
     this._loadNextTickets();
   }
@@ -249,7 +269,8 @@ class Tickets extends Component {
       return;
     }
 
-    alert('added', data);
+    this._from = 0;
+    this.setState({tickets: [], total: 0, number: 0, date: null});
   }
 
   _onDigitChange(number) {
