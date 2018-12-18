@@ -1,8 +1,4 @@
-.login-container {
-    padding: 10px;
-    border: 1px solid rgba(120, 185, 232, 0.9);
-    border-radius: 4px;
-}
+.login-container {}
 
 .login-title-container {
     text-align: center;

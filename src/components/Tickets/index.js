@@ -60,7 +60,7 @@ class Tickets extends Component {
 
   render() {
     return (
-      <div>
+      <div className="tickets-content">
         <h2>Tickets</h2>
         <div className="flex-container-column">
           <div className="tickets-container flex-container-row">

@@ -1,3 +1,11 @@
+.tickets-content hr {
+    text-align: center;
+}
+
+.tickets-content hr {
+    border-color: rgba(120, 185, 232, 0.9);
+}
+
 .ticket-digit-button {
     width: 15px;
     height: 15px;
