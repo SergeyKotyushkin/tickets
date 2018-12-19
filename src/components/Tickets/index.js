@@ -31,16 +31,19 @@ class Tickets extends Component {
 
   constructor(props) {
     super(props);
-    this._authService = new AuthService(props.dispatchedAuthActions);
-    this._ticketService = new TicketService();
+
     this.state = {
       tickets: [],
       total: 0,
       number: 0,
       date: null,
       foundNumber: undefined,
+      foundDates: undefined,
       searchNumber: 0
     };
+
+    this._authService = new AuthService(props.dispatchedAuthActions);
+    this._ticketService = new TicketService();
   }
 
   componentDidMount() {
@@ -121,7 +124,7 @@ class Tickets extends Component {
                 <button onClick={(event) => this._onSearchNumberClick(event)}>Find</button>
               </div>
               <div className="found-ticket-container flex-container-row">
-                <Ticket number={this.state.foundNumber}/>
+                <Ticket number={this.state.foundNumber} dates={this.state.foundDates}/>
               </div>
             </div>
           </div>
@@ -166,7 +169,7 @@ class Tickets extends Component {
 
       ticketsMarkup.push(
         <div key={i}>
-          <Ticket number={tickets[i].number}/>
+          <Ticket number={tickets[i].number} dates={tickets[i].dates}/>
         </div>
       );
     }
@@ -312,16 +315,15 @@ class Tickets extends Component {
     this.setState({
       foundNumber: data.ticket
         ? data.ticket.number
+        : null,
+      foundDates: data.ticket
+        ? data.ticket.dates
         : null
     });
   }
 
   _onDigitChange(number) {
     this.setState({number});
-  }
-
-  _fillLeftWithZero(num, len) {
-    return (Array(len).join("0") + num).slice(-len);
   }
 
   _handleError(data) {

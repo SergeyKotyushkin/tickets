@@ -70,6 +70,7 @@
 /* ticket */
 .ticket {
     margin: 5px;
+    cursor: pointer;
 }
 
 .ticket-outer-container {
@@ -133,4 +134,36 @@
 
 .search-ticket-input-container input {
     text-align: center;
+}
+
+/* ticket modal */
+.ticket-modal {
+    max-width: 500px;
+    max-height: 500px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.ticket-modal-close-button-container {
+    align-self: flex-end;
+}
+
+.ticket-details-ticket-container {
+    margin-right: 50px;
+}
+
+.ticket-details-dates-container {
+    overflow-y: auto;
+}
+
+.ticket-details-date-container {
+    margin: 10px 0;
+    padding: 5px;
+    border-bottom: 2px solid rgba(120, 185, 232, 0.9);
+    justify-content: space-between;
+}
+
+.ticket-details-date {
+    margin-right: 30px;
 }

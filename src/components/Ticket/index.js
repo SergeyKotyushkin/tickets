@@ -1,12 +1,40 @@
 import React, {Component} from 'react'
 
+import ReactModal from 'react-modal';
+ReactModal.setAppElement('#root');
+
+import TicketService from 'services/ticket';
+
+import messages from 'constants/messages';
+
 export default class Ticket extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      modalIsOpen: false
+    };
+
+    this._ticketService = new TicketService();
+
+    this.onOpenTicketClick = this
+      ._onOpenTicketClick
+      .bind(this);
+    this.onCloseTicketClick = this
+      ._onCloseTicketClick
+      .bind(this);
+    this.onDeleteDateClick = this
+      ._onDeleteDateClick
+      .bind(this);
+  }
+
   render() {
     return (
-      <div className="ticket">
+      <div className="ticket" onClick={this.onOpenTicketClick}>
         {this.props.number === undefined && this._getEmptyMarkup()}
         {this.props.number === null && this._getNotFoundMarkup()}
-        {!!(this.props.number === 0 || this.props.number) && this._getFoundMarkup()}
+        {(this.props.number === 0 || this.props.number) && this._getFoundMarkup()}
+        {!this.props.readonly && this._getReactModalMarkup()}
       </div>
     );
   }
@@ -32,6 +60,115 @@ export default class Ticket extends Component {
 
   _getNotFoundMarkup() {
     return (<span>Not found</span>);
+  }
+
+  _getReactModalMarkup() {
+    return (
+      <ReactModal
+        style={this._getModalStyles()}
+        isOpen={this.state.modalIsOpen}
+        onRequestClose={this.onCloseTicketClick}>
+        <div>
+          <h3>Ticket details</h3>
+        </div>
+        <div className="ticket-details-container flex-container-row">
+          <div className="ticket-details-ticket-container flex-container-row">
+            <Ticket number={this.props.number} readonly={true}></Ticket>
+          </div>
+          <div className="ticket-details-dates-container">
+            {this._getDatesMarkup()}
+          </div>
+        </div>
+        <div>buttons</div>
+        <div className="ticket-modal-close-button-container">
+          <button onClick={this.onCloseTicketClick}>Close</button>
+        </div>
+      </ReactModal>
+    );
+  }
+
+  _getDatesMarkup() {
+    let datesMarkups = [];
+    if (this.props.dates) {
+      let sortedDates = [...this.props.dates].sort(
+        (x, y) => (new Date(x)).getTime() - (new Date(y)).getTime()
+      );
+
+      for (let i = 0; i < sortedDates.length; i++) {
+        let date = new Date(sortedDates[i]).toLocaleDateString();
+        datesMarkups.push(
+          <div key={i} className="ticket-details-date-container flex-container-row">
+            <div
+              className="ticket-details-date"
+              data-number={this.props.number}
+              data-date={sortedDates[i]}>{date}</div>
+            <div>
+              <button onClick={this.onDeleteDateClick}>&times;</button>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    return (
+      <div className="flex-container-column">
+        <div>
+          <strong>Dates</strong>
+        </div>
+        <div>{datesMarkups}</div>
+      </div>
+    );
+  }
+
+  _onOpenTicketClick(event) {
+    event.stopPropagation();
+
+    if (this.props.readonly) {
+      return;
+    }
+
+    this.setState({modalIsOpen: true});
+  }
+
+  _onCloseTicketClick(event) {
+    event.stopPropagation();
+
+    this.setState({modalIsOpen: false});
+  }
+
+  _onDeleteDateClick(event) {
+    if (!confirm(messages.deleteTicketDateConfirm)) {
+      return;
+    }
+
+    let button = event.target || event.srcElement;
+
+    let dateNode = button.parentElement.previousSibling;
+
+    this
+      ._ticketService
+      .deleteDate({number: dateNode.dataset.number, date: dateNode.dataset.date});
+  }
+
+  _getModalStyles() {
+    let styles = {
+      content: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        maxWidth: '300px',
+        maxHeight: '500px',
+        position: 'relative',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column'
+      }
+    };
+
+    return styles;
   }
 
   _fillLeftWithZero(num, len) {
