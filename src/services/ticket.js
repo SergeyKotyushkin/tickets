@@ -6,6 +6,7 @@ export default function AuthService(dispatchedAuthActions) {
   this.getMany = _getMany;
   this.add = _add;
   this.deleteDate = _deleteDate;
+  this.deleteTicket = _deleteTicket;
   this.find = _find;
 }
 
@@ -31,6 +32,15 @@ function _add(ticket, successCallback, failureCallback) {
 function _deleteDate(deleteDateData, successCallback, failureCallback) {
   axios
     .post(routes.deleteTicketDate, deleteDateData)
+    .then(
+      _onDeleteDateSuccess.bind(null, successCallback, failureCallback),
+      _onDeleteDateFailure.bind(null, failureCallback)
+    );
+}
+
+function _deleteTicket(number, successCallback, failureCallback) {
+  axios
+    .post(routes.deleteTicket, number)
     .then(
       _onDeleteDateSuccess.bind(null, successCallback, failureCallback),
       _onDeleteDateFailure.bind(null, failureCallback)

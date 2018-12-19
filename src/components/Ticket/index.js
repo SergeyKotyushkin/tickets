@@ -26,6 +26,9 @@ export default class Ticket extends Component {
     this.onDeleteDateClick = this
       ._onDeleteDateClick
       .bind(this);
+    this.onDeleteTicketClick = this
+      ._onDeleteTicketClick
+      .bind(this);
   }
 
   render() {
@@ -79,7 +82,9 @@ export default class Ticket extends Component {
             {this._getDatesMarkup()}
           </div>
         </div>
-        <div>buttons</div>
+        <div>
+          <button onClick={this.onDeleteTicketClick}>Delete ticket</button>
+        </div>
         <div className="ticket-modal-close-button-container">
           <button onClick={this.onCloseTicketClick}>Close</button>
         </div>
@@ -103,7 +108,7 @@ export default class Ticket extends Component {
               data-number={this.props.number}
               data-date={sortedDates[i]}>{date}</div>
             <div>
-              <button onClick={this.onDeleteDateClick}>&times;</button>
+              <button onClick={this.onDeleteDateClick}>Delete</button>
             </div>
           </div>
         );
@@ -147,7 +152,42 @@ export default class Ticket extends Component {
 
     this
       ._ticketService
-      .deleteDate({number: dateNode.dataset.number, date: dateNode.dataset.date});
+      .deleteDate(
+        {
+          number: this.props.number,
+          date: dateNode.dataset.date
+        },
+        this._onTicketDateDeleted.bind(this),
+        () => alert(messages.internalServerError)
+      );
+  }
+
+  _onDeleteTicketClick(event) {
+    if (!confirm(messages.deleteTicketConfirm)) {
+      return;
+    }
+
+    this
+      ._ticketService
+      .deleteTicket({
+        number: this.props.number
+      }, this._onTicketDeleted.bind(this), () => alert(messages.internalServerError));
+  }
+
+  _onTicketDeleted(data) {
+    if (this._handleError(data)) {
+      return;
+    }
+
+    this.setState({modalIsOpen: false});
+  }
+
+  _onTicketDateDeleted(data) {
+    if (this._handleError(data)) {
+      return;
+    }
+
+    this.setState({modalIsOpen: false});
   }
 
   _getModalStyles() {
@@ -157,7 +197,7 @@ export default class Ticket extends Component {
         right: 0,
         bottom: 0,
         left: 0,
-        maxWidth: '300px',
+        maxWidth: '400px',
         maxHeight: '500px',
         position: 'relative',
         top: '50%',
@@ -173,5 +213,19 @@ export default class Ticket extends Component {
 
   _fillLeftWithZero(num, len) {
     return (Array(len).join("0") + num).slice(-len);
+  }
+
+  _handleError(data) {
+    if (!data.error) {
+      return false;
+    }
+
+    if (data.unauthenticated) {
+      this._redirectToLogin();
+      return true;
+    }
+
+    alert(messages.internalServerError);
+    return true;
   }
 }

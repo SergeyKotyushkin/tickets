@@ -142,39 +142,16 @@ class Tickets extends Component {
       return x.number - y.number;
     });
 
-    let ticketsMarkup = [];
+    let ticketsMarkups = [];
     for (var i = 0; i < tickets.length; i++) {
-      let ticketDatesMarkup = [];
-      for (var j = 0; j < tickets[i].dates.length; j++) {
-        let date = new Date(tickets[i].dates[j]).toLocaleDateString();
-        ticketDatesMarkup.push(
-          <div key={j} className="flex-container-row">
-            <div
-              className="ticket-number-date"
-              data-number={tickets[i].number}
-              data-date={tickets[i].dates[j]}>{date}</div>
-            <button onClick={(event) => this._onDateDelete(event)}>&times;</button>
-          </div>
-        );
-      }
-
-      let x1 = (
-        <div>
-          <span>{tickets[i].number}</span>
-          <div className="flex-container-column">
-            {ticketDatesMarkup}
-          </div>
-        </div>
-      );
-
-      ticketsMarkup.push(
+      ticketsMarkups.push(
         <div key={i}>
           <Ticket number={tickets[i].number} dates={tickets[i].dates}/>
         </div>
       );
     }
 
-    return ticketsMarkup;
+    return ticketsMarkups;
   }
 
   _getEmptyTicketsMarkup() {

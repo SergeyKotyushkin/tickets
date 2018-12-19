@@ -8,6 +8,7 @@ module.exports = {
   create: _create,
   addDate: _addDate,
   deleteDate: _deleteDate,
+  deleteTicket: _deleteTicket,
   find: _find
 };
 
@@ -48,6 +49,13 @@ function _deleteDate(userId, number, date, successCallback, errorCallback) {
     number: number,
     dates: date
   }, _onDeleteDateFoundTicket.bind(null, date, successCallback, errorCallback));
+}
+
+function _deleteTicket(userId, number, successCallback, errorCallback) {
+  TicketModel.deleteOne({
+    user: userId,
+    number: number
+  }, _onDeleteTicket.bind(null, successCallback, errorCallback));
 }
 
 function _find(userId, number, successCallback, errorCallback) {
@@ -205,6 +213,15 @@ function _saveTicket(ticket, successCallback, errorCallback) {
 
     successCallback && successCallback(ticket);
   });
+}
+
+function _onDeleteTicket(successCallback, errorCallback, error) {
+  if (error) {
+    errorCallback && errorCallback(error);
+    return;
+  }
+
+  successCallback && successCallback(true);
 }
 
 function _onFindTicket(successCallback, errorCallback, error, ticket) {

@@ -6,6 +6,7 @@ module.exports = {
   registrationIsComplete: 'Registration is complete!',
   registrationFailed: 'Registration failed! Try again!',
   addTicketConfirm: 'Would you like to add this new ticket?',
-  deleteTicketDateConfirm: 'Would you like to delete this date for the ticket?',
+  deleteTicketDateConfirm: 'Are you sure to delete this date for the ticket?',
+  deleteTicketConfirm: 'Are you sure to delete this ticket?',
   fillDate: 'Date is not selected!'
 };

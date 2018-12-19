@@ -137,14 +137,6 @@
 }
 
 /* ticket modal */
-.ticket-modal {
-    max-width: 500px;
-    max-height: 500px;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 .ticket-modal-close-button-container {
     align-self: flex-end;
 }
