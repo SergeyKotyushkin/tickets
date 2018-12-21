@@ -12,8 +12,8 @@ import AuthService from 'services/auth';
 import RouteService from 'services/route';
 import TicketService from 'services/ticket';
 
-import Ticket from 'components/Ticket';
-import TicketNumber from 'components/TicketNumber';
+import Ticket from 'components/ticket';
+import TicketNumber from 'components/ticketNumber';
 
 import authConstants from 'constants/auth';
 import messages from 'constants/messages';

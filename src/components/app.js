@@ -9,9 +9,9 @@ import * as authActions from 'stores/auth/actions';
 
 import AuthService from 'services/auth';
 
-import Home from 'components/Home';
-import Login from 'components/Login';
-import Tickets from 'components/Tickets';
+import Home from 'components/home';
+import Login from 'components/login';
+import Tickets from 'components/tickets';
 import PrivateRoute from 'components/_privateRoute';
 
 import messages from 'constants/messages';
