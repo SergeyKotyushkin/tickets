@@ -2,7 +2,7 @@ import * as actionTypes from 'stores/auth/action-types';
 
 const initialState = {
   username: '',
-  isLoggedIn: false
+  isAuthenticated: false
 };
 
 function _getDefautState(state) {
@@ -13,7 +13,7 @@ function _getDefautState(state) {
   ));
 }
 
-function _getIsLoggedIn(state) {
+function _getIsAuthenticated(state) {
   return !!(state.username && state.username.length);
 }
 
@@ -23,13 +23,13 @@ export default function auth(state = initialState, action) {
     case actionTypes.LOG_IN:
       var newState = _getDefautState()
       newState.username = action.name;
-      newState.isLoggedIn = _getIsLoggedIn(newState);
+      newState.isAuthenticated = _getIsAuthenticated(newState);
       return newState;
 
     case actionTypes.LOG_OUT:
       var newState = _getDefautState();
       newState.username = null;
-      newState.isLoggedIn = false;
+      newState.isAuthenticated = false;
       return newState;
 
     default:

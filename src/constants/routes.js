@@ -1,6 +1,5 @@
 module.exports = {
   addTicket: '/add-ticket',
-  authStatus: '/auth-status',
   deleteTicketDate: '/delete-ticket-date',
   deleteTicket: '/delete-ticket',
   findTicket: '/find-ticket',
@@ -8,5 +7,6 @@ module.exports = {
   home: '/',
   logIn: '/login',
   logOut: '/logout',
-  register: '/register'
+  register: '/register',
+  tryLogIn: '/try-login'
 };

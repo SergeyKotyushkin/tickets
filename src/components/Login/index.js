@@ -6,9 +6,10 @@ import {connect} from 'react-redux';
 import * as authActions from 'stores/auth/actions';
 
 import AuthService from 'services/auth';
+import RouteService from 'services/route';
 
 import messages from 'constants/messages';
-import routes from 'constants/routes';
+import statusCodes from 'constants/statusCodes';
 
 class Login extends Component {
   LOGIN_TYPE = 0;
@@ -16,8 +17,6 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
-
-    this._authService = new AuthService(props.dispatchedAuthActions);
 
     this.state = {
       login: {
@@ -31,18 +30,42 @@ class Login extends Component {
       },
       type: this.LOGIN_TYPE
     }
+
+    this._authService = new AuthService(props.dispatchedAuthActions);
+    this._routeService = new RouteService();
+
+    this.onInputChange = this._onInputChange.bind(this);
+    this.onLogInClick = this._onLogInClick.bind(this);
+    this.onRegisterClick = this._onRegisterClick.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (!prevProps.authStore.isLoggedIn && this.props.authStore.isLoggedIn) {
-      this
-        .props
-        .history
-        .push(routes.home);
+    if (this.props.authStore.isAuthenticated) {
+      this._routeService.redirectToHome(this.props.history);
     }
   }
 
-  _renderLogInForm() {
+  render() {
+    let markup = this.props.authStore.isAuthenticated
+      ? this._getLoggedInMarkup()
+      : this.state.type === this.LOGIN_TYPE
+        ? this._getLogInMarkup()
+        : this._getRegistrationMarkup();
+    return markup;
+  }
+
+  // markups
+  _getLoggedInMarkup() {
+    return (
+      <div className="flex-container-column login-container">
+        <div className="login-title-container">
+          <h2>{this.props.authStore.username}, you are already logged in!</h2>
+        </div>
+      </div>
+    );
+  }
+
+  _getLogInMarkup() {
     return (
       <div className="flex-container-column login-container">
         <div className="login-title-container">
@@ -57,7 +80,7 @@ class Login extends Component {
               name="username"
               data-type="login"
               value={this.state.login.username}
-              onChange={(event) => this._onInputChange(event)}/>
+              onChange={this.onInputChange}/>
           </div>
           <div className="login-password-container">
             <label htmlFor="login-password__input">Password</label>
@@ -67,18 +90,18 @@ class Login extends Component {
               name="password"
               data-type="login"
               value={this.state.login.password}
-              onChange={(event) => this._onInputChange(event)}/>
+              onChange={this.onInputChange}/>
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={() => this._switchType(this.REGISTRATION_TYPE)}>To registration form</button>
-          <button onClick={() => this._logInClick()}>Log In</button>
+          <button onClick={() => this._onSwitchTypeClick(this.REGISTRATION_TYPE)}>To registration form</button>
+          <button onClick={this.onLogInClick}>Log In</button>
         </div>
       </div>
     );
   }
 
-  _renderRegistrationForm() {
+  _getRegistrationMarkup() {
     return (
       <div className="flex-container-column login-container">
         <div className="login-title-container">
@@ -93,7 +116,7 @@ class Login extends Component {
               name="username"
               data-type="registration"
               value={this.state.registration.username}
-              onChange={(event) => this._onInputChange(event)}/>
+              onChange={this.onInputChange}/>
           </div>
           <div className="registration-password-container">
             <label htmlFor="registration-password__input">Password</label>
@@ -103,7 +126,7 @@ class Login extends Component {
               name="password"
               data-type="registration"
               value={this.state.registration.password}
-              onChange={(event) => this._onInputChange(event)}/>
+              onChange={this.onInputChange}/>
           </div>
           <div className="registration-conform-password-container">
             <label htmlFor="registration-conform-password__input">Confirm Password</label>
@@ -113,49 +136,45 @@ class Login extends Component {
               name="conformPassword"
               data-type="registration"
               value={this.state.registration.conformPassword}
-              onChange={(event) => this._onInputChange(event)}/>
+              onChange={this.onInputChange}/>
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={() => this._switchType(this.LOGIN_TYPE)}>To log in form</button>
-          <button onClick={() => this._registerClick()}>Register</button>
+          <button onClick={() => this._onSwitchTypeClick(this.LOGIN_TYPE)}>To log in form</button>
+          <button onClick={this.onRregisterClick}>Register</button>
         </div>
       </div>
     );
   }
 
-  _renderLoggedInForm() {
-    return (
-      <div className="flex-container-column login-container">
-        <div className="login-title-container">
-          <h2>{this.props.authStore.username}, you are already logged in!</h2>
-        </div>
-      </div>
-    );
+  // onChange handlers
+  _onInputChange(event) {
+    const copyOfState = JSON.parse(JSON.stringify(this.state));
+    copyOfState[event.target.dataset.type][event.target.name] = event.target.value;
+    this.setState(copyOfState);
   }
 
-  render() {
-    let markup = this.props.authStore.isLoggedIn
-      ? this._renderLoggedInForm()
-      : this.state.type === this.LOGIN_TYPE
-        ? this._renderLogInForm()
-        : this._renderRegistrationForm();
-    return markup;
+  // onClick handlers
+  _onSwitchTypeClick(type) {
+    this._switchType(type);
   }
 
-  _logInClick() {
+  _onLogInClick() {
     const login = this.state.login;
     if (!login.username || !login.password) {
       alert(messages.notAllFieldsAreFilled);
       return;
     }
 
-    this
-      ._authService
-      .logIn(login.username, login.password);
+    this._authService.logIn(
+      login.username,
+      login.password,
+      null,
+      this._onLogInFailure
+    );
   }
 
-  _registerClick() {
+  _onRegisterClick() {
     const registration = this.state.registration;
     if (!registration.username || !registration.password || !registration.conformPassword) {
       alert(messages.notAllFieldsAreFilled);
@@ -167,22 +186,46 @@ class Login extends Component {
       return;
     }
 
-    this
-      ._authService
-      .register(
-        registration.username,
-        registration.password,
-        registration.conformPassword,
-        () => this._switchType(this.LOGIN_TYPE)
-      );
+    this._authService.register(
+      registration.username,
+      registration.password,
+      registration.conformPassword,
+      this._onRegisterSuccess.bind(this),
+      this._onRegisterFailure.bind(this)
+    );
   }
 
-  _onInputChange(event) {
-    const copyOfState = JSON.parse(JSON.stringify(this.state));
-    copyOfState[event.target.dataset.type][event.target.name] = event.target.value;
-    this.setState(copyOfState);
+  // auth service callbacks
+  _onRegisterSuccess() {
+    this._switchType(this.LOGIN_TYPE)
   }
 
+  _onLogInFailure(error) {
+    const message = error.response.status === statusCodes.unauthenticated
+      ? messages.wrongCredentials
+      : messages.internalServerError;
+
+    alert(message);
+  }
+
+  _onRegisterFailure(error) {
+    let message;
+    switch (error.response.status) {
+      case statusCodes.authenticated:
+        message = messages.alreadyAuthenticated;
+        break;
+      case statusCodes.badRequest:
+        message = error.response.data.reason;
+        break;
+      default:
+        message = messages.internalServerError;
+        break;
+    }
+
+    alert(message);
+  }
+
+  // local
   _switchType(type) {
     this.setState({type: type});
   }

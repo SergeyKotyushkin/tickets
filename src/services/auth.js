@@ -1,3 +1,4 @@
+import authConstants from 'constants/auth';
 import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
@@ -13,12 +14,10 @@ export default function AuthService(dispatchedAuthActions) {
 
 // main
 function _tryLogIn(dispatchedAuthActions, successCallback, failureCallback) {
-  axios
-    .get(routes.authStatus)
-    .then(
-      _onAuthStatusSuccess.bind(null, dispatchedAuthActions, successCallback, failureCallback),
-      _onAuthStatusFailure.bind(null, failureCallback)
-    );
+  axios.get(routes.tryLogIn).then(
+    _onTryLogInSuccess.bind(null, dispatchedAuthActions, successCallback),
+    _handleError.bind(null, failureCallback)
+  );
 }
 
 function _logIn(
@@ -28,12 +27,10 @@ function _logIn(
   successCallback,
   failureCallback
 ) {
-  axios
-    .post(routes.logIn, {username, password})
-    .then(
-      _onLogInSuccess.bind(null, dispatchedAuthActions, username, successCallback),
-      _onLogInFailure.bind(null, failureCallback)
-    );
+  axios.post(routes.logIn, {username, password}).then(
+    _onLogInSuccess.bind(null, dispatchedAuthActions, username, successCallback),
+    _handleError.bind(null, failureCallback)
+  );
 }
 
 function _register(
@@ -43,83 +40,45 @@ function _register(
   successCallback,
   failureCallback
 ) {
-  axios
-    .post(routes.register, {username, password, conformPassword})
-    .then(
-      _onRegisterSuccess.bind(null, successCallback),
-      _onRegisterFailure.bind(null, failureCallback)
-    );
+  axios.post(routes.register, {username, password, conformPassword}).then(
+    _onRegisterSuccess.bind(null, successCallback),
+    _handleError.bind(null, failureCallback)
+  );
 }
 
 function _logOut(dispatchedAuthActions, successCallback, failureCallback) {
-  axios
-    .get(routes.logOut)
-    .then(
-      _onLogOutSuccess.bind(null, dispatchedAuthActions, successCallback),
-      _onLogOutFailure.bind(null, failureCallback)
-    );
+  axios.get(routes.logOut).then(
+    _onLogOutSuccess.bind(null, dispatchedAuthActions, successCallback),
+    _handleError.bind(null, failureCallback)
+  );
 }
 
 // local
-function _onAuthStatusSuccess(
-  dispatchedAuthActions,
-  successCallback,
-  failureCallback,
-  response
-) {
-  const authStatus = response.data;
-  if (!authStatus.isAuthenticated) {
-    failureCallback && failureCallback();
-    return;
-  }
-
-  dispatchedAuthActions.logIn(authStatus.user.username);
+function _onTryLogInSuccess(dispatchedAuthActions, successCallback, response) {
+  dispatchedAuthActions.logIn(response.data.username);
+  localStorage.setItem(authConstants.keyInStorage, true);
 
   successCallback && successCallback();
 }
 
-function _onAuthStatusFailure(callback, response) {
-  alert(messages.internalServerError);
-
-  callback && callback();
-}
-
 function _onLogInSuccess(dispatchedAuthActions, username, callback) {
   dispatchedAuthActions.logIn(username);
-
-  callback && callback();
-}
-
-function _onLogInFailure(callback, error) {
-  const message = error.response.status === statusCodes.unauthorized
-    ? messages.wrongCredentials
-    : messages.internalServerError;
-
-  alert(message);
+  localStorage.setItem(authConstants.keyInStorage, true);
 
   callback && callback();
 }
 
 function _onLogOutSuccess(dispatchedAuthActions, callback) {
   dispatchedAuthActions.logOut();
-
-  callback && callback();
-}
-
-function _onLogOutFailure(callback) {
-  alert(messages.internalServerError);
+  localStorage.removeItem(authConstants.keyInStorage);
 
   callback && callback();
 }
 
 function _onRegisterSuccess(callback) {
-  alert(messages.registrationIsComplete);
-
   callback && callback();
 }
 
-function _onRegisterFailure(callback) {
-  alert(messages.registrationFailed);
-
-  callback && callback();
+function _handleError(callback, error) {
+  callback && callback(error);
 }

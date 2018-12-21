@@ -9,14 +9,15 @@ class Home extends Component {
       <div className="flex-container-column home-container">
         <div>
           <span>Now you can store your bus tickets!</span>
-          {this._getIsLoggedIn() && this._renderTicketsLink()}
-          {!this._getIsLoggedIn() && this._renderLogInLink()}
+          {this.props.authStore.isAuthenticated && this._getTicketsLinkMarkup()}
+          {!this.props.authStore.isAuthenticated && this._getLogInLinkMarkup()}
         </div>
       </div>
     );
   }
 
-  _renderTicketsLink() {
+  // markups
+  _getTicketsLinkMarkup() {
     return (
       <div className="home-additional-info">
         <span>You are ready for your&nbsp;
@@ -26,7 +27,7 @@ class Home extends Component {
     );
   }
 
-  _renderLogInLink() {
+  _getLogInLinkMarkup() {
     return (
       <div className="home-additional-info">
         <span>You need to&nbsp;
@@ -34,10 +35,6 @@ class Home extends Component {
           &nbsp;to start!</span>
       </div>
     );
-  }
-
-  _getIsLoggedIn() {
-    return this.props.authStore.isLoggedIn;
   }
 }
 

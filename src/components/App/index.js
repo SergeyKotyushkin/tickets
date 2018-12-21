@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
-import {BrowserRouter, Switch, Link, Route} from 'react-router-dom';
+import {BrowserRouter, Switch, Link, Route, Redirect} from 'react-router-dom';
 
 import * as authActions from 'stores/auth/actions';
 
@@ -12,18 +12,18 @@ import AuthService from 'services/auth';
 import Home from 'components/Home';
 import Login from 'components/Login';
 import Tickets from 'components/Tickets';
+import PrivateRoute from 'components/_privateRoute';
+
+import messages from 'constants/messages';
+import statusCodes from 'constants/statusCodes';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this._authService = new AuthService(props.dispatchedAuthActions);
-  }
 
-  componentDidMount() {
-    this
-      ._authService
-      .tryLogIn();
+    this.onLogOutClick = this._onLogOutClick.bind(this);
   }
 
   render() {
@@ -38,14 +38,14 @@ class App extends Component {
               <div className="app-header-menu-link-container">
                 <Link to="/">Home</Link>
               </div>
-              {!this.props.authStore.isLoggedIn && this._renderLogInLink()}
-              {this.props.authStore.isLoggedIn && this._renderLogOutLink()}
+              {!this.props.authStore.isAuthenticated && this._getLogInLinkMarkup()}
+              {this.props.authStore.isAuthenticated && this._getLogOutLinkMarkup()}
             </div>
           </div>
           <div className="app-content">
             <Switch>
               <Route exact={true} path="/" component={Home}></Route>
-              <Route exact={true} path="/tickets" component={Tickets}></Route>
+              <PrivateRoute exact={true} path="/tickets" component={Tickets}></PrivateRoute>
               <Route exact={true} path="/login" component={Login}></Route>
             </Switch>
           </div>
@@ -55,7 +55,8 @@ class App extends Component {
     );
   }
 
-  _renderLogInLink() {
+  // markups
+  _getLogInLinkMarkup() {
     return (
       <div className="app-header-menu-link-container">
         <Link to="/login">Log In</Link>
@@ -63,20 +64,28 @@ class App extends Component {
     );
   }
 
-  _renderLogOutLink() {
+  _getLogOutLinkMarkup() {
     return (
       <div className="app-header-menu-link-container">
-        <a href="javascript:void(0);" onClick={(event) => this._logOutClick(event)}>{this.props.authStore.username}&nbsp;|&nbsp;Log Out</a>
+        <a href="javascript:void(0);" onClick={this.onLogOutClick}>{this.props.authStore.username}&nbsp;|&nbsp;Log Out</a>
       </div>
     );
   }
 
-  _logOutClick(event) {
+  // onClick handlers
+  _onLogOutClick(event) {
     event.stopPropagation();
 
-    this
-      ._authService
-      .logOut();
+    this._authService.logOut(null, this._onLogOutFailure.bind(this));
+  }
+
+  // auth service callbacks
+  _onLogOutFailure(error) {
+    const message = error.response.status === statusCodes.unauthenticated
+      ? messages.wrongCredentials
+      : messages.internalServerError;
+
+    alert(message);
   }
 }
 

@@ -9,30 +9,25 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as authActions from 'stores/auth/actions';
 
 import AuthService from 'services/auth';
-
+import RouteService from 'services/route';
 import TicketService from 'services/ticket';
+
 import Ticket from 'components/Ticket';
 import TicketNumber from 'components/TicketNumber';
 
-import routes from 'constants/routes';
+import authConstants from 'constants/auth';
+import statusCodes from 'constants/statusCodes';
 import messages from 'constants/messages';
 
 class Tickets extends Component {
   _from = 0;
   _size = 10;
-  _digits = [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-  ];
 
   constructor(props) {
     super(props);
 
     this.state = {
+      isAuthenticated: this.props.authStore.isAuthenticated,
       tickets: [],
       total: 0,
       number: 0,
@@ -43,18 +38,42 @@ class Tickets extends Component {
     };
 
     this._authService = new AuthService(props.dispatchedAuthActions);
+    this._routeService = new RouteService();
     this._ticketService = new TicketService();
+
+    this.onDigitChange = this._onTicketNumberDigitChange.bind(this);
+    this.onDateChange = this._onNewTicketDateChange.bind(this);
+    this.onSearchInputChange = this._onSearchInputChange.bind(this);
+    this.onAddTicketClick = this._onAddTicketClick.bind(this);
+    this.onSearchNumberClick = this._onSearchNumberClick.bind(this);
+    this.onLoadMoreClick = this._onLoadMoreClick.bind(this);
   }
 
   componentDidMount() {
-    this
-      ._authService
-      .tryLogIn(this._loadComponentData.bind(this));
+    if (this.props.authStore.isAuthenticated) {
+      this._loadNextTickets();
+      return;
+    }
+
+    if (localStorage.getItem(authConstants.keyInStorage)) {
+      this._authService.tryLogIn(
+        this._onTryLogInSuccess.bind(this),
+        this._handleError.bind(this)
+      );
+      return;
+    }
+
+    this._routeService.redirectToLogin(this.props.history);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.authStore.isLoggedIn && !this.props.authStore.isLoggedIn) {
-      this._redirectToLogin();
+    if (prevProps.authStore.isAuthenticated && !this.props.authStore.isAuthenticated) {
+      this._routeService.redirectToLogin(this.props.history);
+      return;
+    }
+
+    if (!prevProps.authStore.isAuthenticated && this.props.authStore.isAuthenticated) {
+      this._loadNextTickets();
       return;
     }
 
@@ -66,8 +85,21 @@ class Tickets extends Component {
 
   render() {
     return (
+      <React.Fragment>
+        {
+          this.state.isAuthenticated
+            ? this._getAuthenticatedMarkup()
+            : this._getLoadingMarkup()
+        }
+      </React.Fragment>
+    );
+  }
+
+  // markups
+  _getAuthenticatedMarkup() {
+    return (
       <div className="tickets-content">
-        <h2>Tickets</h2>
+        <h2>Tickets</h2 >
         <div className="flex-container-column">
           <div className="tickets-container flex-container-row">
             {!!this.state.tickets.length && this._getTicketsMarkup()}
@@ -75,18 +107,16 @@ class Tickets extends Component {
           </div>
           {this.state.total > this.state.tickets.length && this._getLoadMoreMarkup()}
           {this._getTotalMarkup()}
-          <div>
+          <div >
             <hr/>
           </div>
           <div className="ticket-actions-container flex-container-row">
             <div className="new-ticket-container flex-container-column">
               <div>
-                <h2>Add new ticket here:</h2>
+                <h3>Add new ticket here:</h3>
               </div>
               <div className="new-ticket-number-container">
-                <TicketNumber
-                  number={this.state.number}
-                  onDigitChange={(number) => this._onDigitChange(number)}></TicketNumber>
+                <TicketNumber number={this.state.number} onDigitChange={this.onDigitChange}/>
               </div>
               <div className="new-ticket-date-container">
                 <div>
@@ -97,16 +127,16 @@ class Tickets extends Component {
                     id="new-ticket-date__input"
                     selected={this.state.date}
                     dateFormat="dd.MM.yyyy"
-                    onChange={(date) => this._onDateChange(date)}></DatePicker>
+                    onChange={this.onDateChange}/>
                 </div>
               </div>
               <div className="new-ticket-add-button-container">
-                <button onClick={() => this._onAddTicketClick()}>Add</button>
+                <button onClick={this.onAddTicketClick}>Add</button>
               </div>
             </div>
             <div className="search-ticket-container flex-container-column">
               <div className="search-ticket-title-container">
-                <h2>Search for a ticket:</h2>
+                <h3>Search for a ticket:</h3>
               </div>
               <div className="search-ticket-input-container">
                 <div>
@@ -117,11 +147,11 @@ class Tickets extends Component {
                     type="number"
                     id="search-ticket__input"
                     value={this.state.searchNumber}
-                    onChange={(event) => this._onSearchInputChange(event)}/>
+                    onChange={this.onSearchInputChange}/>
                 </div>
               </div>
               <div className="find-ticket-button-container">
-                <button onClick={(event) => this._onSearchNumberClick(event)}>Find</button>
+                <button onClick={this.onSearchNumberClick}>Find</button>
               </div>
               <div className="found-ticket-container flex-container-row">
                 <Ticket number={this.state.foundNumber} dates={this.state.foundDates}/>
@@ -132,6 +162,14 @@ class Tickets extends Component {
             <hr/>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  _getLoadingMarkup() {
+    return (
+      <div className="tickets-content">
+        <span>loading...</span>
       </div>
     );
   }
@@ -165,7 +203,7 @@ class Tickets extends Component {
       <div className="tickets-load-more-container flex-container-column">
         <div><hr/></div>
         <div className="tickets-load-more-button-container">
-          <button onClick={() => this._loadNextTickets()}>Load more</button>
+          <button onClick={this.onLoadMoreClick}>Load more</button>
         </div>
       </div>
     );
@@ -184,50 +222,27 @@ class Tickets extends Component {
     );
   }
 
-  _loadComponentData() {
-    this._loadNextTickets();
-  }
-
   _loadNextTickets() {
-    this
-      ._ticketService
-      .getMany(
-        this._from,
-        this._size,
-        this._onGetTicketsSuccess.bind(this),
-        () => console.log(messages.internalServerError)
-      );
+    this._ticketService.getMany(
+      this._from,
+      this._size,
+      this._onLoadNextTicketsSuccess.bind(this),
+      this._handleError.bind(this)
+    );
   }
 
-  _redirectToLogin() {
-    this
-      .props
-      .history
-      .push(routes.logIn);
+  // onChange handlers
+  _onTicketNumberDigitChange(number) {
+    this.setState({number});
   }
 
-  _onGetTicketsSuccess(data) {
-    if (this._handleError(data)) {
-      return;
-    }
-
-    let tickets = JSON.parse(JSON.stringify(this.state.tickets));
-    data
-      .tickets
-      .forEach(function(ticket) {
-        tickets.push(ticket);
-      });
-
-    this._from = tickets.length;
-    this.setState({tickets, total: data.total});
-  }
-
-  _onDateChange(date) {
+  _onNewTicketDateChange(date) {
     let adjustedDate = new Date(
       date.getFullYear(),
       date.getMonth(),
       date.getDate()
     );
+
     this.setState({date: adjustedDate});
   }
 
@@ -235,6 +250,7 @@ class Tickets extends Component {
     this.setState({searchNumber: event.target.value});
   }
 
+  // onClick handlers
   _onAddTicketClick() {
     if (!confirm(messages.addTicketConfirm)) {
       return;
@@ -245,50 +261,33 @@ class Tickets extends Component {
       return;
     }
 
-    this
-      ._ticketService
-      .add({
-        number: this.state.number,
-        date: this.state.date
-      }, this._onTicketAdded.bind(this), () => alert(messages.internalServerError));
-  }
-
-  _onDateDelete(event) {
-    if (!confirm(messages.deleteTicketDateConfirm)) {
-      return;
-    }
-
-    let button = event.target || event.srcElement;
-
-    let dateNode = button.previousSibling;
-
-    this
-      ._ticketService
-      .deleteDate({number: dateNode.dataset.number, date: dateNode.dataset.date});
+    this._ticketService.add(
+      this.state.number,
+      this.state.date,
+      this._onAddTicketSuccess.bind(this),
+      this._handleError.bind(this)
+    );
   }
 
   _onSearchNumberClick() {
-    this
-      ._ticketService
-      .find({
-        number: this.state.searchNumber
-      }, this._onTicketFound.bind(this), () => alert(messages.internalServerError));
+    this._ticketService.find(
+      this.state.searchNumber,
+      this._onSearchNumberSuccess.bind(this),
+      this._handleError.bind(this)
+    );
   }
 
-  _onTicketAdded(data) {
-    if (this._handleError(data)) {
-      return;
-    }
+  _onLoadMoreClick() {
+    this._loadNextTickets();
+  }
 
+  // ticket service callbacks
+  _onAddTicketSuccess(data) {
     this._from = 0;
     this.setState({tickets: [], total: 0, number: 0, date: null});
   }
 
-  _onTicketFound(data) {
-    if (this._handleError(data)) {
-      return;
-    }
-
+  _onSearchNumberSuccess(data) {
     this.setState({
       foundNumber: data.ticket
         ? data.ticket.number
@@ -299,22 +298,29 @@ class Tickets extends Component {
     });
   }
 
-  _onDigitChange(number) {
-    this.setState({number});
+  _onLoadNextTicketsSuccess(data) {
+    let tickets = JSON.parse(JSON.stringify(this.state.tickets));
+    data.tickets.forEach(function(ticket) {
+      tickets.push(ticket);
+    });
+
+    this._from = tickets.length;
+    this.setState({tickets, total: data.total});
   }
 
-  _handleError(data) {
-    if (!data.error) {
-      return false;
-    }
+  // auth service callbacks
+  _onTryLogInSuccess(data) {
+    this.setState({isAuthenticated: true});
+  }
 
-    if (data.unauthenticated) {
-      this._redirectToLogin();
-      return true;
+  // local
+  _handleError(error) {
+    if (error.response.status === statusCodes.unauthenticated) {
+      this._routeService.redirectToLogin(this.props.history);
+      return;
     }
 
     alert(messages.internalServerError);
-    return true;
   }
 }
 

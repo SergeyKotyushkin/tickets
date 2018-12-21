@@ -1,40 +1,15 @@
 import React, {Component} from 'react'
 
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux';
-
-import {browserHistory, withRouter} from "react-router-dom"
-
-import routes from 'constants/routes';
-
-import * as authActions from 'stores/auth/actions';
-
-import AuthService from 'services/auth';
 import TicketNumberService from 'services/ticket-number';
 
-class TicketNumber extends Component {
+export default class TicketNumber extends Component {
   constructor(props) {
     super(props);
 
-    this._authService = new AuthService(props.dispatchedAuthActions);
     this._ticketNumberService = new TicketNumberService();
 
     // markup methods
-    this.onDigitChange = this
-      ._onDigitChange
-      .bind(this);
-  }
-
-  componentDidMount() {
-    this
-      ._authService
-      .tryLogIn(null, this._redirectToLogin.bind(this));
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.authStore.isLoggedIn && !this.props.authStore.isLoggedIn) {
-      this._redirectToLogin();
-    }
+    this.onDigitChange = this._onDigitChange.bind(this);
   }
 
   render() {
@@ -45,11 +20,10 @@ class TicketNumber extends Component {
     );
   }
 
+  // markups
   _createTicketNumberMarkup() {
     let ticketNumber = [];
-    let digits = this
-      ._ticketNumberService
-      .getDigitsFromNumber(this.props.number);
+    let digits = this._ticketNumberService.getDigitsFromNumber(this.props.number);
 
     for (var i = 0; i < 6; i++) {
       let value = digits && digits.length && digits[i] || 0;
@@ -95,13 +69,7 @@ class TicketNumber extends Component {
     return newTicketMarkup;
   }
 
-  _redirectToLogin() {
-    this
-      .props
-      .history
-      .push(routes.logIn);
-  }
-
+  // onChange handlers
   _onDigitChange(event) {
     const button = event.currentTarget;
 
@@ -121,23 +89,11 @@ class TicketNumber extends Component {
     }
 
     let mul = Math.pow(10, digitPosition);
-    let digits = this
-      ._ticketNumberService
-      .getDigitsFromNumber(this.props.number);
+    let digits = this._ticketNumberService.getDigitsFromNumber(this.props.number);
     digits[digitPosition] = newDigitValue;
-    let number = this
-      ._ticketNumberService
-      .getNumberFromDigits(digits);
+    let number = this._ticketNumberService.getNumberFromDigits(digits);
 
-    this.setState({number})
-    this.props.onDigitChange && this
-      .props
-      .onDigitChange(number);
+    this.setState({number});
+    this.props.onDigitChange && this.props.onDigitChange(number);
   }
 }
-
-export default withRouter(
-  connect((state, ownProps) => ({authStore: state.auth}), (dispatch, ownProps) => ({
-    dispatchedAuthActions: bindActionCreators(authActions, dispatch)
-  }))(TicketNumber)
-);

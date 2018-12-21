@@ -150,9 +150,7 @@ function _addDateToTicket(ticket, date) {
     ? ticket.dates
     : [];
 
-  ticket
-    .dates
-    .push(date);
+  ticket.dates.push(date);
 }
 
 function _onDeleteDateFoundTicket(
@@ -185,9 +183,7 @@ function _onDeleteDateFoundTicket(
 function _deleteDateFromTicket(ticket, date) {
   for (var i = 0; i < ticket.dates.length; i++) {
     if (ticket.dates[i].getTime() === new Date(date).getTime()) {
-      ticket
-        .dates
-        .splice(i, 1);
+      ticket.dates.splice(i, 1);
       return;
     }
   }

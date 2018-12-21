@@ -1,4 +1,5 @@
 module.exports = {
+  alreadyAuthenticated: 'You are already authenticated!',
   internalServerError: 'Internal Server Error',
   wrongCredentials: 'Wrong credentials!',
   notAllFieldsAreFilled: 'Not all fields are filled!',

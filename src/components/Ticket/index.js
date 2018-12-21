@@ -1,13 +1,14 @@
-import React, {Component} from 'react'
+import React from 'react'
 
 import ReactModal from 'react-modal';
 ReactModal.setAppElement('#root');
 
 import TicketService from 'services/ticket';
+import RouteService from 'services/route';
 
 import messages from 'constants/messages';
 
-export default class Ticket extends Component {
+export default class Ticket extends React.Component {
   constructor(props) {
     super(props);
 
@@ -16,19 +17,12 @@ export default class Ticket extends Component {
     };
 
     this._ticketService = new TicketService();
+    this._routeService = new RouteService();
 
-    this.onOpenTicketClick = this
-      ._onOpenTicketClick
-      .bind(this);
-    this.onCloseTicketClick = this
-      ._onCloseTicketClick
-      .bind(this);
-    this.onDeleteDateClick = this
-      ._onDeleteDateClick
-      .bind(this);
-    this.onDeleteTicketClick = this
-      ._onDeleteTicketClick
-      .bind(this);
+    this.onOpenTicketClick = this._onOpenTicketClick.bind(this);
+    this.onCloseTicketClick = this._onCloseTicketClick.bind(this);
+    this.onDeleteDateClick = this._onDeleteDateClick.bind(this);
+    this.onDeleteTicketClick = this._onDeleteTicketClick.bind(this);
   }
 
   render() {
@@ -42,6 +36,7 @@ export default class Ticket extends Component {
     );
   }
 
+  // markups
   _getFoundMarkup() {
     let formattedNumber = this._fillLeftWithZero(this.props.number, 6);
     return (
@@ -69,7 +64,7 @@ export default class Ticket extends Component {
     return (
       <ReactModal
         style={this._getModalStyles()}
-        isOpen={this.state.modalIsOpen}
+        isOpen={this.state.modalIsOpen && !this.props.readonly}
         onRequestClose={this.onCloseTicketClick}>
         <div>
           <h3>Ticket details</h3>
@@ -94,25 +89,27 @@ export default class Ticket extends Component {
 
   _getDatesMarkup() {
     let datesMarkups = [];
-    if (this.props.dates) {
-      let sortedDates = [...this.props.dates].sort(
-        (x, y) => (new Date(x)).getTime() - (new Date(y)).getTime()
-      );
+    if (!this.props.dates) {
+      return (<div className="flex-container-column"></div>);
+    }
 
-      for (let i = 0; i < sortedDates.length; i++) {
-        let date = new Date(sortedDates[i]).toLocaleDateString();
-        datesMarkups.push(
-          <div key={i} className="ticket-details-date-container flex-container-row">
-            <div
-              className="ticket-details-date"
-              data-number={this.props.number}
-              data-date={sortedDates[i]}>{date}</div>
-            <div>
-              <button onClick={this.onDeleteDateClick}>Delete</button>
-            </div>
+    let sortedDates = [...this.props.dates].sort(
+      (x, y) => (new Date(x)).getTime() - (new Date(y)).getTime()
+    );
+
+    for (let i = 0; i < sortedDates.length; i++) {
+      let date = new Date(sortedDates[i]).toLocaleDateString();
+      datesMarkups.push(
+        <div key={i} className="ticket-details-date-container flex-container-row">
+          <div
+            className="ticket-details-date"
+            data-number={this.props.number}
+            data-date={sortedDates[i]}>{date}</div>
+          <div>
+            <button onClick={this.onDeleteDateClick}>Delete</button>
           </div>
-        );
-      }
+        </div>
+      );
     }
 
     return (
@@ -125,6 +122,7 @@ export default class Ticket extends Component {
     );
   }
 
+  // onClick handlers
   _onOpenTicketClick(event) {
     event.stopPropagation();
 
@@ -147,19 +145,14 @@ export default class Ticket extends Component {
     }
 
     let button = event.target || event.srcElement;
-
     let dateNode = button.parentElement.previousSibling;
 
-    this
-      ._ticketService
-      .deleteDate(
-        {
-          number: this.props.number,
-          date: dateNode.dataset.date
-        },
-        this._onTicketDateDeleted.bind(this),
-        () => alert(messages.internalServerError)
-      );
+    this._ticketService.deleteDate(
+      this.props.number,
+      dateNode.dataset.date,
+      this._onDeleteDateSuccess.bind(this),
+      this._handleError.bind(this)
+    );
   }
 
   _onDeleteTicketClick(event) {
@@ -167,29 +160,23 @@ export default class Ticket extends Component {
       return;
     }
 
-    this
-      ._ticketService
-      .deleteTicket({
-        number: this.props.number
-      }, this._onTicketDeleted.bind(this), () => alert(messages.internalServerError));
+    this._ticketService.deleteTicket(
+      this.props.number,
+      this._onDeleteTicketSuccess.bind(this),
+      this._handleError.bind(this)
+    );
   }
 
-  _onTicketDeleted(data) {
-    if (this._handleError(data)) {
-      return;
-    }
-
+  // ticket service callbacks
+  _onDeleteDateSuccess() {
     this.setState({modalIsOpen: false});
   }
 
-  _onTicketDateDeleted(data) {
-    if (this._handleError(data)) {
-      return;
-    }
-
+  _onDeleteTicketSuccess() {
     this.setState({modalIsOpen: false});
   }
 
+  // react modal styles
   _getModalStyles() {
     let styles = {
       content: {
@@ -211,21 +198,17 @@ export default class Ticket extends Component {
     return styles;
   }
 
+  // local
   _fillLeftWithZero(num, len) {
     return (Array(len).join("0") + num).slice(-len);
   }
 
-  _handleError(data) {
-    if (!data.error) {
-      return false;
-    }
-
-    if (data.unauthenticated) {
-      this._redirectToLogin();
-      return true;
+  _handleError(error) {
+    if (error.response.status === statusCodes.unauthenticated) {
+      this._routeService.redirectToLogin(this.props.history);
+      return;
     }
 
     alert(messages.internalServerError);
-    return true;
   }
 }
