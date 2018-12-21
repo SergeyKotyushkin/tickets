@@ -16,8 +16,8 @@ import Ticket from 'components/Ticket';
 import TicketNumber from 'components/TicketNumber';
 
 import authConstants from 'constants/auth';
-import statusCodes from 'constants/statusCodes';
 import messages from 'constants/messages';
+import statusCodes from 'constants/statusCodes';
 
 class Tickets extends Component {
   _from = 0;
@@ -252,12 +252,12 @@ class Tickets extends Component {
 
   // onClick handlers
   _onAddTicketClick() {
-    if (!confirm(messages.addTicketConfirm)) {
+    if (!confirm(messages.tickets.addTicketConfirm)) {
       return;
     }
 
     if (!this.state.date) {
-      alert(messages.fillDate);
+      alert(messages.tickets.dateIsNotFilled);
       return;
     }
 
@@ -315,12 +315,15 @@ class Tickets extends Component {
 
   // local
   _handleError(error) {
+    const message = error.response.status === statusCodes.unauthenticated
+      ? messages.common.unauthenticated
+      : messages.common.internalServerError
+
+    alert(message);
+
     if (error.response.status === statusCodes.unauthenticated) {
       this._routeService.redirectToLogin(this.props.history);
-      return;
     }
-
-    alert(messages.internalServerError);
   }
 }
 

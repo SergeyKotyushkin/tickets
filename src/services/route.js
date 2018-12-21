@@ -7,9 +7,9 @@ export default function RouteService() {
 
 // main
 function _redirectToLogin(history) {
-  history.push(routes.logIn);
+  history.push(routes.pages.logIn);
 }
 
 function _redirectToHome(history) {
-  history.push(routes.home);
+  history.push(routes.pages.home);
 }

@@ -94,7 +94,7 @@ class Login extends Component {
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={() => this._onSwitchTypeClick(this.REGISTRATION_TYPE)}>To registration form</button>
+          <button onClick={this._onSwitchTypeClick.bind(this, this.REGISTRATION_TYPE)}>To registration form</button>
           <button onClick={this.onLogInClick}>Log In</button>
         </div>
       </div>
@@ -140,7 +140,7 @@ class Login extends Component {
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={() => this._onSwitchTypeClick(this.LOGIN_TYPE)}>To log in form</button>
+          <button onClick={this._onSwitchTypeClick.bind(this, this.LOGIN_TYPE)}>To log in form</button>
           <button onClick={this.onRregisterClick}>Register</button>
         </div>
       </div>
@@ -162,7 +162,7 @@ class Login extends Component {
   _onLogInClick() {
     const login = this.state.login;
     if (!login.username || !login.password) {
-      alert(messages.notAllFieldsAreFilled);
+      alert(messages.logIn.someFieldsAreNotFilled);
       return;
     }
 
@@ -177,12 +177,12 @@ class Login extends Component {
   _onRegisterClick() {
     const registration = this.state.registration;
     if (!registration.username || !registration.password || !registration.conformPassword) {
-      alert(messages.notAllFieldsAreFilled);
+      alert(messages.registration.someFieldsAreNotFilled);
       return;
     }
 
     if (registration.password !== registration.conformPassword) {
-      alert(messages.passwordsAreNotEqual);
+      alert(messages.registration.passwordsAreNotEqual);
       return;
     }
 
@@ -197,13 +197,14 @@ class Login extends Component {
 
   // auth service callbacks
   _onRegisterSuccess() {
+    alert(messages.registration.registrationIsComplete);
     this._switchType(this.LOGIN_TYPE)
   }
 
   _onLogInFailure(error) {
     const message = error.response.status === statusCodes.unauthenticated
-      ? messages.wrongCredentials
-      : messages.internalServerError;
+      ? messages.logIn.wrongCredentials
+      : messages.common.internalServerError;
 
     alert(message);
   }
@@ -212,13 +213,13 @@ class Login extends Component {
     let message;
     switch (error.response.status) {
       case statusCodes.authenticated:
-        message = messages.alreadyAuthenticated;
+        message = messages.registration.alreadyAuthenticated;
         break;
       case statusCodes.badRequest:
         message = error.response.data.reason;
         break;
       default:
-        message = messages.internalServerError;
+        message = messages.common.internalServerError;
         break;
     }
 

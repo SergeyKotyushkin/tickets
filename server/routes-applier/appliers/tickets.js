@@ -1,26 +1,29 @@
 const passport = require('passport');
 const ticketRepository = require('../../database/repositories/ticket');
-const statusCodes = require('../../constants/statusCodes');
+const statusCodes = require('../../../common/constants/statusCodes');
+
+const logs = require('../../../common/constants/logs');
+const routes = require('../../../common/constants/routes');
 
 module.exports = {
   apply: _applyRoutes
 };
 
 function _applyRoutes(expressApplication) {
-  expressApplication.post('/get-tickets', _onGetTickets);
+  expressApplication.post(routes.tickets.getTickets, _onGetTickets);
 
-  expressApplication.post('/add-ticket', _onAddTicket);
+  expressApplication.post(routes.tickets.addTicket, _onAddTicket);
 
-  expressApplication.post('/delete-ticket-date', _onDeleteTicketDate);
+  expressApplication.post(routes.tickets.deleteTicketDate, _onDeleteTicketDate);
 
-  expressApplication.post('/delete-ticket', _onDeleteTicket);
+  expressApplication.post(routes.tickets.deleteTicket, _onDeleteTicket);
 
-  expressApplication.post('/find-ticket', _onFindTicketDate);
+  expressApplication.post(routes.tickets.findTicket, _onFindTicketDate);
 }
 
 function _onGetTickets(req, res) {
   if (!req.isAuthenticated()) {
-    console.log('/get-tickets: unauthenticated');
+    console.error(logs.tickets.getTickets, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
@@ -33,7 +36,7 @@ function _onGetTickets(req, res) {
       res.json(data);
     },
     function(error) {
-      console.log('Internal Server Error');
+      console.error(logs.tickets.getTickets, logs.tickets.internalServerError, error);
       res.sendStatus(statusCodes.internalServerError);
     }
   );
@@ -41,7 +44,7 @@ function _onGetTickets(req, res) {
 
 function _onAddTicket(req, res) {
   if (!req.isAuthenticated()) {
-    console.log('Unauthenticated');
+    console.error(logs.addTicket.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
@@ -61,21 +64,21 @@ function _onAddTicket(req, res) {
       }
     );
   }, function(error) {
-    console.log('Internal Server Error');
+    console.error(logs.addTicket.internalServerError, error);
     res.sendStatus(statusCodes.internalServerError);
   });
 }
 
 function _onDeleteTicketDate(req, res) {
   if (!req.isAuthenticated()) {
-    console.log('Unauthenticated');
+    console.error(logs.tickets.deleteTicketDate, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
 
   ticketRepository.exists(req.user.id, req.body.number, function(result) {
     if (!result) {
-      res.json({});
+      res.json();
       return;
     }
 
@@ -84,18 +87,22 @@ function _onDeleteTicketDate(req, res) {
       req.body.number,
       req.body.date,
       function() {
-        res.json({});
+        res.json();
       }
     );
   }, function(error) {
-    console.log('Internal Server Error');
+    console.error(
+      logs.tickets.deleteTicketDate,
+      logs.tickets.internalServerError,
+      error
+    );
     res.sendStatus(statusCodes.internalServerError);
   });
 }
 
 function _onDeleteTicket(req, res) {
   if (!req.isAuthenticated()) {
-    console.log('Unauthenticated');
+    console.error(logs.tickets.deleteTicket, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
@@ -103,14 +110,18 @@ function _onDeleteTicket(req, res) {
   ticketRepository.deleteTicket(req.user.id, req.body.number, function(result) {
     res.json(result);
   }, function(error) {
-    console.log('Internal Server Error');
+    console.error(
+      logs.tickets.deleteTicket,
+      log.tickets.internalServerError,
+      error
+    );
     res.sendStatus(statusCodes.internalServerError);
   });
 }
 
 function _onFindTicketDate(req, res) {
   if (!req.isAuthenticated()) {
-    console.log('/find-ticket: unauthenticated');
+    console.error(logs.tickets.findTicket, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
@@ -118,7 +129,7 @@ function _onFindTicketDate(req, res) {
   ticketRepository.find(req.user.id, req.body.number, function(ticket) {
     res.json({ticket: ticket});
   }, function(error) {
-    console.log('Internal Server Error');
+    console.error(logs.tickets.findTicket, logs.tickets.internalServerError, error);
     res.sendStatus(statusCodes.internalServerError);
   });
 }

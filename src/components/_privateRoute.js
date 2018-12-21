@@ -20,7 +20,7 @@ class PrivateRoute extends React.Component {
   _routeRender(Component, props) {
     return this._isAuthentificated()
       ? <Component {...props}/>
-      : <Redirect to={routes.logIn}/>
+      : <Redirect to={routes.pages.logIn}/>
   }
 
   _isAuthentificated() {

@@ -1,29 +1,37 @@
 const passport = require('passport');
+
 const userRepository = require('../../database/repositories/user');
 
-const statusCodes = require('../../constants/statusCodes');
+const logs = require('../../../common/constants/logs');
+const routes = require('../../../common/constants/routes');
+const statusCodes = require('../../../common/constants/statusCodes');
 
 module.exports = {
   apply: _applyRoutes
 };
 
 function _applyRoutes(expressApplication) {
-  expressApplication.post('/login', passport.authenticate('local'), _onLogIn);
+  expressApplication.post(
+    routes.auth.logIn,
+    passport.authenticate('local'),
+    _onLogIn
+  );
 
-  expressApplication.post('/register', _onRegister);
+  expressApplication.post(routes.auth.register, _onRegister);
 
-  expressApplication.get('/logout', _onLogOut);
+  expressApplication.get(routes.auth.logOut, _onLogOut);
 
-  expressApplication.get('/try-login', _onTryLogIn);
+  expressApplication.get(routes.auth.tryLogIn, _onTryLogIn);
 }
 
+// main
 function _onLogIn(req, res) {
   res.json();
 }
 
 function _onRegister(req, res) {
   if (req.isAuthenticated()) {
-    console.log('already logged in');
+    console.error(logs.registration.alreadyAuthenticated, req.user.username);
     res.sendStatus(statusCodes.authenticated);
     return;
   }
@@ -37,49 +45,31 @@ function _onRegister(req, res) {
   const trimmedConformPassword = conformPassword && conformPassword.trim();
 
   if (!trimmedUsername || !trimmedPassword || !trimmedConformPassword) {
-    console.log('Not all fields are filled');
+    console.log(logs.registration.someFieldsAreNotFilled);
     res.sendStatusStatus(statusCodes.badRequest).json(
-      {reason: 'Not all fields are filled'}
+      {message: messages.registration.someFieldsAreNotFilled}
     );
     return;
   }
 
   if (trimmedPassword !== trimmedConformPassword) {
-    console.log('Passwords are not equal');
+    console.log(logs.registration.passwordsAreNotEqual);
     res.sendStatusStatus(statusCodes.badRequest).json(
-      {reason: 'Passwords are not equal'}
+      {message: messages.registration.passwordsAreNotEqual}
     );
     return;
   }
 
-  userRepository.findUserByUsername(trimmedUsername, function(user) {
-    if (user) {
-      console.log('User already exists');
-      res.sendStatus(statusCodes.badRequest).json({reason: 'already exists'});
-      return;
-    }
-
-    userRepository.createUser({
-      username: username,
-      password: password
-    }, function() {
-      res.json({result: true});
-    }, function() {
-      console.log('Error on new user creation');
-      res.sendStatus(statusCodes.internalServerError).json(
-        {reason: messages.internalServerError}
-      );
-    });
-  }, function() {
-    console.log('Error on user searching');
-    res.sendStatus(statusCodes.internalServerError).json(
-      {reason: messages.internalServerError}
-    );
-  });
+  userRepository.findUserByUsername(
+    trimmedUsername,
+    _onRegisterAfterFindUserByUsernameSuccess.bind(null, username, password),
+    _onRegisterAfterFindUserByUsernameFailure
+  );
 }
 
 function _onLogOut(req, res) {
   if (!req.isAuthenticated()) {
+    console.error(logs.logOut.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
@@ -91,9 +81,40 @@ function _onLogOut(req, res) {
 function _onTryLogIn(req, res) {
   const isAuthenticated = req.isAuthenticated();
   if (!isAuthenticated) {
+    console.log(logs.tryLogIn.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
     return;
   }
 
   res.json({username: req.user.username});
+}
+
+// local
+function _onRegisterAfterFindUserByUsername(username, password, user) {
+  if (user) {
+    console.log(logs.registration.existingUsername);
+    res.sendStatus(statusCodes.badRequest).json(
+      {message: messages.registration.existingUsername}
+    );
+    return;
+  }
+
+  userRepository.createUser({
+    username: username,
+    password: password
+  }, function() {
+    res.json();
+  }, function(error) {
+    console.error(logs.registration.userCreationError, error);
+    res.sendStatus(statusCodes.internalServerError).json(
+      {message: messages.common.internalServerError}
+    );
+  });
+}
+
+function _onRegisterAfterFindUserByUsernameFailure(error) {
+  console.error(logs.registration.userSearchingError, error);
+  res.sendStatus(statusCodes.internalServerError).json(
+    {reason: messages.common.internalServerError}
+  );
 }

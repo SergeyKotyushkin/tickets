@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 
 import {Link} from 'react-router-dom';
 
+import routes from 'constants/routes';
+
 class Home extends Component {
   render() {
     return (
@@ -21,7 +23,7 @@ class Home extends Component {
     return (
       <div className="home-additional-info">
         <span>You are ready for your&nbsp;
-          <Link to="/tickets">tickets</Link>
+          <Link to={routes.pages.tickets}>tickets</Link>
           &nbsp;statistics!</span>
       </div>
     );
@@ -31,7 +33,7 @@ class Home extends Component {
     return (
       <div className="home-additional-info">
         <span>You need to&nbsp;
-          <Link to="/login">log in</Link>
+          <Link to={routes.pages.logIn}>log in</Link>
           &nbsp;to start!</span>
       </div>
     );

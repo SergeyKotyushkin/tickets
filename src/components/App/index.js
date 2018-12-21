@@ -15,6 +15,7 @@ import Tickets from 'components/Tickets';
 import PrivateRoute from 'components/_privateRoute';
 
 import messages from 'constants/messages';
+import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
 
 class App extends Component {
@@ -36,7 +37,7 @@ class App extends Component {
             </div>
             <div className="app-header-menu flex-container-row">
               <div className="app-header-menu-link-container">
-                <Link to="/">Home</Link>
+                <Link to={routes.pages.home}>Home</Link>
               </div>
               {!this.props.authStore.isAuthenticated && this._getLogInLinkMarkup()}
               {this.props.authStore.isAuthenticated && this._getLogOutLinkMarkup()}
@@ -44,9 +45,9 @@ class App extends Component {
           </div>
           <div className="app-content">
             <Switch>
-              <Route exact={true} path="/" component={Home}></Route>
-              <PrivateRoute exact={true} path="/tickets" component={Tickets}></PrivateRoute>
-              <Route exact={true} path="/login" component={Login}></Route>
+              <Route exact={true} path={routes.pages.home} component={Home}></Route>
+              <PrivateRoute exact={true} path={routes.pages.tickets} component={Tickets}></PrivateRoute>
+              <Route exact={true} path={routes.pages.logIn} component={Login}></Route>
             </Switch>
           </div>
           <div className="app-footer"></div>
@@ -59,7 +60,7 @@ class App extends Component {
   _getLogInLinkMarkup() {
     return (
       <div className="app-header-menu-link-container">
-        <Link to="/login">Log In</Link>
+        <Link to={routes.pages.logIn}>Log In</Link>
       </div>
     );
   }
@@ -82,8 +83,8 @@ class App extends Component {
   // auth service callbacks
   _onLogOutFailure(error) {
     const message = error.response.status === statusCodes.unauthenticated
-      ? messages.wrongCredentials
-      : messages.internalServerError;
+      ? messages.common.unauthenticated
+      : messages.common.internalServerError;
 
     alert(message);
   }

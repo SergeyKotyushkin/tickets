@@ -14,7 +14,7 @@ export default function AuthService(dispatchedAuthActions) {
 
 // main
 function _tryLogIn(dispatchedAuthActions, successCallback, failureCallback) {
-  axios.get(routes.tryLogIn).then(
+  axios.get(routes.auth.tryLogIn).then(
     _onTryLogInSuccess.bind(null, dispatchedAuthActions, successCallback),
     _handleError.bind(null, failureCallback)
   );
@@ -27,7 +27,7 @@ function _logIn(
   successCallback,
   failureCallback
 ) {
-  axios.post(routes.logIn, {username, password}).then(
+  axios.post(routes.auth.logIn, {username, password}).then(
     _onLogInSuccess.bind(null, dispatchedAuthActions, username, successCallback),
     _handleError.bind(null, failureCallback)
   );
@@ -40,14 +40,14 @@ function _register(
   successCallback,
   failureCallback
 ) {
-  axios.post(routes.register, {username, password, conformPassword}).then(
+  axios.post(routes.auth.register, {username, password, conformPassword}).then(
     _onRegisterSuccess.bind(null, successCallback),
     _handleError.bind(null, failureCallback)
   );
 }
 
 function _logOut(dispatchedAuthActions, successCallback, failureCallback) {
-  axios.get(routes.logOut).then(
+  axios.get(routes.auth.logOut).then(
     _onLogOutSuccess.bind(null, dispatchedAuthActions, successCallback),
     _handleError.bind(null, failureCallback)
   );

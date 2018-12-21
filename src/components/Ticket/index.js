@@ -140,7 +140,7 @@ export default class Ticket extends React.Component {
   }
 
   _onDeleteDateClick(event) {
-    if (!confirm(messages.deleteTicketDateConfirm)) {
+    if (!confirm(messages.tickets.deleteTicketDateConfirm)) {
       return;
     }
 
@@ -156,7 +156,7 @@ export default class Ticket extends React.Component {
   }
 
   _onDeleteTicketClick(event) {
-    if (!confirm(messages.deleteTicketConfirm)) {
+    if (!confirm(messages.tickets.deleteTicketConfirm)) {
       return;
     }
 
@@ -204,11 +204,14 @@ export default class Ticket extends React.Component {
   }
 
   _handleError(error) {
+    const message = error.response.status === statusCodes.unauthenticated
+      ? messages.common.unauthenticated
+      : messages.common.internalServerError
+
+    alert(message);
+
     if (error.response.status === statusCodes.unauthenticated) {
       this._routeService.redirectToLogin(this.props.history);
-      return;
     }
-
-    alert(messages.internalServerError);
   }
 }

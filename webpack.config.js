@@ -96,7 +96,7 @@ module.exports = {
   resolve: {
     alias: {
       components: path.resolve(__dirname, 'src', 'components'),
-      constants: path.resolve(__dirname, 'src', 'constants'),
+      constants: path.resolve(__dirname, 'common', 'constants'),
       services: path.resolve(__dirname, 'src', 'services'),
       stores: path.resolve(__dirname, 'src', 'stores')
     }
@@ -112,33 +112,26 @@ if (process.env.NODE_ENV == 'production') {
     module.exports.optimization.minimizer = [];
   }
 
-  module
-    .exports
-    .optimization
-    .minimizer
-    .push(new UglifyJsPlugin({
-      test: /\.min\.js$/,
-      uglifyOptions: {
-        ie8: false,
-        mangle: true,
-        output: {
-          comments: false,
-          beautify: false
-        },
-        compress: {
-          warnings: false, // Suppress uglification warnings
-          pure_getters: true,
-          unsafe: true,
-          unsafe_comps: true
-        },
-        warnings: false
-      }
-    }));
+  module.exports.optimization.minimizer.push(new UglifyJsPlugin({
+    test: /\.min\.js$/,
+    uglifyOptions: {
+      ie8: false,
+      mangle: true,
+      output: {
+        comments: false,
+        beautify: false
+      },
+      compress: {
+        warnings: false, // Suppress uglification warnings
+        pure_getters: true,
+        unsafe: true,
+        unsafe_comps: true
+      },
+      warnings: false
+    }
+  }));
 
-  module
-    .exports
-    .plugins
-    .push(
-      new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true})
-    );
+  module.exports.plugins.push(
+    new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true})
+  );
 }

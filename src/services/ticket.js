@@ -12,47 +12,42 @@ export default function AuthService(dispatchedAuthActions) {
 
 // main
 function _getMany(from, size, successCallback, failureCallback) {
-  axios.post(routes.getTickets, {from, size}).then(
-    _handleSuccess.bind(null, successCallback, failureCallback),
+  axios.post(routes.tickets.getTickets, {from, size}).then(
+    _handleSuccess.bind(null, successCallback),
     _handleFailture.bind(null, failureCallback)
   );
 }
 
 function _add(number, date, successCallback, failureCallback) {
-  axios.post(routes.addTicket, {number, date}).then(
-    _handleSuccess.bind(null, successCallback, failureCallback),
+  axios.post(routes.tickets.addTicket, {number, date}).then(
+    _handleSuccess.bind(null, successCallback),
     _handleFailture.bind(null, failureCallback)
   );
 }
 
 function _deleteDate(number, date, successCallback, failureCallback) {
-  axios.post(routes.deleteTicketDate, {number, date}).then(
-    _handleSuccess.bind(null, successCallback, failureCallback),
+  axios.post(routes.tickets.deleteTicketDate, {number, date}).then(
+    _handleSuccess.bind(null, successCallback),
     _handleFailture.bind(null, failureCallback)
   );
 }
 
 function _deleteTicket(number, successCallback, failureCallback) {
-  axios.post(routes.deleteTicket, {number}).then(
-    _handleSuccess.bind(null, successCallback, failureCallback),
+  axios.post(routes.tickets.deleteTicket, {number}).then(
+    _handleSuccess.bind(null, successCallback),
     _handleFailture.bind(null, failureCallback)
   );
 }
 
 function _find(number, successCallback, failureCallback) {
-  axios.post(routes.findTicket, {number}).then(
-    _handleSuccess.bind(null, successCallback, failureCallback),
+  axios.post(routes.tickets.findTicket, {number}).then(
+    _handleSuccess.bind(null, successCallback),
     _handleFailture.bind(null, failureCallback)
   );
 }
 
 // local
-function _handleSuccess(successCallback, failureCallback, response) {
-  if (response.data.error) {
-    failureCallback && failureCallback(response.data);
-    return;
-  }
-
+function _handleSuccess(successCallback, response) {
   successCallback && successCallback(response.data);
 }
 
