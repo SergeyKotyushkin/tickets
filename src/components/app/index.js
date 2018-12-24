@@ -14,6 +14,8 @@ import Login from 'components/login';
 import Tickets from 'components/tickets';
 import PrivateRoute from 'components/_privateRoute';
 
+import AuthLink from './presentational/auth-link';
+
 import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
@@ -39,8 +41,10 @@ class App extends Component {
               <div className="app-header-menu-link-container">
                 <Link to={routes.pages.home}>Home</Link>
               </div>
-              {!this.props.authStore.isAuthenticated && this._getLogInLinkMarkup()}
-              {this.props.authStore.isAuthenticated && this._getLogOutLinkMarkup()}
+              <AuthLink
+                isAuthenticated={this.props.authStore.isAuthenticated}
+                username={this.props.authStore.username}
+                onLogOutClick={this.onLogOutClick}/>
             </div>
           </div>
           <div className="app-content">

@@ -8,6 +8,10 @@ import * as authActions from 'stores/auth/actions';
 import AuthService from 'services/auth';
 import RouteService from 'services/route';
 
+import LoggedInBlock from './presentational/logged-in-block';
+import LogInBlock from './presentational/log-in-block';
+import RegistrationBlock from './presentational/registration-block';
+
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 
@@ -37,6 +41,7 @@ class Login extends Component {
     this.onInputChange = this._onInputChange.bind(this);
     this.onLogInClick = this._onLogInClick.bind(this);
     this.onRegisterClick = this._onRegisterClick.bind(this);
+    this.onSwitchTypeClick = this._onSwitchTypeClick.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -47,102 +52,25 @@ class Login extends Component {
 
   render() {
     let markup = this.props.authStore.isAuthenticated
-      ? this._getLoggedInMarkup()
+      ? <LoggedInBlock username={this.props.authStore.username}/>
       : this.state.type === this.LOGIN_TYPE
-        ? this._getLogInMarkup()
-        : this._getRegistrationMarkup();
-    return markup;
-  }
+        ? <LogInBlock
+            username={this.state.login.username}
+            password={this.state.login.password}
+            onInputChange={this.onInputChange}
+            onSwitchTypeClick={this.onSwitchTypeClick.bind(this, this.REGISTRATION_TYPE)}
+            onLogInClick={this.onLogInClick}/>
+        : <RegistrationBlock
+          username={this.state.login.username}
+          password={this.state.login.password}
+          conformPassword={this.state.login.conformPassword}
+          onInputChange={this.onInputChange}
+          onSwitchTypeClick={this._onSwitchTypeClick.bind(this, this.LOGIN_TYPE)}
+          onRegisterClick={this.onRegisterClick}/>;
 
-  // markups
-  _getLoggedInMarkup() {
     return (
       <div className="flex-container-column login-container">
-        <div className="login-title-container">
-          <h2>{this.props.authStore.username}, you are already logged in!</h2>
-        </div>
-      </div>
-    );
-  }
-
-  _getLogInMarkup() {
-    return (
-      <div className="flex-container-column login-container">
-        <div className="login-title-container">
-          <h2>Log In</h2>
-        </div>
-        <div className="login-inputs-container">
-          <div className="login-username-container">
-            <label htmlFor="login-username__input">Username</label>
-            <input
-              type="text"
-              id="login-username__input"
-              name="username"
-              data-type="login"
-              value={this.state.login.username}
-              onChange={this.onInputChange}/>
-          </div>
-          <div className="login-password-container">
-            <label htmlFor="login-password__input">Password</label>
-            <input
-              type="password"
-              id="login-password__input"
-              name="password"
-              data-type="login"
-              value={this.state.login.password}
-              onChange={this.onInputChange}/>
-          </div>
-        </div>
-        <div className="login-controls-container">
-          <button onClick={this._onSwitchTypeClick.bind(this, this.REGISTRATION_TYPE)}>To registration form</button>
-          <button onClick={this.onLogInClick}>Log In</button>
-        </div>
-      </div>
-    );
-  }
-
-  _getRegistrationMarkup() {
-    return (
-      <div className="flex-container-column login-container">
-        <div className="login-title-container">
-          <h2>Registration</h2>
-        </div>
-        <div className="login-inputs-container">
-          <div className="registration-username-container">
-            <label htmlFor="registration-username__input">Username</label>
-            <input
-              type="text"
-              id="registration-username__input"
-              name="username"
-              data-type="registration"
-              value={this.state.registration.username}
-              onChange={this.onInputChange}/>
-          </div>
-          <div className="registration-password-container">
-            <label htmlFor="registration-password__input">Password</label>
-            <input
-              type="password"
-              id="registration-password__input"
-              name="password"
-              data-type="registration"
-              value={this.state.registration.password}
-              onChange={this.onInputChange}/>
-          </div>
-          <div className="registration-conform-password-container">
-            <label htmlFor="registration-conform-password__input">Confirm Password</label>
-            <input
-              type="password"
-              id="registration-conform-password__input"
-              name="conformPassword"
-              data-type="registration"
-              value={this.state.registration.conformPassword}
-              onChange={this.onInputChange}/>
-          </div>
-        </div>
-        <div className="login-controls-container">
-          <button onClick={this._onSwitchTypeClick.bind(this, this.LOGIN_TYPE)}>To log in form</button>
-          <button onClick={this.onRregisterClick}>Register</button>
-        </div>
+        {markup}
       </div>
     );
   }
