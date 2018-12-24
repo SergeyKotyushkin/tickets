@@ -12,7 +12,7 @@ import AuthService from 'services/auth';
 import Home from 'components/home';
 import Login from 'components/login';
 import Tickets from 'components/tickets';
-import PrivateRoute from 'components/_privateRoute';
+import PrivateRoute from 'components/private-route/presentational';
 
 import AuthLink from './presentational/auth-link';
 

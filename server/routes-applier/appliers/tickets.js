@@ -61,10 +61,14 @@ function _onAddTicket(req, res) {
       req.body.date,
       function(ticket) {
         res.json({ticket});
+      },
+      function(error) {
+        console.error(logs.tickets.addTicket, logs.tickets.internalServerError, error);
+        res.sendStatus(statusCodes.internalServerError);
       }
     );
   }, function(error) {
-    console.error(logs.addTicket.internalServerError, error);
+    console.error(logs.tickets.internalServerError, error);
     res.sendStatus(statusCodes.internalServerError);
   });
 }
@@ -88,6 +92,14 @@ function _onDeleteTicketDate(req, res) {
       req.body.date,
       function() {
         res.json();
+      },
+      function(error) {
+        console.error(
+          logs.tickets.deleteTicketDate,
+          logs.tickets.internalServerError,
+          error
+        );
+        res.sendStatus(statusCodes.internalServerError);
       }
     );
   }, function(error) {
@@ -107,16 +119,29 @@ function _onDeleteTicket(req, res) {
     return;
   }
 
-  ticketRepository.deleteTicket(req.user.id, req.body.number, function(result) {
-    res.json(result);
-  }, function(error) {
-    console.error(
-      logs.tickets.deleteTicket,
-      log.tickets.internalServerError,
-      error
-    );
-    res.sendStatus(statusCodes.internalServerError);
-  });
+  ticketRepository.deleteTicket(
+    req.user.id,
+    req.body.number,
+    function(result) {
+      res.json(result);
+    },
+    function(error) {
+      console.error(
+        logs.tickets.deleteTicket,
+        log.tickets.internalServerError,
+        error
+      );
+      res.sendStatus(statusCodes.internalServerError);
+    },
+    function(error) {
+      console.error(
+        logs.tickets.deleteTicket,
+        logs.tickets.internalServerError,
+        error
+      );
+      res.sendStatus(statusCodes.internalServerError);
+    }
+  );
 }
 
 function _onFindTicketDate(req, res) {

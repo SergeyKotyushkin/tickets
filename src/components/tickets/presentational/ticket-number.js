@@ -22,12 +22,12 @@ export default class TicketNumber extends Component {
 
   // markups
   _createTicketNumberMarkup() {
-    let ticketNumber = [];
+    let ticketDigitsMarkups = [];
     let digits = this._ticketNumberService.getDigitsFromNumber(this.props.number);
 
     for (var i = 0; i < 6; i++) {
       let value = digits && digits.length && digits[i] || 0;
-      ticketNumber.push(
+      ticketDigitsMarkups.push(
         <div
           key={i}
           className="ticket-digit-container"
@@ -56,7 +56,7 @@ export default class TicketNumber extends Component {
           <div className="ticket-inner-container flex-container-column">
             <span className="ticket-header-text-container">...</span>
             <div className="ticket-number-container flex-container-row">
-              {ticketNumber}
+              {ticketDigitsMarkups}
             </div>
             <span className="ticket-bus-label-container">bus</span>
             <span className="ticket-ticket-label-container">ticket</span>
@@ -93,7 +93,6 @@ export default class TicketNumber extends Component {
     digits[digitPosition] = newDigitValue;
     let number = this._ticketNumberService.getNumberFromDigits(digits);
 
-    this.setState({number});
     this.props.onDigitChange && this.props.onDigitChange(number);
   }
 }
