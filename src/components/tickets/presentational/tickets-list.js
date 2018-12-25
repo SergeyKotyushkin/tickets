@@ -2,14 +2,17 @@ import React from 'react'
 
 import Ticket from './ticket';
 
-import labels from 'constants/labels';
+import {withI18n} from "react-i18next";
+import Localizator from 'localization/localizator';
 
-export default class TicketsList extends React.Component {
+class TicketsList extends React.Component {
   render() {
+    const {t} = this.props;
+
     if (!this.props.tickets || !this.props.tickets.length) {
       return (
         <div>
-          <span>{labels.components.tickets.ticketsList.noTicketsMessage}</span>
+          <span>{t(Localizator.keys.components.tickets.ticketsList.noTicketsMessage)}</span>
         </div>
       );
     }
@@ -42,3 +45,5 @@ export default class TicketsList extends React.Component {
     return tickets;
   }
 }
+
+export default withI18n()(TicketsList);

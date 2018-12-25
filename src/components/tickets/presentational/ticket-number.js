@@ -2,9 +2,10 @@ import React, {Component} from 'react'
 
 import TicketNumberService from 'services/ticket-number';
 
-import labels from 'constants/labels';
+import {withI18n} from "react-i18next";
+import Localizator from 'localization/localizator';
 
-export default class TicketNumber extends Component {
+class TicketNumber extends Component {
   constructor(props) {
     super(props);
 
@@ -24,6 +25,8 @@ export default class TicketNumber extends Component {
 
   // markups
   _createTicketNumberMarkup() {
+    const {t} = this.props;
+
     let ticketDigitsMarkups = [];
     let digits = this._ticketNumberService.getDigitsFromNumber(this.props.number);
 
@@ -39,16 +42,16 @@ export default class TicketNumber extends Component {
             className="ticket-digit-button"
             data-top="true"
             onClick={this.onDigitChange}
-            title={labels.components.tickets.ticketNumber.increaseDigitButtonHoverMessage}>
-            <span>{labels.components.tickets.ticketNumber.increaseDigitButtonLabel}</span>
+            title={t(Localizator.keys.components.tickets.ticketNumber.increaseDigitButtonHoverMessage)}>
+            <span>{t(Localizator.keys.components.tickets.ticketNumber.increaseDigitButtonLabel)}</span>
           </div>
           <div className="ticket-digit">{value}</div>
           <div
             className="ticket-digit-button"
             data-bottom="true"
             onClick={this.onDigitChange}
-            title={labels.components.tickets.ticketNumber.decreaseDigitButtonHoverMessage}>
-            <span>{labels.components.tickets.ticketNumber.decreaseDigitButtonLabel}</span>
+            title={t(Localizator.keys.components.tickets.ticketNumber.decreaseDigitButtonHoverMessage)}>
+            <span>{t(Localizator.keys.components.tickets.ticketNumber.decreaseDigitButtonLabel)}</span>
           </div>
         </div>
       );
@@ -58,13 +61,13 @@ export default class TicketNumber extends Component {
       <div className="ticket">
         <div className="ticket-outer-container">
           <div className="ticket-inner-container flex-container-column">
-            <span className="ticket-header-text-container">{labels.components.tickets.ticket.headerLabel}</span>
+            <span className="ticket-header-text-container">{t(Localizator.keys.components.tickets.ticket.headerLabel)}</span>
             <div className="ticket-number-container flex-container-row">
               {ticketDigitsMarkups}
             </div>
-            <span className="ticket-bus-label-container">{labels.components.tickets.ticket.busLabel}</span>
-            <span className="ticket-ticket-label-container">{labels.components.tickets.ticket.ticketLabel}</span>
-            <span className="ticket-price-container">{labels.components.tickets.ticket.priceLabel}</span>
+            <span className="ticket-bus-label-container">{t(Localizator.keys.components.tickets.ticket.busLabel)}</span>
+            <span className="ticket-ticket-label-container">{t(Localizator.keys.components.tickets.ticket.ticketLabel)}</span>
+            <span className="ticket-price-container">{t(Localizator.keys.components.tickets.ticket.priceLabel)}</span>
           </div>
         </div>
       </div>
@@ -100,3 +103,5 @@ export default class TicketNumber extends Component {
     this.props.onDigitChange && this.props.onDigitChange(number);
   }
 }
+
+export default withI18n()(TicketNumber);

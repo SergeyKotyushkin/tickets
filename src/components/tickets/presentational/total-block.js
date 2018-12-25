@@ -2,16 +2,19 @@ import React from 'react'
 
 import DelimiterBlock from './delimiter-block';
 
-import labels from 'constants/labels';
+import {withI18n} from "react-i18next";
+import Localizator from 'localization/localizator';
 
-export default class LoadMoreBlock extends React.Component {
+class TotalBlock extends React.Component {
   render() {
+    const {t} = this.props;
+
     return (
       <div className="tickets-total-container flex-container-column">
         <DelimiterBlock/>
         <div className="tickets-total-text-container">
           <div>
-            <span className="tickets-total-label">{labels.components.tickets.totalLabel}</span>
+            <span className="tickets-total-label">{t(Localizator.keys.components.tickets.totalLabel)}</span>
             <span>{this.props.total}</span>
           </div>
         </div>
@@ -19,3 +22,5 @@ export default class LoadMoreBlock extends React.Component {
     );
   }
 }
+
+export default withI18n()(TotalBlock);

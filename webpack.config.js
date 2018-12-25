@@ -97,6 +97,7 @@ module.exports = {
     alias: {
       components: path.resolve(__dirname, 'src', 'components'),
       constants: path.resolve(__dirname, 'common', 'constants'),
+      localization: path.resolve(__dirname, 'src', 'localization'),
       services: path.resolve(__dirname, 'src', 'services'),
       stores: path.resolve(__dirname, 'src', 'stores')
     }

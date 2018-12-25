@@ -1,17 +1,20 @@
 import React from 'react';
 
-import labels from 'constants/labels';
+import {withI18n} from "react-i18next";
+import Localizator from 'localization/localizator';
 
-export default class LogInBlock extends React.Component {
+class LogInBlock extends React.Component {
   render() {
+    const {t} = this.props;
+
     return (
       <React.Fragment>
         <div className="login-title-container">
-          <h2>{labels.components.login.logIn.title}</h2>
+          <h2>{t(Localizator.keys.components.login.logIn.title)}</h2>
         </div>
         <div className="login-inputs-container">
           <div className="login-username-container">
-            <label htmlFor="login-username__input">{labels.components.login.logIn.usernameLabel}</label>
+            <label htmlFor="login-username__input">{t(Localizator.keys.components.login.logIn.usernameLabel)}</label>
             <input
               type="text"
               id="login-username__input"
@@ -21,7 +24,7 @@ export default class LogInBlock extends React.Component {
               onChange={this.props.onInputChange}/>
           </div>
           <div className="login-password-container">
-            <label htmlFor="login-password__input">{labels.components.login.logIn.passwordLabel}</label>
+            <label htmlFor="login-password__input">{t(Localizator.keys.components.login.logIn.passwordLabel)}</label>
             <input
               type="password"
               id="login-password__input"
@@ -32,10 +35,12 @@ export default class LogInBlock extends React.Component {
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={this.props.onSwitchTypeClick}>{labels.components.login.logIn.toRegistrationButtonLabel}</button>
-          <button onClick={this.props.onLogInClick}>{labels.components.login.logIn.logInButtonLabel}</button>
+          <button onClick={this.props.onSwitchTypeClick}>{t(Localizator.keys.components.login.logIn.toRegistrationButtonLabel)}</button>
+          <button onClick={this.props.onLogInClick}>{t(Localizator.keys.components.login.logIn.logInButtonLabel)}</button>
         </div>
       </React.Fragment>
     );
   }
 }
+
+export default withI18n()(LogInBlock);

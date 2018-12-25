@@ -16,7 +16,9 @@ import PrivateRoute from 'components/private-route/presentational';
 
 import AuthLink from './presentational/auth-link';
 
-import labels from 'constants/labels';
+import {withI18n} from "react-i18next";
+import Localizator from 'localization/localizator';
+
 import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
@@ -31,16 +33,18 @@ class App extends Component {
   }
 
   render() {
+    const {t} = this.props;
+
     return (
       <BrowserRouter>
         <div className="flex-container-column">
           <div className="app-header flex-container-column">
             <div className="app-header-title">
-              <h1>{labels.components.app.header.title}</h1>
+              <h1>{t(Localizator.keys.components.app.header.title)}</h1>
             </div>
             <div className="app-header-menu flex-container-row">
               <div className="app-header-menu-link-container">
-                <Link to={routes.pages.home}>{labels.components.app.header.links.home}</Link>
+                <Link to={routes.pages.home}>{t(Localizator.keys.components.app.header.links.home)}</Link>
               </div>
               <AuthLink
                 isAuthenticated={this.props.authStore.isAuthenticated}
@@ -83,4 +87,4 @@ export default connect(
   (dispatch, ownProps) => ({
     dispatchedAuthActions: bindActionCreators(authActions, dispatch)
   })
-)(App);
+)(withI18n()(App));

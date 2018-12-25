@@ -4,11 +4,13 @@ import TicketService from 'services/ticket';
 
 import TicketDetails from './ticket-details';
 
-import labels from 'constants/labels';
+import {withI18n} from "react-i18next";
+import Localizator from 'localization/localizator';
+
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 
-export default class Ticket extends React.Component {
+class Ticket extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,10 +27,12 @@ export default class Ticket extends React.Component {
   }
 
   render() {
+    const {t} = this.props;
+
     let formattedNumber = this._fillLeftWithZero(this.props.number, 6);
     let hoverMessage = this.props.readonly || this.state.areTicketDetailsOpen
       ? ''
-      : labels.components.tickets.ticket.hoverMessage;
+      : t(Localizator.keys.components.tickets.ticket.hoverMessage);
     return (
       <React.Fragment>
         <div
@@ -37,11 +41,11 @@ export default class Ticket extends React.Component {
           title={hoverMessage}>
           <div className="ticket-outer-container">
             <div className="ticket-inner-container flex-container-column">
-              <span className="ticket-header-text-container">{labels.components.tickets.ticket.headerLabel}</span>
+              <span className="ticket-header-text-container">{t(Localizator.keys.components.tickets.ticket.headerLabel)}</span>
               <span className="ticket-number-container">{formattedNumber}</span>
-              <span className="ticket-bus-label-container">{labels.components.tickets.ticket.busLabel}</span>
-              <span className="ticket-ticket-label-container">{labels.components.tickets.ticket.ticketLabel}</span>
-              <span className="ticket-price-container">{labels.components.tickets.ticket.priceLabel}</span>
+              <span className="ticket-bus-label-container">{t(Localizator.keys.components.tickets.ticket.busLabel)}</span>
+              <span className="ticket-ticket-label-container">{t(Localizator.keys.components.tickets.ticket.ticketLabel)}</span>
+              <span className="ticket-price-container">{t(Localizator.keys.components.tickets.ticket.priceLabel)}</span>
             </div>
           </div>
         </div>
@@ -140,3 +144,5 @@ export default class Ticket extends React.Component {
     }
   }
 }
+
+export default withI18n()(Ticket);

@@ -8,6 +8,9 @@ import * as reducers from 'stores/reducers';
 
 import App from 'components/app';
 
+import Localizator from 'localization/localizator';
+Localizator.init();
+
 const store = createStore(combineReducers(reducers));
 
 const rootElement = document.getElementById('root');
