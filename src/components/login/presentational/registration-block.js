@@ -1,15 +1,17 @@
 import React from 'react';
 
+import labels from 'constants/labels';
+
 export default class RegistrationBlock extends React.Component {
   render() {
     return (
       <React.Fragment>
         <div className="login-title-container">
-          <h2>Registration</h2>
+          <h2>{labels.components.login.registration.title}</h2>
         </div>
         <div className="login-inputs-container">
           <div className="registration-username-container">
-            <label htmlFor="registration-username__input">Username</label>
+            <label htmlFor="registration-username__input">{labels.components.login.registration.usernameLabel}</label>
             <input
               type="text"
               id="registration-username__input"
@@ -19,7 +21,7 @@ export default class RegistrationBlock extends React.Component {
               onChange={this.props.onInputChange}/>
           </div>
           <div className="registration-password-container">
-            <label htmlFor="registration-password__input">Password</label>
+            <label htmlFor="registration-password__input">{labels.components.login.registration.passwordLabel}</label>
             <input
               type="password"
               id="registration-password__input"
@@ -29,7 +31,7 @@ export default class RegistrationBlock extends React.Component {
               onChange={this.props.onInputChange}/>
           </div>
           <div className="registration-conform-password-container">
-            <label htmlFor="registration-conform-password__input">Confirm Password</label>
+            <label htmlFor="registration-conform-password__input">{labels.components.login.registration.conformPasswordLabel}</label>
             <input
               type="password"
               id="registration-conform-password__input"
@@ -40,8 +42,8 @@ export default class RegistrationBlock extends React.Component {
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={this.props.onSwitchTypeClick}>To log in form</button>
-          <button onClick={this.props.onRegisterClick}>Register</button>
+          <button onClick={this.props.onSwitchTypeClick}>{labels.components.login.registration.toLogInButtonLabel}</button>
+          <button onClick={this.props.onRegisterClick}>{labels.components.login.registration.registerButtonLabel}</button>
         </div>
       </React.Fragment>
     );

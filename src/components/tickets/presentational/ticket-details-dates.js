@@ -1,5 +1,7 @@
 import React from 'react';
 
+import labels from 'constants/labels';
+
 export default class TicketDetailsDates extends React.Component {
   render() {
     let datesMarkups = [];
@@ -20,7 +22,7 @@ export default class TicketDetailsDates extends React.Component {
             data-number={this.props.number}
             data-date={sortedDates[i]}>{date}</div>
           <div>
-            <button onClick={this.props.onDeleteTicketDateClick}>Delete</button>
+            <button onClick={this.props.onDeleteTicketDateClick}>{labels.components.tickets.ticketDetails.deleteTicketDateButtonLabel}</button>
           </div>
         </div>
       );
@@ -29,7 +31,7 @@ export default class TicketDetailsDates extends React.Component {
     return (
       <div className="flex-container-column">
         <div>
-          <strong>Dates</strong>
+          <strong>{labels.components.tickets.ticketDetails.datesTitle}</strong>
         </div>
         <div>{datesMarkups}</div>
       </div>

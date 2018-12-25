@@ -7,3 +7,8 @@
 .home-additional-info {
     margin-top: 5px;
 }
+
+.home-log-in-link,
+.home-logged-in-tickets-link {
+    padding: 0 5px;
+}

@@ -2,6 +2,8 @@ import React from 'react'
 
 import DelimiterBlock from './delimiter-block';
 
+import labels from 'constants/labels';
+
 export default class LoadMoreBlock extends React.Component {
   render() {
     return (
@@ -9,7 +11,8 @@ export default class LoadMoreBlock extends React.Component {
         <DelimiterBlock/>
         <div className="tickets-total-text-container">
           <div>
-            <span>Total:&nbsp;{this.props.total}</span>
+            <span className="tickets-total-label">{labels.components.tickets.totalLabel}</span>
+            <span>{this.props.total}</span>
           </div>
         </div>
       </div>

@@ -2,12 +2,16 @@ import React from 'react'
 
 import Ticket from './ticket';
 
+import labels from 'constants/labels';
+
 export default class TicketsList extends React.Component {
   render() {
     if (!this.props.tickets || !this.props.tickets.length) {
-      return (<div>
-        <span>You don't have any ticket yet!</span>
-      </div>);
+      return (
+        <div>
+          <span>{labels.components.tickets.ticketsList.noTicketsMessage}</span>
+        </div>
+      );
     }
 
     let tickets = this._adjustTickets(this.props.tickets);

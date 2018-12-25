@@ -5,12 +5,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import TicketNumber from './ticket-number';
 
+import labels from 'constants/labels';
+
 export default class NewTicketBlock extends React.Component {
   render() {
     return (
       <div className="new-ticket-container flex-container-column">
         <div>
-          <h3>Add new ticket here:</h3>
+          <h3>{labels.components.tickets.newTicket.title}</h3>
         </div>
         <div className="new-ticket-number-container">
           <TicketNumber
@@ -19,7 +21,7 @@ export default class NewTicketBlock extends React.Component {
         </div>
         <div className="new-ticket-date-container">
           <div>
-            <label htmlFor="new-ticket-date__input">Date:&nbsp;</label>
+            <label htmlFor="new-ticket-date__input">{labels.components.tickets.newTicket.dateLabel}</label>
           </div>
           <div>
             <DatePicker
@@ -30,7 +32,7 @@ export default class NewTicketBlock extends React.Component {
           </div>
         </div>
         <div className="new-ticket-add-button-container">
-          <button onClick={this.props.onAddNewTicketClick}>Add</button>
+          <button onClick={this.props.onAddNewTicketClick}>{labels.components.tickets.newTicket.addButtonLabel}</button>
         </div>
       </div>
     );

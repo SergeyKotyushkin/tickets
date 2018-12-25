@@ -67,6 +67,10 @@
     text-align: center;
 }
 
+.tickets-total-label {
+    margin-right: 5px;
+}
+
 /* ticket */
 .ticket {
     margin: 5px;

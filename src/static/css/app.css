@@ -42,6 +42,10 @@ body, html {
     color: rgba(245, 245, 245, 0.7);
 }
 
+.app-header-menu-link-log-out-delimiter {
+    padding: 0 5px;
+}
+
 .app-content {
     display: flex;
     justify-content: center;

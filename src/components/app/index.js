@@ -16,6 +16,7 @@ import PrivateRoute from 'components/private-route/presentational';
 
 import AuthLink from './presentational/auth-link';
 
+import labels from 'constants/labels';
 import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
@@ -35,11 +36,11 @@ class App extends Component {
         <div className="flex-container-column">
           <div className="app-header flex-container-column">
             <div className="app-header-title">
-              <h1>Tickets</h1>
+              <h1>{labels.components.app.header.title}</h1>
             </div>
             <div className="app-header-menu flex-container-row">
               <div className="app-header-menu-link-container">
-                <Link to={routes.pages.home}>Home</Link>
+                <Link to={routes.pages.home}>{labels.components.app.header.links.home}</Link>
               </div>
               <AuthLink
                 isAuthenticated={this.props.authStore.isAuthenticated}
@@ -57,23 +58,6 @@ class App extends Component {
           <div className="app-footer"></div>
         </div>
       </BrowserRouter>
-    );
-  }
-
-  // markups
-  _getLogInLinkMarkup() {
-    return (
-      <div className="app-header-menu-link-container">
-        <Link to={routes.pages.logIn}>Log In</Link>
-      </div>
-    );
-  }
-
-  _getLogOutLinkMarkup() {
-    return (
-      <div className="app-header-menu-link-container">
-        <a href="javascript:void(0);" onClick={this.onLogOutClick}>{this.props.authStore.username}&nbsp;|&nbsp;Log Out</a>
-      </div>
     );
   }
 

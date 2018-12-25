@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 
 import TicketNumberService from 'services/ticket-number';
 
+import labels from 'constants/labels';
+
 export default class TicketNumber extends Component {
   constructor(props) {
     super(props);
@@ -36,15 +38,17 @@ export default class TicketNumber extends Component {
           <div
             className="ticket-digit-button"
             data-top="true"
-            onClick={this.onDigitChange}>
-            <span>+</span>
+            onClick={this.onDigitChange}
+            title={labels.components.tickets.ticketNumber.increaseDigitButtonHoverMessage}>
+            <span>{labels.components.tickets.ticketNumber.increaseDigitButtonLabel}</span>
           </div>
           <div className="ticket-digit">{value}</div>
           <div
             className="ticket-digit-button"
             data-bottom="true"
-            onClick={this.onDigitChange}>
-            <span>-</span>
+            onClick={this.onDigitChange}
+            title={labels.components.tickets.ticketNumber.decreaseDigitButtonHoverMessage}>
+            <span>{labels.components.tickets.ticketNumber.decreaseDigitButtonLabel}</span>
           </div>
         </div>
       );
@@ -54,13 +58,13 @@ export default class TicketNumber extends Component {
       <div className="ticket">
         <div className="ticket-outer-container">
           <div className="ticket-inner-container flex-container-column">
-            <span className="ticket-header-text-container">...</span>
+            <span className="ticket-header-text-container">{labels.components.tickets.ticket.headerLabel}</span>
             <div className="ticket-number-container flex-container-row">
               {ticketDigitsMarkups}
             </div>
-            <span className="ticket-bus-label-container">bus</span>
-            <span className="ticket-ticket-label-container">ticket</span>
-            <span className="ticket-price-container">...</span>
+            <span className="ticket-bus-label-container">{labels.components.tickets.ticket.busLabel}</span>
+            <span className="ticket-ticket-label-container">{labels.components.tickets.ticket.ticketLabel}</span>
+            <span className="ticket-price-container">{labels.components.tickets.ticket.priceLabel}</span>
           </div>
         </div>
       </div>

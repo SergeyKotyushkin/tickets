@@ -4,6 +4,7 @@ import TicketService from 'services/ticket';
 
 import TicketDetails from './ticket-details';
 
+import labels from 'constants/labels';
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 
@@ -25,16 +26,22 @@ export default class Ticket extends React.Component {
 
   render() {
     let formattedNumber = this._fillLeftWithZero(this.props.number, 6);
+    let hoverMessage = this.props.readonly || this.state.areTicketDetailsOpen
+      ? ''
+      : labels.components.tickets.ticket.hoverMessage;
     return (
       <React.Fragment>
-        <div className="ticket" onClick={this.onOpenTicketDetailsClick}>
+        <div
+          className="ticket"
+          onClick={this.onOpenTicketDetailsClick}
+          title={hoverMessage}>
           <div className="ticket-outer-container">
             <div className="ticket-inner-container flex-container-column">
-              <span className="ticket-header-text-container">...</span>
+              <span className="ticket-header-text-container">{labels.components.tickets.ticket.headerLabel}</span>
               <span className="ticket-number-container">{formattedNumber}</span>
-              <span className="ticket-bus-label-container">bus</span>
-              <span className="ticket-ticket-label-container">ticket</span>
-              <span className="ticket-price-container">...</span>
+              <span className="ticket-bus-label-container">{labels.components.tickets.ticket.busLabel}</span>
+              <span className="ticket-ticket-label-container">{labels.components.tickets.ticket.ticketLabel}</span>
+              <span className="ticket-price-container">{labels.components.tickets.ticket.priceLabel}</span>
             </div>
           </div>
         </div>
@@ -118,7 +125,7 @@ export default class Ticket extends React.Component {
 
   // local
   _fillLeftWithZero(num, len) {
-    return (Array(len).join("0") + num).slice(-len);
+    return (Array(len).join('0') + num).slice(-len);
   }
 
   _handleError(error) {

@@ -6,6 +6,8 @@ ReactModal.setAppElement('#root');
 import Ticket from './ticket';
 import TicketDetailsDates from './ticket-details-dates';
 
+import labels from 'constants/labels';
+
 export default class TicketDetails extends React.Component {
   render() {
     return (
@@ -23,7 +25,7 @@ export default class TicketDetails extends React.Component {
         isOpen={this.props.areTicketDetailsOpen && !this.props.readonly}
         onRequestClose={this.props.onCloseTicketDetailsClick}>
         <div>
-          <h3>Ticket details</h3>
+          <h3>{labels.components.tickets.ticketDetails.title}</h3>
         </div>
         <div className="ticket-details-container flex-container-row">
           <div className="ticket-details-ticket-container flex-container-row">
@@ -37,10 +39,10 @@ export default class TicketDetails extends React.Component {
           </div>
         </div>
         <div>
-          <button onClick={this.props.onDeleteTicketClick}>Delete ticket</button>
+          <button onClick={this.props.onDeleteTicketClick}>{labels.components.tickets.ticketDetails.deleteTicketButtonLabel}</button>
         </div>
         <div className="ticket-modal-close-button-container">
-          <button onClick={this.props.onCloseTicketDetailsClick}>Close</button>
+          <button onClick={this.props.onCloseTicketDetailsClick}>{labels.components.tickets.ticketDetails.closeTicketDetailsButtonLabel}</button>
         </div>
       </ReactModal>
     );
