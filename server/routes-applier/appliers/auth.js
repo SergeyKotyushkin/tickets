@@ -2,6 +2,7 @@ const passport = require('passport');
 
 const userRepository = require('../../database/repositories/user');
 
+const badRequestTypes = require('../../../common/constants/badRequestTypes');
 const logs = require('../../../common/constants/logs');
 const routes = require('../../../common/constants/routes');
 const statusCodes = require('../../../common/constants/statusCodes');
@@ -13,6 +14,7 @@ module.exports = {
 function _applyRoutes(expressApplication) {
   expressApplication.post(
     routes.auth.logIn,
+    _beforePassportLogin,
     passport.authenticate('local'),
     _onLogIn
   );
@@ -25,6 +27,20 @@ function _applyRoutes(expressApplication) {
 }
 
 // main
+function _beforePassportLogin(req, res, next) {
+  const trimmedUsername = req.body.username && req.body.username.trim();
+  const trimmedPassword = req.body.password && req.body.password.trim();
+  if (!trimmedUsername || !trimmedPassword) {
+    console.log(logs.logIn.someFieldsAreNotFilled);
+    res.status(statusCodes.badRequest).json(
+      {type: badRequestTypes.someFieldsAreNotFilled}
+    );
+    return;
+  }
+
+  next();
+}
+
 function _onLogIn(req, res) {
   res.json();
 }
@@ -46,31 +62,31 @@ function _onRegister(req, res) {
 
   if (!trimmedUsername || !trimmedPassword || !trimmedConformPassword) {
     console.log(logs.registration.someFieldsAreNotFilled);
-    res.sendStatusStatus(statusCodes.badRequest).json(
-      {message: messages.registration.someFieldsAreNotFilled}
+    res.status(statusCodes.badRequest).json(
+      {type: badRequestTypes.someFieldsAreNotFilled}
     );
     return;
   }
 
   if (trimmedPassword !== trimmedConformPassword) {
     console.log(logs.registration.passwordsAreNotEqual);
-    res.sendStatusStatus(statusCodes.badRequest).json(
-      {message: messages.registration.passwordsAreNotEqual}
+    res.status(statusCodes.badRequest).json(
+      {type: badRequestTypes.passwordsAreNotEqual}
     );
     return;
   }
 
   userRepository.findUserByUsername(
     trimmedUsername,
-    _onRegisterAfterFindUserByUsernameSuccess.bind(null, username, password),
-    _onRegisterAfterFindUserByUsernameFailure
+    _onRegisterAfterFindUserByUsernameSuccess.bind(null, res, username, password),
+    _onRegisterAfterFindUserByUsernameFailure.bind(null, res)
   );
 }
 
 function _onLogOut(req, res) {
   if (!req.isAuthenticated()) {
     console.error(logs.logOut.unauthenticated);
-    res.sendStatus(statusCodes.unauthenticated);
+    res.status(statusCodes.unauthenticated);
     return;
   }
 
@@ -90,11 +106,16 @@ function _onTryLogIn(req, res) {
 }
 
 // local
-function _onRegisterAfterFindUserByUsername(username, password, user) {
+function _onRegisterAfterFindUserByUsernameSuccess(
+  res,
+  username,
+  password,
+  user
+) {
   if (user) {
     console.log(logs.registration.existingUsername);
-    res.sendStatus(statusCodes.badRequest).json(
-      {message: messages.registration.existingUsername}
+    res.status(statusCodes.badRequest).json(
+      {type: badRequestTypes.existingUsername}
     );
     return;
   }
@@ -106,15 +127,11 @@ function _onRegisterAfterFindUserByUsername(username, password, user) {
     res.json();
   }, function(error) {
     console.error(logs.registration.userCreationError, error);
-    res.sendStatus(statusCodes.internalServerError).json(
-      {message: messages.common.internalServerError}
-    );
+    res.sendStatus(statusCodes.internalServerError);
   });
 }
 
-function _onRegisterAfterFindUserByUsernameFailure(error) {
+function _onRegisterAfterFindUserByUsernameFailure(res, error) {
   console.error(logs.registration.userSearchingError, error);
-  res.sendStatus(statusCodes.internalServerError).json(
-    {reason: messages.common.internalServerError}
-  );
+  res.sendStatus(statusCodes.internalServerError);
 }

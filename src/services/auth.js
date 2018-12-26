@@ -55,22 +55,22 @@ function _logOut(dispatchedAuthActions, successCallback, failureCallback) {
 
 // local
 function _onTryLogInSuccess(dispatchedAuthActions, successCallback, response) {
-  dispatchedAuthActions.logIn(response.data.username);
   localStorage.setItem(storageKeys.auth, true);
+  dispatchedAuthActions.logIn(response.data.username);
 
   successCallback && successCallback();
 }
 
 function _onLogInSuccess(dispatchedAuthActions, username, callback) {
-  dispatchedAuthActions.logIn(username);
   localStorage.setItem(storageKeys.auth, true);
+  dispatchedAuthActions.logIn(username);
 
   callback && callback();
 }
 
 function _onLogOutSuccess(dispatchedAuthActions, callback) {
-  dispatchedAuthActions.logOut();
   localStorage.removeItem(storageKeys.auth);
+  dispatchedAuthActions.logOut();
 
   callback && callback();
 }

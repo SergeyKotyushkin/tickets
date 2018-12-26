@@ -15,7 +15,7 @@ export default class LogInBlock extends React.Component {
             <input
               type="text"
               id="login-username__input"
-              name="username"
+              data-name="username"
               data-type="login"
               value={this.props.username}
               onChange={this.props.onInputChange}/>
@@ -25,7 +25,7 @@ export default class LogInBlock extends React.Component {
             <input
               type="password"
               id="login-password__input"
-              name="password"
+              data-name="password"
               data-type="login"
               value={this.props.password}
               onChange={this.props.onInputChange}/>

@@ -18,6 +18,7 @@ module.exports = {
     addTicketConfirm: 'Would you like to add this new ticket?',
     deleteTicketDateConfirm: 'Are you sure to delete this date for the ticket?',
     deleteTicketConfirm: 'Are you sure to delete this ticket?',
-    dateIsNotFilled: 'Date is not filled!'
+    dateIsNotFilled: 'Date is not filled!',
+    badData: 'Some data is not filled!'
   }
 };

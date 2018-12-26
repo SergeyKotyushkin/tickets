@@ -2,6 +2,7 @@ const passport = require('passport');
 const ticketRepository = require('../../database/repositories/ticket');
 const statusCodes = require('../../../common/constants/statusCodes');
 
+const badRequestTypes = require('../../../common/constants/badRequestTypes');
 const logs = require('../../../common/constants/logs');
 const routes = require('../../../common/constants/routes');
 
@@ -44,8 +45,14 @@ function _onGetTickets(req, res) {
 
 function _onAddTicket(req, res) {
   if (!req.isAuthenticated()) {
-    console.error(logs.addTicket.unauthenticated);
+    console.error(logs.tickets.addTicket, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
+    return;
+  }
+
+  if ((!req.body.number && req.body.number !== 0) || Object.prototype.toString.call(req.body.date) !== '[object Date]') {
+    console.error(logs.tickets.addTicket, logs.tickets.badRequest);
+    res.status(statusCodes.badRequest).json({type: badRequestTypes.badData});
     return;
   }
 
@@ -77,6 +84,12 @@ function _onDeleteTicketDate(req, res) {
   if (!req.isAuthenticated()) {
     console.error(logs.tickets.deleteTicketDate, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
+    return;
+  }
+
+  if ((!req.body.number && req.body.number !== 0) || Object.prototype.toString.call(req.body.date) !== '[object Date]') {
+    console.error(logs.tickets.deleteTicketDate, logs.tickets.badRequest);
+    res.sendStatus(statusCodes.badRequest);
     return;
   }
 
@@ -119,6 +132,12 @@ function _onDeleteTicket(req, res) {
     return;
   }
 
+  if ((!req.body.number && req.body.number !== 0)) {
+    console.error(logs.tickets.deleteTicket, logs.tickets.badRequest);
+    res.status(statusCodes.badRequest).json({type: badRequestTypes.badData});
+    return;
+  }
+
   ticketRepository.deleteTicket(
     req.user.id,
     req.body.number,
@@ -148,6 +167,12 @@ function _onFindTicketDate(req, res) {
   if (!req.isAuthenticated()) {
     console.error(logs.tickets.findTicket, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
+    return;
+  }
+
+  if ((!req.body.number && req.body.number !== 0)) {
+    console.error(logs.tickets.findTicket, logs.tickets.badRequest);
+    res.status(statusCodes.badRequest).json({type: badRequestTypes.badData});
     return;
   }
 

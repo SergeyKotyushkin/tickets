@@ -2,6 +2,9 @@ module.exports = {
   logOut: {
     unauthenticated: 'logOut: user is not authenticated'
   },
+  logIn: {
+    someFieldsAreNotFilled: 'logIn: some fields are not filled'
+  },
   registration: {
     alreadyAuthenticated: 'registration: already authenticated with username',
     someFieldsAreNotFilled: 'registration: some fields are not filled',
@@ -15,7 +18,8 @@ module.exports = {
     getTickets: 'getTickets:',
     deleteTicket: 'deleteTicket:',
     deleteTicketDate: 'deleteTicketDate:',
-    findTicket: 'addTicket:',
+    findTicket: 'findTicket:',
+    badRequest: 'bad request data',
     unauthenticated: 'user is not authenticated',
     internalServerError: 'internal server error'
   },

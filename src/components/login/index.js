@@ -12,6 +12,7 @@ import LoggedInBlock from './presentational/logged-in-block';
 import LogInBlock from './presentational/log-in-block';
 import RegistrationBlock from './presentational/registration-block';
 
+import badRequestTypes from 'constants/badRequestTypes';
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
@@ -63,9 +64,9 @@ class Login extends Component {
             onSwitchTypeClick={this.onSwitchTypeClick.bind(this, this.REGISTRATION_TYPE)}
             onLogInClick={this.onLogInClick}/>
         : <RegistrationBlock
-          username={this.state.login.username}
-          password={this.state.login.password}
-          conformPassword={this.state.login.conformPassword}
+          username={this.state.registration.username}
+          password={this.state.registration.password}
+          conformPassword={this.state.registration.conformPassword}
           onInputChange={this.onInputChange}
           onSwitchTypeClick={this._onSwitchTypeClick.bind(this, this.LOGIN_TYPE)}
           onRegisterClick={this.onRegisterClick}/>;
@@ -80,7 +81,7 @@ class Login extends Component {
   // onChange handlers
   _onInputChange(event) {
     const copyOfState = JSON.parse(JSON.stringify(this.state));
-    copyOfState[event.target.dataset.type][event.target.name] = event.target.value;
+    copyOfState[event.target.dataset.type][event.target.dataset.name] = event.target.value;
     this.setState(copyOfState);
   }
 
@@ -99,7 +100,7 @@ class Login extends Component {
     this._authService.logIn(
       login.username,
       login.password,
-      null,
+      this._onLogInSuccess.bind(this),
       this._onLogInFailure
     );
   }
@@ -126,34 +127,55 @@ class Login extends Component {
   }
 
   // auth service callbacks
+  _onLogInSuccess() {
+    this._routeService.redirectToHome(this.props.history)
+  }
+
   _onRegisterSuccess() {
     alert(messages.registration.registrationIsComplete);
     this._switchType(this.LOGIN_TYPE)
   }
 
   _onLogInFailure(error) {
-    const message = error.response.status === statusCodes.unauthenticated
-      ? messages.logIn.wrongCredentials
-      : messages.common.internalServerError;
+    let message = null;
+    switch (error.response.status) {
+      case statusCodes.unauthenticated:
+        message = messages.logIn.wrongCredentials;
+        break;
+      case statusCodes.badRequest:
+        switch (error.response.data.type) {
+          case badRequestTypes.someFieldsAreNotFilled:
+            message = messages.registration.someFieldsAreNotFilled;
+            break;
+        }
+        break;
+    }
 
-    alert(message);
+    alert(message || messages.common.internalServerError);
   }
 
   _onRegisterFailure(error) {
-    let message;
+    let message = null;
     switch (error.response.status) {
       case statusCodes.authenticated:
         message = messages.registration.alreadyAuthenticated;
         break;
       case statusCodes.badRequest:
-        message = error.response.data.reason;
-        break;
-      default:
-        message = messages.common.internalServerError;
+        switch (error.response.data.type) {
+          case badRequestTypes.existingUsername:
+            message = messages.registration.existingUsername;
+            break;
+          case badRequestTypes.someFieldsAreNotFilled:
+            message = messages.registration.someFieldsAreNotFilled;
+            break;
+          case badRequestTypes.passwordsAreNotEqual:
+            message = messages.registration.passwordsAreNotEqual;
+            break;
+        }
         break;
     }
 
-    alert(message);
+    alert(message || messages.common.internalServerError);
   }
 
   // local

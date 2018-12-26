@@ -19,7 +19,7 @@ export default class RegistrationBlock extends React.Component {
             <input
               type="text"
               id="registration-username__input"
-              name="username"
+              data-name="username"
               data-type="registration"
               value={this.props.username}
               onChange={this.props.onInputChange}/>
@@ -33,7 +33,7 @@ export default class RegistrationBlock extends React.Component {
             <input
               type="password"
               id="registration-password__input"
-              name="password"
+              data-name="password"
               data-type="registration"
               value={this.props.password}
               onChange={this.props.onInputChange}/>
@@ -47,7 +47,7 @@ export default class RegistrationBlock extends React.Component {
             <input
               type="password"
               id="registration-conform-password__input"
-              name="conformPassword"
+              data-name="conformPassword"
               data-type="registration"
               value={this.props.conformPassword}
               onChange={this.props.onInputChange}/>

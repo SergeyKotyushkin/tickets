@@ -21,6 +21,7 @@ import LoadingBlock from './presentational/loading-block';
 
 import localizator from 'localization/localizator';
 
+import badRequestTypes from 'constants/badRequestTypes';
 import storageKeys from 'constants/storageKeys';
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
@@ -271,14 +272,25 @@ class Tickets extends Component {
 
   // local
   _handleError(error) {
-    const message = error.response.status === statusCodes.unauthenticated
-      ? messages.common.unauthenticated
-      : messages.common.internalServerError
+    let message = null;
+    switch (error.response.status) {
+      case statusCodes.unauthenticated:
+        message = messages.common.unauthenticated;
+        break;
+      case statusCodes.badRequest:
+        switch (error.response.data.type) {
+          case badRequestTypes.badData:
+            message = messages.tickets.badData;
+            break;
+        }
+        break;
+    }
 
-    alert(message);
+    alert(message || messages.common.internalServerError);
 
     if (error.response.status === statusCodes.unauthenticated) {
-      this._routeService.redirectToLogin(this.props.history);
+      localStorage.removeItem(storageKeys.auth);
+      this.props.dispatchedAuthActions.logOut();
     }
   }
 

@@ -132,13 +132,24 @@ export default class Ticket extends React.Component {
   }
 
   _handleError(error) {
-    const message = error.response.status === statusCodes.unauthenticated
-      ? messages.common.unauthenticated
-      : messages.common.internalServerError
+    let message = null;
+    switch (error.response.status) {
+      case statusCodes.unauthenticated:
+        message = messages.registration.unauthenticated;
+        break;
+      case statusCodes.badRequest:
+        switch (error.response.type) {
+          case badData:
+            message = messages.tickets.badData;
+            break;
+        }
+        break;
+    }
 
-    alert(message);
+    alert(message || messages.common.internalServerError);
 
     if (error.response.status === statusCodes.unauthenticated) {
+      this._authService.dispatchedAuthActions.logOut();
       this._routeService.redirectToLogin(this.props.history);
     }
   }
