@@ -14,7 +14,7 @@ import RegistrationBlock from './presentational/registration-block';
 
 import localizator from 'localization/localizator';
 
-import badRequestTypes from 'constants/badRequestTypes';
+import badRequestTypes from 'constants/bad-request-types';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 

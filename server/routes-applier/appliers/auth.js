@@ -2,7 +2,7 @@ const passport = require('passport');
 
 const userRepository = require('../../database/repositories/user');
 
-const badRequestTypes = require('../../../common/constants/badRequestTypes');
+const badRequestTypes = require('../../../common/constants/bad-request-types');
 const logs = require('../../../common/constants/logs');
 const routes = require('../../../common/constants/routes');
 const statusCodes = require('../../../common/constants/statusCodes');

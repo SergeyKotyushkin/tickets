@@ -2,7 +2,7 @@ const passport = require('passport');
 const ticketRepository = require('../../database/repositories/ticket');
 const statusCodes = require('../../../common/constants/statusCodes');
 
-const badRequestTypes = require('../../../common/constants/badRequestTypes');
+const badRequestTypes = require('../../../common/constants/bad-request-types');
 const logs = require('../../../common/constants/logs');
 const routes = require('../../../common/constants/routes');
 
@@ -19,7 +19,7 @@ function _applyRoutes(expressApplication) {
 
   expressApplication.post(routes.tickets.deleteTicket, _onDeleteTicket);
 
-  expressApplication.post(routes.tickets.findTicket, _onFindTicketDate);
+  expressApplication.post(routes.tickets.findTicket, _onFindTicket);
 }
 
 function _onGetTickets(req, res) {
@@ -33,8 +33,11 @@ function _onGetTickets(req, res) {
     req.user.id,
     req.body.from,
     req.body.size,
-    function(data) {
-      res.json(data);
+    function(result) {
+      var resultDto = {};
+      resultDto.total = result.total;
+      resultDto.tickets = result.tickets.map(_mapTicketToTicketDto);
+      res.json(resultDto);
     },
     function(error) {
       console.error(logs.tickets.getTickets, logs.tickets.internalServerError, error);
@@ -67,7 +70,7 @@ function _onAddTicket(req, res) {
       req.body.number,
       req.body.date,
       function(ticket) {
-        res.json({ticket});
+        res.json({ticket: _mapTicketToTicketDto(ticket)});
       },
       function(error) {
         console.error(logs.tickets.addTicket, logs.tickets.internalServerError, error);
@@ -163,7 +166,7 @@ function _onDeleteTicket(req, res) {
   );
 }
 
-function _onFindTicketDate(req, res) {
+function _onFindTicket(req, res) {
   if (!req.isAuthenticated()) {
     console.error(logs.tickets.findTicket, logs.tickets.unauthenticated);
     res.sendStatus(statusCodes.unauthenticated);
@@ -177,9 +180,13 @@ function _onFindTicketDate(req, res) {
   }
 
   ticketRepository.find(req.user.id, req.body.number, function(ticket) {
-    res.json({ticket: ticket});
+    res.json({ticket: _mapTicketToTicketDto(ticket)});
   }, function(error) {
     console.error(logs.tickets.findTicket, logs.tickets.internalServerError, error);
     res.sendStatus(statusCodes.internalServerError);
   });
+}
+
+function _mapTicketToTicketDto(ticket) {
+  return {number: ticket.number, dates: ticket.dates};
 }
