@@ -14,6 +14,7 @@ import RegistrationBlock from './presentational/registration-block';
 
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
+import storageKeys from 'constants/storageKeys';
 
 class Login extends Component {
   LOGIN_TYPE = 0;
@@ -44,9 +45,10 @@ class Login extends Component {
     this.onSwitchTypeClick = this._onSwitchTypeClick.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.authStore.isAuthenticated) {
-      this._routeService.redirectToHome(this.props.history);
+  componentDidMount() {
+    if (!this.props.authStore.isAuthenticated && localStorage.getItem(storageKeys.auth)) {
+      this._authService.tryLogIn(null, this._handleError.bind(this));
+      return;
     }
   }
 
@@ -157,6 +159,10 @@ class Login extends Component {
   // local
   _switchType(type) {
     this.setState({type: type});
+  }
+
+  _handleError(error) {
+    alert(messages.common.internalServerError);
   }
 }
 

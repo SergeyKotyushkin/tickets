@@ -5,9 +5,14 @@ module.exports = {
 };
 
 function _connect(onConnectSuccess) {
-  mongoose
-    .connect(process.env.MONGO_URL, {useNewUrlParser: true})
-    .then(onConnectSuccess, _onConnectFailure);
+  mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true}).then(
+    _onConnectSuccess.bind(null, onConnectSuccess, mongoose.connection),
+    _onConnectFailure
+  );
+}
+
+function _onConnectSuccess(callback, mongooseConnection) {
+  callback(mongooseConnection);
 }
 
 function _onConnectFailure() {

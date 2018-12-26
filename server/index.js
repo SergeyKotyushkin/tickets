@@ -6,22 +6,26 @@ const bodyParser = require('body-parser');
 const initPassportStrategy = require('./auth/passport');
 const routesApplier = require('./routes-applier');
 const mongoConnector = require('./database/init');
-
-const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(
-  session({secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false})
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-initPassportStrategy();
+const MongoStore = require('connect-mongo')(session);
 
 mongoConnector.connect(_onMongoConnected);
 
-function _onMongoConnected() {
+function _onMongoConnected(mongooseConnection) {
+  const app = express();
+
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(session({
+    store: new MongoStore({mongooseConnection: mongooseConnection}),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  }));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+  initPassportStrategy();
+
   routesApplier.apply(app);
 
   app.listen(process.env.PORT, function(err) {
