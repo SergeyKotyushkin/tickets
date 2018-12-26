@@ -188,5 +188,10 @@ function _onFindTicket(req, res) {
 }
 
 function _mapTicketToTicketDto(ticket) {
-  return {number: ticket.number, dates: ticket.dates};
+  return ticket
+    ? {
+      number: ticket.number,
+      dates: ticket.dates
+    }
+    : null;
 }

@@ -5,7 +5,10 @@ module.exports = {
 };
 
 function _connect(onConnectSuccess) {
-  mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true}).then(
+  mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useCreateIndex: true
+  }).then(
     _onConnectSuccess.bind(null, onConnectSuccess, mongoose.connection),
     _onConnectFailure
   );

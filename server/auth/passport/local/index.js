@@ -34,12 +34,18 @@ function _validateCredentials(username, password, done) {
 }
 
 function _onFindUserByUsernameSuccess(doneCallback, username, password, user) {
-  if (!user || username !== user.username || password !== user.password) {
-    doneCallback(null, false);
+  if (!user) {
+    doneCallback(null, null);
     return;
   }
 
-  doneCallback(null, user);
+  var isMatch = user.comparePasswords(password);
+  doneCallback(
+    null,
+    isMatch
+      ? user
+      : null
+  );
 }
 
 function _onFindUserByUsernameError(doneCallback, error) {
