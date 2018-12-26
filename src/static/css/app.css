@@ -67,6 +67,14 @@ body, html {
     min-height: 200px;
 }
 
+.app-languages-container {
+    margin: 10px;
+}
+
+.app-languages-title-container {
+    margin-bottom: 4px;
+}
+
 input {
     background-color: rgba(245, 245, 245, 1);
     border: 1px solid rgba(120, 185, 232, 0.9);

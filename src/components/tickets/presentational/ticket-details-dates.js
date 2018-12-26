@@ -1,12 +1,9 @@
 import React from 'react';
 
-import {withI18n} from "react-i18next";
-import Localizator from 'localization/localizator';
+import localizator from 'localization/localizator';
 
-class TicketDetailsDates extends React.Component {
+export default class TicketDetailsDates extends React.Component {
   render() {
-    const {t} = this.props;
-
     let datesMarkups = [];
     if (!this.props.dates) {
       return (<div className="flex-container-column"></div>);
@@ -26,8 +23,8 @@ class TicketDetailsDates extends React.Component {
             data-date={sortedDates[i]}>{date}</div>
           <div>
             <button onClick={this.props.onDeleteTicketDateClick}>{
-                t(
-                  Localizator.keys.components.tickets.ticketDetails.deleteTicketDateButtonLabel
+                localizator.translate(
+                  localizator.keys.components.tickets.ticketDetails.deleteTicketDateButtonLabel
                 )
               }</button>
           </div>
@@ -38,12 +35,14 @@ class TicketDetailsDates extends React.Component {
     return (
       <div className="flex-container-column">
         <div>
-          <strong>{t(Localizator.keys.components.tickets.ticketDetails.datesTitle)}</strong>
+          <strong>{
+              localizator.translate(
+                localizator.keys.components.tickets.ticketDetails.datesTitle
+              )
+            }</strong>
         </div>
         <div>{datesMarkups}</div>
       </div>
     );
   }
 }
-
-export default withI18n()(TicketDetailsDates);

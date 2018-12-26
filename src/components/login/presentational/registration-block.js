@@ -1,20 +1,21 @@
 import React from 'react';
 
-import {withI18n} from "react-i18next";
-import Localizator from 'localization/localizator';
+import localizator from 'localization/localizator';
 
-class RegistrationBlock extends React.Component {
+export default class RegistrationBlock extends React.Component {
   render() {
-    const {t} = this.props;
-
     return (
       <React.Fragment>
         <div className="login-title-container">
-          <h2>{t(Localizator.keys.components.login.registration.title)}</h2>
+          <h2>{localizator.translate(localizator.keys.components.login.registration.title)}</h2>
         </div>
         <div className="login-inputs-container">
           <div className="registration-username-container">
-            <label htmlFor="registration-username__input">{t(Localizator.keys.components.login.registration.usernameLabel)}</label>
+            <label htmlFor="registration-username__input">{
+                localizator.translate(
+                  localizator.keys.components.login.registration.usernameLabel
+                )
+              }</label>
             <input
               type="text"
               id="registration-username__input"
@@ -24,7 +25,11 @@ class RegistrationBlock extends React.Component {
               onChange={this.props.onInputChange}/>
           </div>
           <div className="registration-password-container">
-            <label htmlFor="registration-password__input">{t(Localizator.keys.components.login.registration.passwordLabel)}</label>
+            <label htmlFor="registration-password__input">{
+                localizator.translate(
+                  localizator.keys.components.login.registration.passwordLabel
+                )
+              }</label>
             <input
               type="password"
               id="registration-password__input"
@@ -34,7 +39,11 @@ class RegistrationBlock extends React.Component {
               onChange={this.props.onInputChange}/>
           </div>
           <div className="registration-conform-password-container">
-            <label htmlFor="registration-conform-password__input">{t(Localizator.keys.components.login.registration.conformPasswordLabel)}</label>
+            <label htmlFor="registration-conform-password__input">{
+                localizator.translate(
+                  localizator.keys.components.login.registration.conformPasswordLabel
+                )
+              }</label>
             <input
               type="password"
               id="registration-conform-password__input"
@@ -45,12 +54,18 @@ class RegistrationBlock extends React.Component {
           </div>
         </div>
         <div className="login-controls-container">
-          <button onClick={this.props.onSwitchTypeClick}>{t(Localizator.keys.components.login.registration.toLogInButtonLabel)}</button>
-          <button onClick={this.props.onRegisterClick}>{t(Localizator.keys.components.login.registration.registerButtonLabel)}</button>
+          <button onClick={this.props.onSwitchTypeClick}>{
+              localizator.translate(
+                localizator.keys.components.login.registration.toLogInButtonLabel
+              )
+            }</button>
+          <button onClick={this.props.onRegisterClick}>{
+              localizator.translate(
+                localizator.keys.components.login.registration.registerButtonLabel
+              )
+            }</button>
         </div>
       </React.Fragment>
     );
   }
 }
-
-export default withI18n()(RegistrationBlock);

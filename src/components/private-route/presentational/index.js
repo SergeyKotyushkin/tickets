@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import {Route, Redirect} from 'react-router-dom';
 
-import authConstants from 'constants/auth';
+import storageKeys from 'constants/storageKeys';
 import routes from 'constants/routes';
 
 class PrivateRoute extends React.Component {
@@ -25,7 +25,7 @@ class PrivateRoute extends React.Component {
 
   _isAuthentificated() {
     return this.props.authStore.isAuthenticated || localStorage.getItem(
-      authConstants.keyInStorage
+      storageKeys.auth
     );
   }
 }

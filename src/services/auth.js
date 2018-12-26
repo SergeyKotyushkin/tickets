@@ -1,4 +1,4 @@
-import authConstants from 'constants/auth';
+import storageKeys from 'constants/storageKeys';
 import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
@@ -56,21 +56,21 @@ function _logOut(dispatchedAuthActions, successCallback, failureCallback) {
 // local
 function _onTryLogInSuccess(dispatchedAuthActions, successCallback, response) {
   dispatchedAuthActions.logIn(response.data.username);
-  localStorage.setItem(authConstants.keyInStorage, true);
+  localStorage.setItem(storageKeys.auth, true);
 
   successCallback && successCallback();
 }
 
 function _onLogInSuccess(dispatchedAuthActions, username, callback) {
   dispatchedAuthActions.logIn(username);
-  localStorage.setItem(authConstants.keyInStorage, true);
+  localStorage.setItem(storageKeys.auth, true);
 
   callback && callback();
 }
 
 function _onLogOutSuccess(dispatchedAuthActions, callback) {
   dispatchedAuthActions.logOut();
-  localStorage.removeItem(authConstants.keyInStorage);
+  localStorage.removeItem(storageKeys.auth);
 
   callback && callback();
 }

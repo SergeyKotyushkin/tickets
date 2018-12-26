@@ -6,10 +6,9 @@ ReactModal.setAppElement('#root');
 import Ticket from './ticket';
 import TicketDetailsDates from './ticket-details-dates';
 
-import {withI18n} from "react-i18next";
-import Localizator from 'localization/localizator';
+import localizator from 'localization/localizator';
 
-class TicketDetails extends React.Component {
+export default class TicketDetails extends React.Component {
   render() {
     return (
       <React.Fragment>
@@ -20,15 +19,13 @@ class TicketDetails extends React.Component {
 
   // markups
   _getReactModalMarkup() {
-    const {t} = this.props;
-
     return (
       <ReactModal
         style={this._getModalStyles()}
         isOpen={this.props.areTicketDetailsOpen && !this.props.readonly}
         onRequestClose={this.props.onCloseTicketDetailsClick}>
         <div>
-          <h3>{t(Localizator.keys.components.tickets.ticketDetails.title)}</h3>
+          <h3>{localizator.translate(localizator.keys.components.tickets.ticketDetails.title)}</h3>
         </div>
         <div className="ticket-details-container flex-container-row">
           <div className="ticket-details-ticket-container flex-container-row">
@@ -42,12 +39,16 @@ class TicketDetails extends React.Component {
           </div>
         </div>
         <div>
-          <button onClick={this.props.onDeleteTicketClick}>{t(Localizator.keys.components.tickets.ticketDetails.deleteTicketButtonLabel)}</button>
+          <button onClick={this.props.onDeleteTicketClick}>{
+              localizator.translate(
+                localizator.keys.components.tickets.ticketDetails.deleteTicketButtonLabel
+              )
+            }</button>
         </div>
         <div className="ticket-modal-close-button-container">
           <button onClick={this.props.onCloseTicketDetailsClick}>{
-              t(
-                Localizator.keys.components.tickets.ticketDetails.closeTicketDetailsButtonLabel
+              localizator.translate(
+                localizator.keys.components.tickets.ticketDetails.closeTicketDetailsButtonLabel
               )
             }</button>
         </div>
@@ -77,5 +78,3 @@ class TicketDetails extends React.Component {
     return styles;
   }
 }
-
-export default withI18n()(TicketDetails);

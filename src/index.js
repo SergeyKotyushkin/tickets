@@ -8,8 +8,8 @@ import * as reducers from 'stores/reducers';
 
 import App from 'components/app';
 
-import Localizator from 'localization/localizator';
-Localizator.init();
+import localizator from 'localization/localizator';
+localizator.init();
 
 const store = createStore(combineReducers(reducers));
 

@@ -9,6 +9,9 @@ export default {
           logOut: 'Log Out',
           logOutDelimiter: '|'
         }
+      },
+      footer: {
+        languagesTitle: 'Translate site:'
       }
     },
     home: {
@@ -41,6 +44,7 @@ export default {
       }
     },
     tickets: {
+      title: 'Tickets',
       loadMoreButtonLabel: 'Load More',
       loadingMessage: 'Loading...',
       newTicket: {

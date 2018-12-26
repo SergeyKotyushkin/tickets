@@ -19,7 +19,9 @@ import SearchTicketBlock from './presentational/search-ticket-block';
 import DelimiterBlock from './presentational/delimiter-block';
 import LoadingBlock from './presentational/loading-block';
 
-import authConstants from 'constants/auth';
+import localizator from 'localization/localizator';
+
+import storageKeys from 'constants/storageKeys';
 import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 
@@ -66,7 +68,7 @@ class Tickets extends Component {
       return;
     }
 
-    if (localStorage.getItem(authConstants.keyInStorage)) {
+    if (localStorage.getItem(storageKeys.auth)) {
       this._authService.tryLogIn(
         this._onTryLogInSuccess.bind(this),
         this._handleError.bind(this)
@@ -110,7 +112,7 @@ class Tickets extends Component {
   _getAuthenticatedMarkup() {
     return (
       <div className="tickets-content">
-        <h2>Tickets</h2 >
+        <h2>{localizator.translate(localizator.keys.components.tickets.title)}</h2>
         <div className="flex-container-column">
           <div className="tickets-container flex-container-row">
             <TicketsList

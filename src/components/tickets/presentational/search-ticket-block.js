@@ -2,13 +2,10 @@ import React from 'react';
 
 import Ticket from './ticket';
 
-import {withI18n} from "react-i18next";
-import Localizator from 'localization/localizator';
+import localizator from 'localization/localizator';
 
-class SearchTicketBlock extends React.Component {
+export default class SearchTicketBlock extends React.Component {
   render() {
-    const {t} = this.props;
-
     let foundTicket = (
       <React.Fragment>
         {this.props.foundNumber === undefined && this._getEmptyMarkup()}
@@ -20,11 +17,15 @@ class SearchTicketBlock extends React.Component {
     return (
       <div className="search-ticket-container flex-container-column">
         <div className="search-ticket-title-container">
-          <h3>{t(Localizator.keys.components.tickets.searchTicket.title)}</h3>
+          <h3>{localizator.translate(localizator.keys.components.tickets.searchTicket.title)}</h3>
         </div>
         <div className="search-ticket-input-container">
           <div>
-            <label htmlFor="search-ticket__input">{t(Localizator.keys.components.tickets.searchTicket.numberLabel)}</label>
+            <label htmlFor="search-ticket__input">{
+                localizator.translate(
+                  localizator.keys.components.tickets.searchTicket.numberLabel
+                )
+              }</label>
           </div>
           <div>
             <input
@@ -35,7 +36,11 @@ class SearchTicketBlock extends React.Component {
           </div>
         </div>
         <div className="find-ticket-button-container">
-          <button onClick={this.props.onSearchNumberClick}>{t(Localizator.keys.components.tickets.searchTicket.findButtonLabel)}</button>
+          <button onClick={this.props.onSearchNumberClick}>{
+              localizator.translate(
+                localizator.keys.components.tickets.searchTicket.findButtonLabel
+              )
+            }</button>
         </div>
         <div className="found-ticket-container flex-container-row">
           {foundTicket}
@@ -50,10 +55,12 @@ class SearchTicketBlock extends React.Component {
   }
 
   _getNotFoundMarkup() {
-    const {t} = this.props;
-
     return (
-      <span>{t(Localizator.keys.components.tickets.searchTicket.notFoundMessage)}</span>
+      <span>{
+          localizator.translate(
+            localizator.keys.components.tickets.searchTicket.notFoundMessage
+          )
+        }</span>
     );
   }
 
@@ -68,5 +75,3 @@ class SearchTicketBlock extends React.Component {
     );
   }
 }
-
-export default withI18n()(SearchTicketBlock);
