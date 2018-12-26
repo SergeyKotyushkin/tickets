@@ -23,7 +23,6 @@ import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/badRequestTypes';
 import storageKeys from 'constants/storageKeys';
-import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 
 class Tickets extends Component {
@@ -187,12 +186,12 @@ class Tickets extends Component {
 
   // onClick handlers
   _onAddNewTicketClick() {
-    if (!confirm(messages.tickets.addTicketConfirm)) {
+    if (!confirm(localizator.translate(localizator.keys.messages.tickets.addTicketConfirm))) {
       return;
     }
 
     if (!this.state.newTicket.date) {
-      alert(messages.tickets.dateIsNotFilled);
+      alert(localizator.translate(localizator.keys.messages.tickets.dateIsNotFilled));
       return;
     }
 
@@ -272,21 +271,25 @@ class Tickets extends Component {
 
   // local
   _handleError(error) {
-    let message = null;
+    let message = localizator.translate(
+      localizator.keys.messages.common.internalServerError
+    );
     switch (error.response.status) {
       case statusCodes.unauthenticated:
-        message = messages.common.unauthenticated;
+        message = localizator.translate(
+          localizator.keys.messages.common.unauthenticated
+        );
         break;
       case statusCodes.badRequest:
         switch (error.response.data.type) {
           case badRequestTypes.badData:
-            message = messages.tickets.badData;
+            message = localizator.translate(localizator.keys.messages.tickets.badData);
             break;
         }
         break;
     }
 
-    alert(message || messages.common.internalServerError);
+    alert(message);
 
     if (error.response.status === statusCodes.unauthenticated) {
       localStorage.removeItem(storageKeys.auth);

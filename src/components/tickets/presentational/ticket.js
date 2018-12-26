@@ -6,7 +6,6 @@ import TicketDetails from './ticket-details';
 
 import localizator from 'localization/localizator';
 
-import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 
 export default class Ticket extends React.Component {
@@ -81,7 +80,7 @@ export default class Ticket extends React.Component {
   }
 
   _onDeleteTicketDateClick(event) {
-    if (!confirm(messages.tickets.deleteTicketDateConfirm)) {
+    if (!confirm(localizator.translate(localizator.keys.messages.tickets.deleteTicketDateConfirm))) {
       return;
     }
 
@@ -97,7 +96,7 @@ export default class Ticket extends React.Component {
   }
 
   _onDeleteTicketClick(event) {
-    if (!confirm(messages.tickets.deleteTicketConfirm)) {
+    if (!confirm(localizator.translate(localizator.keys.messages.tickets.deleteTicketConfirm))) {
       return;
     }
 
@@ -132,21 +131,25 @@ export default class Ticket extends React.Component {
   }
 
   _handleError(error) {
-    let message = null;
+    let message = localizator.translate(
+      localizator.keys.messages.common.internalServerError
+    );
     switch (error.response.status) {
       case statusCodes.unauthenticated:
-        message = messages.registration.unauthenticated;
+        message = localizator.translate(
+          localizator.keys.messages.registration.unauthenticated
+        );
         break;
       case statusCodes.badRequest:
         switch (error.response.type) {
           case badData:
-            message = messages.tickets.badData;
+            message = localizator.translate(localizator.keys.messages.tickets.badData);
             break;
         }
         break;
     }
 
-    alert(message || messages.common.internalServerError);
+    alert(message);
 
     if (error.response.status === statusCodes.unauthenticated) {
       this._authService.dispatchedAuthActions.logOut();

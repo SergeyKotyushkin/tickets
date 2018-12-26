@@ -12,8 +12,9 @@ import LoggedInBlock from './presentational/logged-in-block';
 import LogInBlock from './presentational/log-in-block';
 import RegistrationBlock from './presentational/registration-block';
 
+import localizator from 'localization/localizator';
+
 import badRequestTypes from 'constants/badRequestTypes';
-import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
@@ -93,7 +94,9 @@ class Login extends Component {
   _onLogInClick() {
     const login = this.state.login;
     if (!login.username || !login.password) {
-      alert(messages.logIn.someFieldsAreNotFilled);
+      alert(
+        localizator.translate(localizator.keys.messages.logIn.someFieldsAreNotFilled)
+      );
       return;
     }
 
@@ -108,12 +111,16 @@ class Login extends Component {
   _onRegisterClick() {
     const registration = this.state.registration;
     if (!registration.username || !registration.password || !registration.conformPassword) {
-      alert(messages.registration.someFieldsAreNotFilled);
+      alert(
+        localizator.translate(localizator.keys.messages.registration.someFieldsAreNotFilled)
+      );
       return;
     }
 
     if (registration.password !== registration.conformPassword) {
-      alert(messages.registration.passwordsAreNotEqual);
+      alert(
+        localizator.translate(localizator.keys.messages.registration.passwordsAreNotEqual)
+      );
       return;
     }
 
@@ -132,50 +139,68 @@ class Login extends Component {
   }
 
   _onRegisterSuccess() {
-    alert(messages.registration.registrationIsComplete);
+    alert(
+      localizator.translate(localizator.keys.messages.registration.registrationIsComplete)
+    );
     this._switchType(this.LOGIN_TYPE)
   }
 
   _onLogInFailure(error) {
-    let message = null;
+    let message = localizator.translate(
+      localizator.keys.messages.common.internalServerError
+    );
     switch (error.response.status) {
       case statusCodes.unauthenticated:
-        message = messages.logIn.wrongCredentials;
+        message = localizator.translate(
+          localizator.keys.messages.logIn.wrongCredentials
+        );
         break;
       case statusCodes.badRequest:
         switch (error.response.data.type) {
           case badRequestTypes.someFieldsAreNotFilled:
-            message = messages.registration.someFieldsAreNotFilled;
+            message = localizator.translate(
+              localizator.keys.messages.registration.someFieldsAreNotFilled
+            );
             break;
         }
         break;
     }
 
-    alert(message || messages.common.internalServerError);
+    alert(message);
   }
 
   _onRegisterFailure(error) {
-    let message = null;
+    let message = localizator.translate(
+      localizator.keys.messages.common.internalServerError
+    );
     switch (error.response.status) {
       case statusCodes.authenticated:
-        message = messages.registration.alreadyAuthenticated;
+        message = localizator.translate(
+          localizator.keys.messages.registration.alreadyAuthenticated
+        );
         break;
       case statusCodes.badRequest:
         switch (error.response.data.type) {
           case badRequestTypes.existingUsername:
-            message = messages.registration.existingUsername;
+            message = localizator.translate(
+              localizator.keys.messages.registration.existingUsername
+            );
             break;
           case badRequestTypes.someFieldsAreNotFilled:
-            message = messages.registration.someFieldsAreNotFilled;
+            message = localizator.translate(
+              localizator.keys.messages.registration.someFieldsAreNotFilled
+            );
             break;
           case badRequestTypes.passwordsAreNotEqual:
-            message = messages.registration.passwordsAreNotEqual;
+            message = localizator.translate(
+              localizator.keys.messages.registration.passwordsAreNotEqual
+            );
             break;
         }
         break;
     }
 
-    alert(message || messages.common.internalServerError);
+    alert(message);
   }
 
   // local
@@ -184,7 +209,9 @@ class Login extends Component {
   }
 
   _handleError(error) {
-    alert(messages.common.internalServerError);
+    alert(
+      localizator.translate(localizator.keys.messages.common.internalServerError)
+    );
   }
 }
 

@@ -12,7 +12,6 @@ import LoggedInSpan from './presentational/logged-in-span';
 
 import localizator from 'localization/localizator';
 
-import messages from 'constants/messages';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
@@ -46,7 +45,9 @@ class Home extends React.Component {
 
   // local
   _handleError(error) {
-    alert(messages.common.internalServerError);
+    alert(
+      localizator.translate(localizator.keys.messages.common.internalServerError)
+    );
   }
 }
 

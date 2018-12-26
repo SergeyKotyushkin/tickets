@@ -19,7 +19,6 @@ import AuthLink from './presentational/auth-link';
 import localizator from 'localization/localizator';
 import languageSelector from 'localization/languageSelector';
 
-import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
 
@@ -94,8 +93,8 @@ class App extends Component {
   // auth service callbacks
   _onLogOutFailure(error) {
     const message = error.response.status === statusCodes.unauthenticated
-      ? messages.common.unauthenticated
-      : messages.common.internalServerError;
+      ? localizator.translate(localizator.keys.messages.common.unauthenticated)
+      : localizator.translate(localizator.keys.messages.common.internalServerError);
 
     alert(message);
   }

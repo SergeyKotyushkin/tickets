@@ -83,5 +83,29 @@ export default {
       },
       totalLabel: 'Всего:'
     }
+  },
+  messages: {
+    common: {
+      internalServerError: 'Внутренняя ошибка на сервере!',
+      unauthenticated: 'Действие неавторизованно!'
+    },
+    logIn: {
+      someFieldsAreNotFilled: 'Не все поля заполнены!',
+      wrongCredentials: 'Неправильные учетные данные!'
+    },
+    registration: {
+      alreadyAuthenticated: 'Действие предполагает неавторизованное выполнение!',
+      someFieldsAreNotFilled: 'Не все поля заполнены!',
+      passwordsAreNotEqual: 'Введные пароли не совпадают!',
+      existingUsername: 'Введенное имя пользователя уже использовано!',
+      registrationIsComplete: 'Регистрация завершена!'
+    },
+    tickets: {
+      addTicketConfirm: 'Добавить билет?',
+      deleteTicketDateConfirm: 'Удалить дату билета?',
+      deleteTicketConfirm: 'Удалить билет?',
+      dateIsNotFilled: 'Поле дата не заполнено!',
+      badData: 'Не все поля заполнены!'
+    }
   }
 }

@@ -1,5 +1,4 @@
 import storageKeys from 'constants/storageKeys';
-import messages from 'constants/messages';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
 
