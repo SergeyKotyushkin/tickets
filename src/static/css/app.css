@@ -79,6 +79,14 @@ body, html {
     justify-content: flex-end;
 }
 
+.confirm-modal-buttons-container {
+    justify-content: center;
+}
+
+.confirm-modal-buttons-container>button:first-child {
+    margin-right: 20px;
+}
+
 input {
     background-color: rgba(245, 245, 245, 1);
     border: 1px solid rgba(120, 185, 232, 0.9);

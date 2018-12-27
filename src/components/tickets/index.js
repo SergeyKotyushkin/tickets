@@ -7,8 +7,10 @@ import cloneDeep from 'clone-deep';
 
 import * as authActions from 'stores/auth/actions';
 import * as alertModalActions from 'stores/alert-modal/actions';
+import * as confirmModalActions from 'stores/confirm-modal/actions';
 
 import AlertModalService from 'services/alert-modal';
+import ConfirmModalService from 'services/confirm-modal';
 import AuthService from 'services/auth';
 import RouteService from 'services/route';
 import TicketService from 'services/ticket';
@@ -53,6 +55,9 @@ class Tickets extends Component {
       props.dispatchedAlertModalActions
     );
     this._authService = new AuthService(props.dispatchedAuthActions);
+    this._confirmModalService = new ConfirmModalService(
+      props.dispatchedConfirmModalActions
+    );
     this._routeService = new RouteService();
     this._ticketService = new TicketService();
 
@@ -191,23 +196,10 @@ class Tickets extends Component {
 
   // onClick handlers
   _onAddNewTicketClick() {
-    if (!confirm(localizator.translate(localizator.keys.messages.tickets.addTicketConfirm))) {
-      return;
-    }
-
-    if (!this.state.newTicket.date) {
-      this._alertModalService.open(
-        localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
-        localizator.translate(localizator.keys.messages.tickets.dateIsNotFilled)
-      );
-      return;
-    }
-
-    this._ticketService.add(
-      this.state.newTicket.number,
-      this.state.newTicket.date,
-      this._onAddTicketSuccess.bind(this),
-      this._handleError.bind(this)
+    this._confirmModalService.open(
+      localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
+      localizator.translate(localizator.keys.messages.tickets.addTicketConfirm),
+      this._onAddNewTicketConfirmYes.bind(this)
     );
   }
 
@@ -270,6 +262,23 @@ class Tickets extends Component {
 
   _onDeleteTicketCallback(number) {
     this._reloadTickets();
+  }
+
+  _onAddNewTicketConfirmYes() {
+    if (!this.state.newTicket.date) {
+      this._alertModalService.open(
+        localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
+        localizator.translate(localizator.keys.messages.tickets.dateIsNotFilled)
+      );
+      return;
+    }
+
+    this._ticketService.add(
+      this.state.newTicket.number,
+      this.state.newTicket.date.toISOString(),
+      this._onAddTicketSuccess.bind(this),
+      this._handleError.bind(this)
+    );
   }
 
   // auth service callbacks
@@ -335,6 +344,10 @@ export default connect(
   (state, ownProps) => ({authStore: state.auth}),
   (dispatch, ownProps) => ({
     dispatchedAuthActions: bindActionCreators(authActions, dispatch),
-    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
+    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch),
+    dispatchedConfirmModalActions: bindActionCreators(
+      confirmModalActions,
+      dispatch
+    )
   })
 )(Tickets);

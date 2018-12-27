@@ -4,14 +4,17 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
 import * as alertModalActions from 'stores/alert-modal/actions';
+import * as confirmModalActions from 'stores/confirm-modal/actions';
 
 import AlertModalService from 'services/alert-modal';
+import ConfirmModalService from 'services/confirm-modal';
 import TicketService from 'services/ticket';
 
 import TicketDetails from './ticket-details';
 
 import localizator from 'localization/localizator';
 
+import badRequestTypes from 'constants/bad-request-types';
 import statusCodes from 'constants/statusCodes';
 
 class Ticket extends React.Component {
@@ -24,6 +27,9 @@ class Ticket extends React.Component {
 
     this._alertModalService = new AlertModalService(
       props.dispatchedAlertModalActions
+    );
+    this._confirmModalService = new ConfirmModalService(
+      props.dispatchedConfirmModalActions
     );
     this._ticketService = new TicketService();
 
@@ -57,7 +63,7 @@ class Ticket extends React.Component {
           </div>
         </div>
         {
-          !this.props.readonly && <TicketDetails
+          !this.props.readonly && this.state.areTicketDetailsOpen && <TicketDetails
               areTicketDetailsOpen={this.state.areTicketDetailsOpen}
               readonly={this.props.readonly}
               number={this.props.number}
@@ -89,30 +95,18 @@ class Ticket extends React.Component {
   }
 
   _onDeleteTicketDateClick(event) {
-    if (!confirm(localizator.translate(localizator.keys.messages.tickets.deleteTicketDateConfirm))) {
-      return;
-    }
-
-    let button = event.target || event.srcElement;
-    let dateNode = button.parentElement.previousSibling;
-
-    this._ticketService.deleteDate(
-      this.props.number,
-      dateNode.dataset.date,
-      this._onDeleteTicketDateSuccess.bind(this, this.props.number, dateNode.dataset.date),
-      this._handleError.bind(this)
+    this._confirmModalService.open(
+      localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
+      localizator.translate(localizator.keys.messages.tickets.deleteTicketDateConfirm),
+      this._onDeleteTicketDateConfirmYes.bind(this, event)
     );
   }
 
-  _onDeleteTicketClick(event) {
-    if (!confirm(localizator.translate(localizator.keys.messages.tickets.deleteTicketConfirm))) {
-      return;
-    }
-
-    this._ticketService.deleteTicket(
-      this.props.number,
-      this._onDeleteTicketSuccess.bind(this, this.props.number),
-      this._handleError.bind(this)
+  _onDeleteTicketClick() {
+    this._confirmModalService.open(
+      localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
+      localizator.translate(localizator.keys.messages.tickets.deleteTicketConfirm),
+      this._onDeleteTicketConfirmYes.bind(this)
     );
   }
 
@@ -134,6 +128,26 @@ class Ticket extends React.Component {
     this.props.onDeleteTicketCallback && this.props.onDeleteTicketCallback(number);
   }
 
+  _onDeleteTicketDateConfirmYes(event) {
+    let button = event.currentTarget || event.srcElement;
+    let dateNode = button.parentElement.previousSibling;
+
+    this._ticketService.deleteDate(
+      this.props.number,
+      dateNode.dataset.date,
+      this._onDeleteTicketDateSuccess.bind(this, this.props.number, dateNode.dataset.date),
+      this._handleError.bind(this)
+    );
+  }
+
+  _onDeleteTicketConfirmYes() {
+    this._ticketService.deleteTicket(
+      this.props.number,
+      this._onDeleteTicketSuccess.bind(this, this.props.number),
+      this._handleError.bind(this)
+    );
+  }
+
   // local
   _fillLeftWithZero(num, len) {
     return (Array(len).join('0') + num).slice(-len);
@@ -151,7 +165,7 @@ class Ticket extends React.Component {
         break;
       case statusCodes.badRequest:
         switch (error.response.type) {
-          case badData:
+          case badRequestTypes.badData:
             message = localizator.translate(localizator.keys.messages.tickets.badData);
             break;
         }
@@ -171,5 +185,9 @@ class Ticket extends React.Component {
 }
 
 export default connect(null, (dispatch, ownProps) => ({
-  dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
+  dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch),
+  dispatchedConfirmModalActions: bindActionCreators(
+    confirmModalActions,
+    dispatch
+  )
 }))(Ticket);

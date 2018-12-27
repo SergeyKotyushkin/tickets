@@ -17,6 +17,11 @@ export default {
         errorLabel: 'Ошибка!',
         attentionLabel: 'Внимание!',
         closeButtonLabel: 'Закрыть'
+      },
+      confirmModal: {
+        attentionLabel: 'Внимание!',
+        yesButtonLabel: 'Да',
+        noButtonLabel: 'Нет'
       }
     },
     home: {
@@ -110,7 +115,7 @@ export default {
       deleteTicketDateConfirm: 'Удалить дату билета?',
       deleteTicketConfirm: 'Удалить билет?',
       dateIsNotFilled: 'Поле дата не заполнено!',
-      badData: 'Не все поля заполнены!'
+      badData: 'Не все поля заполнены или переданы некорректные данные!'
     }
   }
 }

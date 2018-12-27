@@ -53,7 +53,7 @@ function _onAddTicket(req, res) {
     return;
   }
 
-  if ((!req.body.number && req.body.number !== 0) || Object.prototype.toString.call(req.body.date) !== '[object Date]') {
+  if ((!req.body.number && req.body.number !== 0) || !_isDateStringCorrect(req.body.date)) {
     console.error(logs.tickets.addTicket, logs.tickets.badRequest);
     res.status(statusCodes.badRequest).json({type: badRequestTypes.badData});
     return;
@@ -90,7 +90,7 @@ function _onDeleteTicketDate(req, res) {
     return;
   }
 
-  if ((!req.body.number && req.body.number !== 0) || Object.prototype.toString.call(req.body.date) !== '[object Date]') {
+  if ((!req.body.number && req.body.number !== 0) || !_isDateStringCorrect(req.body.date)) {
     console.error(logs.tickets.deleteTicketDate, logs.tickets.badRequest);
     res.sendStatus(statusCodes.badRequest);
     return;
@@ -194,4 +194,9 @@ function _mapTicketToTicketDto(ticket) {
       dates: ticket.dates
     }
     : null;
+}
+
+function _isDateStringCorrect(dateISOString) {
+  var parsedDate = Date.parse(dateISOString);
+  return !isNaN(parsedDate) && dateISOString === new Date(parsedDate).toISOString();
 }

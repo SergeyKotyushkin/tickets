@@ -1,2 +1,2 @@
-export const OPEN = 'OPEN';
-export const CLOSE = 'CLOSE';
+export const OPEN = 'ALERT_MODAL_OPEN';
+export const CLOSE = 'ALERT_MODAL_CLOSE';

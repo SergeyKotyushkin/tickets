@@ -17,6 +17,11 @@ export default {
         errorLabel: 'Error!',
         attentionLabel: 'Attention!',
         closeButtonLabel: 'Close'
+      },
+      confirmModal: {
+        attentionLabel: 'Attention!',
+        yesButtonLabel: 'Yes',
+        noButtonLabel: 'No'
       }
     },
     home: {
@@ -110,7 +115,7 @@ export default {
       deleteTicketDateConfirm: 'Are you sure to delete this date for the ticket?',
       deleteTicketConfirm: 'Are you sure to delete this ticket?',
       dateIsNotFilled: 'Date is not filled!',
-      badData: 'Some data is not filled!'
+      badData: 'Some data is not filled or wrong data was sent!'
     }
   }
 }

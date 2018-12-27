@@ -7,8 +7,10 @@ import {BrowserRouter, Switch, Link, Route} from 'react-router-dom';
 
 import * as authActions from 'stores/auth/actions';
 import * as alertModalActions from 'stores/alert-modal/actions';
+import * as confirmModalActions from 'stores/confirm-modal/actions';
 
 import AlertModalService from 'services/alert-modal';
+import ConfirmModalService from 'services/confirm-modal';
 import AuthService from 'services/auth';
 
 import Home from 'components/home';
@@ -17,6 +19,8 @@ import Tickets from 'components/tickets';
 import PrivateRoute from 'components/private-route/presentational';
 
 import AlertModal from './presentational/alert-modal';
+import ConfirmModal from './presentational/confirm-modal';
+
 import AuthLink from './presentational/auth-link';
 
 import localizator from 'localization/localizator';
@@ -33,6 +37,9 @@ class App extends Component {
       props.dispatchedAlertModalActions
     );
     this._authService = new AuthService(props.dispatchedAuthActions);
+    this._confirmModalService = new ConfirmModalService(
+      props.dispatchedConfirmModalActions
+    );
 
     this.onLogOutClick = this._onLogOutClick.bind(this);
     this.onLanguageClick = this._onLanguageClick.bind(this);
@@ -78,14 +85,34 @@ class App extends Component {
               </div>
             </div>
           </div>
-          <AlertModal
-            isAlertModalOpen={this.props.alertModalStore.isOpen}
-            onAlertModalClose={this._onAlertModalClose.bind(this)}
-            header={this.props.alertModalStore.header}
-            message={this.props.alertModalStore.message}/>
+          {this._getAlertModalMarkup()}
+          {this._getConfirmModalMarkup()}
         </React.Fragment>
       </BrowserRouter>
     );
+  }
+
+  // markups
+  _getAlertModalMarkup() {
+    return this.props.alertModalStore.isOpen
+      ? <AlertModal
+          isAlertModalOpen={this.props.alertModalStore.isOpen}
+          onAlertModalClose={this._onAlertModalClose.bind(this)}
+          header={this.props.alertModalStore.header}
+          message={this.props.alertModalStore.message}/>
+      : <React.Fragment></React.Fragment>;
+  }
+
+  _getConfirmModalMarkup() {
+    return this.props.confirmModalStore.isOpen
+      ? <ConfirmModal
+          isConfirmModalOpen={this.props.confirmModalStore.isOpen}
+          onConfirmModalClose={this._onConfirmModalClose.bind(this)}
+          header={this.props.confirmModalStore.header}
+          message={this.props.confirmModalStore.message}
+          onYesCallback={this.props.confirmModalStore.onYesCallback}
+          onNoCallback={this.props.confirmModalStore.onNoCallback}/>
+      : <React.Fragment></React.Fragment>;
   }
 
   // onClick handlers
@@ -107,6 +134,11 @@ class App extends Component {
     this._alertModalService.close();
   }
 
+  _onConfirmModalClose(callback) {
+    this._confirmModalService.close();
+    callback && callback();
+  }
+
   // auth service callbacks
   _onLogOutFailure(error) {
     const message = error.response.status === statusCodes.unauthenticated
@@ -121,9 +153,13 @@ class App extends Component {
 }
 
 export default connect(
-  (state, ownProps) => ({authStore: state.auth, alertModalStore: state.alertModal}),
+  (state, ownProps) => ({authStore: state.auth, alertModalStore: state.alertModal, confirmModalStore: state.confirmModal}),
   (dispatch, ownProps) => ({
     dispatchedAuthActions: bindActionCreators(authActions, dispatch),
-    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
+    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch),
+    dispatchedConfirmModalActions: bindActionCreators(
+      confirmModalActions,
+      dispatch
+    )
   })
 )(App);
