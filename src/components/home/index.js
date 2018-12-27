@@ -4,8 +4,10 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
 import * as authActions from 'stores/auth/actions';
+import * as alertModalActions from 'stores/alert-modal/actions';
 
 import AuthService from 'services/auth';
+import AlertModalService from 'services/alert-modal';
 
 import LogInSpan from './presentational/log-in-span';
 import LoggedInSpan from './presentational/logged-in-span';
@@ -19,6 +21,9 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
 
+    this._alertModalService = new AlertModalService(
+      props.dispatchedAlertModalActions
+    );
     this._authService = new AuthService(props.dispatchedAuthActions);
   }
 
@@ -45,7 +50,8 @@ class Home extends React.Component {
 
   // local
   _handleError(error) {
-    alert(
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       localizator.translate(localizator.keys.messages.common.internalServerError)
     );
   }
@@ -54,6 +60,7 @@ class Home extends React.Component {
 export default connect(
   (state, ownProps) => ({authStore: state.auth}),
   (dispatch, ownProps) => ({
-    dispatchedAuthActions: bindActionCreators(authActions, dispatch)
+    dispatchedAuthActions: bindActionCreators(authActions, dispatch),
+    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
   })
 )(Home);

@@ -1,4 +1,4 @@
-import * as actionTypes from 'stores/auth/action-types';
+import * as actionTypes from './action-types';
 
 export function logIn(name) {
   return {type: actionTypes.LOG_IN, name};

@@ -4,7 +4,9 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 
 import * as authActions from 'stores/auth/actions';
+import * as alertModalActions from 'stores/alert-modal/actions';
 
+import AlertModalService from 'services/alert-modal';
 import AuthService from 'services/auth';
 import RouteService from 'services/route';
 
@@ -38,6 +40,9 @@ class Login extends Component {
       type: this.LOGIN_TYPE
     }
 
+    this._alertModalService = new AlertModalService(
+      props.dispatchedAlertModalActions
+    );
     this._authService = new AuthService(props.dispatchedAuthActions);
     this._routeService = new RouteService();
 
@@ -94,7 +99,8 @@ class Login extends Component {
   _onLogInClick() {
     const login = this.state.login;
     if (!login.username || !login.password) {
-      alert(
+      this._alertModalService.open(
+        localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.logIn.someFieldsAreNotFilled)
       );
       return;
@@ -111,14 +117,16 @@ class Login extends Component {
   _onRegisterClick() {
     const registration = this.state.registration;
     if (!registration.username || !registration.password || !registration.conformPassword) {
-      alert(
+      this._alertModalService.open(
+        localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.registration.someFieldsAreNotFilled)
       );
       return;
     }
 
     if (registration.password !== registration.conformPassword) {
-      alert(
+      this._alertModalService.open(
+        localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.registration.passwordsAreNotEqual)
       );
       return;
@@ -139,7 +147,8 @@ class Login extends Component {
   }
 
   _onRegisterSuccess() {
-    alert(
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.attentionLabel),
       localizator.translate(localizator.keys.messages.registration.registrationIsComplete)
     );
     this._switchType(this.LOGIN_TYPE)
@@ -166,7 +175,10 @@ class Login extends Component {
         break;
     }
 
-    alert(message);
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
+      message
+    );
   }
 
   _onRegisterFailure(error) {
@@ -200,7 +212,10 @@ class Login extends Component {
         break;
     }
 
-    alert(message);
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
+      message
+    );
   }
 
   // local
@@ -209,7 +224,8 @@ class Login extends Component {
   }
 
   _handleError(error) {
-    alert(
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       localizator.translate(localizator.keys.messages.common.internalServerError)
     );
   }
@@ -218,6 +234,7 @@ class Login extends Component {
 export default connect(
   (state, ownProps) => ({authStore: state.auth}),
   (dispatch, ownProps) => ({
-    dispatchedAuthActions: bindActionCreators(authActions, dispatch)
+    dispatchedAuthActions: bindActionCreators(authActions, dispatch),
+    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
   })
 )(Login);

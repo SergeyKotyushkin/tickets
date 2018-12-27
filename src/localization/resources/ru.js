@@ -12,6 +12,11 @@ export default {
       },
       footer: {
         languagesTitle: 'Перевести сайт:'
+      },
+      alertModal: {
+        errorLabel: 'Ошибка!',
+        attentionLabel: 'Внимание!',
+        closeButtonLabel: 'Закрыть'
       }
     },
     home: {

@@ -1,5 +1,11 @@
 import React from 'react';
 
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux';
+
+import * as alertModalActions from 'stores/alert-modal/actions';
+
+import AlertModalService from 'services/alert-modal';
 import TicketService from 'services/ticket';
 
 import TicketDetails from './ticket-details';
@@ -8,7 +14,7 @@ import localizator from 'localization/localizator';
 
 import statusCodes from 'constants/statusCodes';
 
-export default class Ticket extends React.Component {
+class Ticket extends React.Component {
   constructor(props) {
     super(props);
 
@@ -16,6 +22,9 @@ export default class Ticket extends React.Component {
       areTicketDetailsOpen: false
     };
 
+    this._alertModalService = new AlertModalService(
+      props.dispatchedAlertModalActions
+    );
     this._ticketService = new TicketService();
 
     this.onOpenTicketDetailsClick = this._onOpenTicketDetailsClick.bind(this);
@@ -149,7 +158,10 @@ export default class Ticket extends React.Component {
         break;
     }
 
-    alert(message);
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
+      message
+    );
 
     if (error.response.status === statusCodes.unauthenticated) {
       this._authService.dispatchedAuthActions.logOut();
@@ -157,3 +169,7 @@ export default class Ticket extends React.Component {
     }
   }
 }
+
+export default connect(null, (dispatch, ownProps) => ({
+  dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
+}))(Ticket);

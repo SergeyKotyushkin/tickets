@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {combineReducers, createStore} from 'redux';
 
-import * as reducers from 'stores/reducers';
+import reducers from 'stores/reducers';
 
 import App from 'components/app';
 

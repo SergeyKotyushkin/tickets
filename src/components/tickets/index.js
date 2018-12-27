@@ -6,7 +6,9 @@ import {connect} from 'react-redux';
 import cloneDeep from 'clone-deep';
 
 import * as authActions from 'stores/auth/actions';
+import * as alertModalActions from 'stores/alert-modal/actions';
 
+import AlertModalService from 'services/alert-modal';
 import AuthService from 'services/auth';
 import RouteService from 'services/route';
 import TicketService from 'services/ticket';
@@ -47,6 +49,9 @@ class Tickets extends Component {
       }
     };
 
+    this._alertModalService = new AlertModalService(
+      props.dispatchedAlertModalActions
+    );
     this._authService = new AuthService(props.dispatchedAuthActions);
     this._routeService = new RouteService();
     this._ticketService = new TicketService();
@@ -191,7 +196,10 @@ class Tickets extends Component {
     }
 
     if (!this.state.newTicket.date) {
-      alert(localizator.translate(localizator.keys.messages.tickets.dateIsNotFilled));
+      this._alertModalService.open(
+        localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
+        localizator.translate(localizator.keys.messages.tickets.dateIsNotFilled)
+      );
       return;
     }
 
@@ -289,7 +297,10 @@ class Tickets extends Component {
         break;
     }
 
-    alert(message);
+    this._alertModalService.open(
+      localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
+      message
+    );
 
     if (error.response.status === statusCodes.unauthenticated) {
       localStorage.removeItem(storageKeys.auth);
@@ -323,6 +334,7 @@ class Tickets extends Component {
 export default connect(
   (state, ownProps) => ({authStore: state.auth}),
   (dispatch, ownProps) => ({
-    dispatchedAuthActions: bindActionCreators(authActions, dispatch)
+    dispatchedAuthActions: bindActionCreators(authActions, dispatch),
+    dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
   })
 )(Tickets);

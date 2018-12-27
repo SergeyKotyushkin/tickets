@@ -12,6 +12,11 @@ export default {
       },
       footer: {
         languagesTitle: 'Translate site:'
+      },
+      alertModal: {
+        errorLabel: 'Error!',
+        attentionLabel: 'Attention!',
+        closeButtonLabel: 'Close'
       }
     },
     home: {
