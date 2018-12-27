@@ -17,17 +17,15 @@ module.exports = {
     : 'production',
 
   // start point for the application scripts
-  entry: process.env.NODE_ENV == 'development'
-    ? {
-      "bundle": './src/index.js'
-    }
-    : {
-      "bundle.min": './src/index.js'
-    },
+  entry: {
+    "bundle": './src/index.js'
+  },
 
   // built bundle options
   output: {
-    filename: '[name].js',
+    filename: process.env.NODE_ENV == 'development'
+      ? '[name]-[hash].js'
+      : '[name]-[hash].min.js',
     path: path.join(__dirname, 'dist'),
     publicPath: '/dist/'
   },
