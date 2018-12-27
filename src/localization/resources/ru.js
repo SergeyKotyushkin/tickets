@@ -14,6 +14,7 @@ export default {
         languagesTitle: 'Перевести сайт:'
       },
       alertModal: {
+        successLabel: 'Отлично!',
         errorLabel: 'Ошибка!',
         attentionLabel: 'Внимание!',
         closeButtonLabel: 'Закрыть'

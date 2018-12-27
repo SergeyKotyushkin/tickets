@@ -14,6 +14,7 @@ import LoggedInSpan from './presentational/logged-in-span';
 
 import localizator from 'localization/localizator';
 
+import modalTypes from 'constants/modal-types';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
@@ -51,6 +52,7 @@ class Home extends React.Component {
   // local
   _handleError(error) {
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       localizator.translate(localizator.keys.messages.common.internalServerError)
     );

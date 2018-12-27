@@ -17,6 +17,7 @@ import RegistrationBlock from './presentational/registration-block';
 import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/bad-request-types';
+import modalTypes from 'constants/modal-types';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
@@ -100,6 +101,7 @@ class Login extends Component {
     const login = this.state.login;
     if (!login.username || !login.password) {
       this._alertModalService.open(
+        modalTypes.error,
         localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.logIn.someFieldsAreNotFilled)
       );
@@ -118,6 +120,7 @@ class Login extends Component {
     const registration = this.state.registration;
     if (!registration.username || !registration.password || !registration.conformPassword) {
       this._alertModalService.open(
+        modalTypes.error,
         localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.registration.someFieldsAreNotFilled)
       );
@@ -126,6 +129,7 @@ class Login extends Component {
 
     if (registration.password !== registration.conformPassword) {
       this._alertModalService.open(
+        modalTypes.error,
         localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.registration.passwordsAreNotEqual)
       );
@@ -143,15 +147,31 @@ class Login extends Component {
 
   // auth service callbacks
   _onLogInSuccess() {
+    this.setState({
+      login: {
+        username: null,
+        password: null
+      }
+    });
+
     this._routeService.redirectToHome(this.props.history)
   }
 
   _onRegisterSuccess() {
     this._alertModalService.open(
-      localizator.translate(localizator.keys.components.app.alertModal.attentionLabel),
+      modalTypes.success,
+      localizator.translate(localizator.keys.components.app.alertModal.successLabel),
       localizator.translate(localizator.keys.messages.registration.registrationIsComplete)
     );
-    this._switchType(this.LOGIN_TYPE)
+
+    this.setState({
+      registration: {
+        username: null,
+        password: null,
+        conformPassword: null
+      },
+      type: this.LOGIN_TYPE
+    });
   }
 
   _onLogInFailure(error) {
@@ -176,6 +196,7 @@ class Login extends Component {
     }
 
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       message
     );
@@ -213,6 +234,7 @@ class Login extends Component {
     }
 
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       message
     );
@@ -225,6 +247,7 @@ class Login extends Component {
 
   _handleError(error) {
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       localizator.translate(localizator.keys.messages.common.internalServerError)
     );

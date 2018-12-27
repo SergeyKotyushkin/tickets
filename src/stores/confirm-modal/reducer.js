@@ -2,6 +2,7 @@ import * as actionTypes from './action-types';
 
 const initialState = {
   isOpen: false,
+  modalType: null,
   header: null,
   message: null,
   onYesCallback: null,
@@ -14,6 +15,7 @@ export default function alertModal(state = initialState, action) {
       {
         const newState = {
           isOpen: true,
+          modalType: action.data.modalType,
           header: action.data.header,
           message: action.data.message,
           onYesCallback: action.data.onYesCallback,
@@ -27,6 +29,7 @@ export default function alertModal(state = initialState, action) {
       {
         const newState = {
           isOpen: false,
+          modalType: null,
           header: null,
           message: null,
           onYesCallback: null,

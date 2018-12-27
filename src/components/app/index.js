@@ -26,6 +26,7 @@ import AuthLink from './presentational/auth-link';
 import localizator from 'localization/localizator';
 import languageSelector from 'localization/languageSelector';
 
+import modalTypes from 'constants/modal-types';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
 
@@ -99,7 +100,8 @@ class App extends Component {
           isAlertModalOpen={this.props.alertModalStore.isOpen}
           onAlertModalClose={this._onAlertModalClose.bind(this)}
           header={this.props.alertModalStore.header}
-          message={this.props.alertModalStore.message}/>
+          message={this.props.alertModalStore.message}
+          modalType={this.props.alertModalStore.modalType}/>
       : <React.Fragment></React.Fragment>;
   }
 
@@ -111,7 +113,8 @@ class App extends Component {
           header={this.props.confirmModalStore.header}
           message={this.props.confirmModalStore.message}
           onYesCallback={this.props.confirmModalStore.onYesCallback}
-          onNoCallback={this.props.confirmModalStore.onNoCallback}/>
+          onNoCallback={this.props.confirmModalStore.onNoCallback}
+          modalType={this.props.confirmModalStore.modalType}/>
       : <React.Fragment></React.Fragment>;
   }
 
@@ -146,6 +149,7 @@ class App extends Component {
       : localizator.translate(localizator.keys.messages.common.internalServerError);
 
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       message
     );

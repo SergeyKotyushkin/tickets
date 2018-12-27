@@ -4,8 +4,17 @@ export default function ConfirmModalService(dispatchedActions) {
 }
 
 // main
-function _open(dispatchedActions, header, message, onYesCallback, onNoCallback) {
-  dispatchedActions.open({header, message, onYesCallback, onNoCallback});
+function _open(
+  dispatchedActions,
+  modalType,
+  header,
+  message,
+  onYesCallback,
+  onNoCallback
+) {
+  dispatchedActions.open(
+    {modalType, header, message, onYesCallback, onNoCallback}
+  );
 }
 
 function _close(dispatchedActions) {

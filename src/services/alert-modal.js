@@ -4,8 +4,8 @@ export default function AlertModalService(dispatchedAlertModalActions) {
 }
 
 // main
-function _open(dispatchedAlertModalActions, header, message) {
-  dispatchedAlertModalActions.open({header, message});
+function _open(dispatchedAlertModalActions, modalType, header, message) {
+  dispatchedAlertModalActions.open({modalType, header, message});
 }
 
 function _close(dispatchedAlertModalActions) {

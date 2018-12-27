@@ -26,6 +26,7 @@ import LoadingBlock from './presentational/loading-block';
 import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/bad-request-types';
+import modalTypes from 'constants/modal-types';
 import storageKeys from 'constants/storageKeys';
 import statusCodes from 'constants/statusCodes';
 
@@ -197,6 +198,7 @@ class Tickets extends Component {
   // onClick handlers
   _onAddNewTicketClick() {
     this._confirmModalService.open(
+      modalTypes.attention,
       localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
       localizator.translate(localizator.keys.messages.tickets.addTicketConfirm),
       this._onAddNewTicketConfirmYes.bind(this)
@@ -267,6 +269,7 @@ class Tickets extends Component {
   _onAddNewTicketConfirmYes() {
     if (!this.state.newTicket.date) {
       this._alertModalService.open(
+        modalTypes.error,
         localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
         localizator.translate(localizator.keys.messages.tickets.dateIsNotFilled)
       );
@@ -307,6 +310,7 @@ class Tickets extends Component {
     }
 
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       message
     );

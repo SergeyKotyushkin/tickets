@@ -87,6 +87,21 @@ body, html {
     margin-right: 20px;
 }
 
+.modal-success button {
+    border-color: #046a0a;
+    color: #36a000;
+}
+
+.modal-attention button {
+    border-color: #4d6c24;
+    color: #a08c00;
+}
+
+.modal-error button {
+    border-color: #cc3a3d;
+    color: #cc3a3d;
+}
+
 input {
     background-color: rgba(245, 245, 245, 1);
     border: 1px solid rgba(120, 185, 232, 0.9);

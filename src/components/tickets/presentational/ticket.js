@@ -15,6 +15,7 @@ import TicketDetails from './ticket-details';
 import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/bad-request-types';
+import modalTypes from 'constants/modal-types';
 import statusCodes from 'constants/statusCodes';
 
 class Ticket extends React.Component {
@@ -96,6 +97,7 @@ class Ticket extends React.Component {
 
   _onDeleteTicketDateClick(event) {
     this._confirmModalService.open(
+      modalTypes.attention,
       localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
       localizator.translate(localizator.keys.messages.tickets.deleteTicketDateConfirm),
       this._onDeleteTicketDateConfirmYes.bind(this, event)
@@ -104,6 +106,7 @@ class Ticket extends React.Component {
 
   _onDeleteTicketClick() {
     this._confirmModalService.open(
+      modalTypes.attention,
       localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
       localizator.translate(localizator.keys.messages.tickets.deleteTicketConfirm),
       this._onDeleteTicketConfirmYes.bind(this)
@@ -173,6 +176,7 @@ class Ticket extends React.Component {
     }
 
     this._alertModalService.open(
+      modalTypes.error,
       localizator.translate(localizator.keys.components.app.alertModal.errorLabel),
       message
     );

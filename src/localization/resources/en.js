@@ -14,6 +14,7 @@ export default {
         languagesTitle: 'Translate site:'
       },
       alertModal: {
+        successLabel: 'Success!',
         errorLabel: 'Error!',
         attentionLabel: 'Attention!',
         closeButtonLabel: 'Close'

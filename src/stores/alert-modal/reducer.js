@@ -2,6 +2,7 @@ import * as actionTypes from './action-types';
 
 const initialState = {
   isOpen: false,
+  modalType: null,
   header: null,
   message: null
 };
@@ -9,10 +10,28 @@ const initialState = {
 export default function alertModal(state = initialState, action) {
   switch (action.type) {
     case actionTypes.OPEN:
-      return {isOpen: true, header: action.data.header, message: action.data.message};
+      {
+        const newState = {
+          isOpen: true,
+          modalType: action.data.modalType,
+          header: action.data.header,
+          message: action.data.message
+        };
+
+        return newState;
+      }
 
     case actionTypes.CLOSE:
-      return {isOpen: false, header: null, message: null};
+      {
+        const newState = {
+          isOpen: false,
+          modalType: null,
+          header: null,
+          message: null
+        };
+
+        return newState;
+      }
 
     default:
       return state;

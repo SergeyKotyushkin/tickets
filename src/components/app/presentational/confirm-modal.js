@@ -5,15 +5,21 @@ ReactModal.setAppElement('#root');
 
 import localizator from 'localization/localizator';
 
+import colors from 'constants/colors';
+import modalTypes from 'constants/modal-types';
+
 export default class ConfirmModal extends React.Component {
   render() {
+    const modalTypeClass = this._getModalTypeClassByModalType();
+
     return (
       <ReactModal
         style={this._getModalStyles()}
         shouldCloseOnOverlayClick={false}
         isOpen={this.props.isConfirmModalOpen}
         onRequestClose={this.props.onConfirmModalClose}>
-        <div className="confirm-modal-container flex-container-column">
+        <div
+          className={`confirm-modal-container flex-container-column ${modalTypeClass}`}>
           <div className="confirm-modal-header-container">
             <h3>{this.props.header}</h3>
           </div>
@@ -57,7 +63,45 @@ export default class ConfirmModal extends React.Component {
       }
     };
 
+    this._adjustStylesByModalType(styles);
+
     return styles;
+  }
+
+  _adjustStylesByModalType(styles) {
+    switch (this.props.modalType) {
+      case modalTypes.success:
+        {
+          styles.content.backgroundColor = colors.green;
+          styles.content.borderColor = colors.greenDark;
+          break;
+        }
+      case modalTypes.attention:
+        {
+          styles.content.backgroundColor = colors.yellow;
+          styles.content.borderColor = colors.yellowDark;
+          break;
+        }
+      case modalTypes.error:
+        {
+          styles.content.backgroundColor = colors.red;
+          styles.content.borderColor = colors.redDark;
+          break;
+        }
+    }
+  }
+
+  _getModalTypeClassByModalType() {
+    switch (this.props.modalType) {
+      case modalTypes.success:
+        return 'modal-success';
+      case modalTypes.attention:
+        return 'modal-attention';
+      case modalTypes.error:
+        return 'modal-error';
+      default:
+        return '';
+    }
   }
 
   // onClick
