@@ -1,16 +1,38 @@
-var path = require('path');
-var express = require('express');
+const path = require('path');
+const express = require('express');
+const passport = require('passport');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const initPassportStrategy = require('./auth/passport');
+const routesApplier = require('./routes-applier');
+const mongoConnector = require('./database/init');
+const MongoStore = require('connect-mongo')(session);
 
-var app = express();
+mongoConnector.connect(_onMongoConnected);
 
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, '../index.html'));
-});
+function _onMongoConnected(mongooseConnection) {
+  const app = express();
 
-app.listen(3200, function(err) {
-  if (err) {
-    return console.error(err);
-  }
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(session({
+    store: new MongoStore({mongooseConnection: mongooseConnection}),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  }));
 
-  console.log('Listening at http://localhost:3200/');
-});
+  app.use(passport.initialize());
+  app.use(passport.session());
+  initPassportStrategy();
+
+  routesApplier.apply(app);
+
+  app.listen(process.env.PORT, function(err) {
+    if (err) {
+      return console.error('Server hasn\'t started', err);
+    }
+
+    console.log(`Listening at http://localhost:${process.env.PORT}/`);
+  });
+}

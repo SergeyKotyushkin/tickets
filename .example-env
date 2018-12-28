@@ -1,0 +1,12 @@
+{
+  "node": {
+    "env": "development"
+  },
+  "port": 3200,
+  "session": {
+    "secret": "some secret"
+  },
+  "mongo": {
+    "url": "mongodb://mongo-address:port/database"
+  }
+}
