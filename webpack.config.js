@@ -6,6 +6,8 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
   // sets webpack mode
@@ -21,7 +23,7 @@ module.exports = {
   // built bundle options
   output: {
     filename: process.env.NODE_ENV == 'development'
-      ? '[name]-[hash].js'
+      ? '[name].js'
       : '[name]-[hash].min.js',
     path: path.join(__dirname, 'dist'),
     publicPath: '/dist/'
@@ -45,7 +47,28 @@ module.exports = {
         from: './src/static/images',
         to: './images'
       }
-    ])
+    ]),
+    // extracts css files imported in the components
+    new MiniCssExtractPlugin({
+      filename: process.env.NODE_ENV == 'development'
+        ? 'bundle.css'
+        : 'bundle-[hash].min.css'
+    }),
+    // optimizes extracted css
+    new OptimizeCssAssetsPlugin({
+      assetNameRegExp: /\.min\.css$/g,
+      cssProcessor: require('cssnano'),
+      cssProcessorPluginOptions: {
+        preset: [
+          'default', {
+            discardComments: {
+              removeAll: true
+            }
+          }
+        ]
+      },
+      canPrint: true
+    })
   ],
 
   module: {
@@ -67,13 +90,7 @@ module.exports = {
         }
       }, {
         test: /\.css$/,
-        use: [
-          {
-            loader: "style-loader"
-          }, {
-            loader: "css-loader"
-          }
-        ]
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
       }
     ]
   },
