@@ -150,12 +150,12 @@ class Login extends Component {
   _onLogInSuccess() {
     this.setState({
       login: {
-        username: null,
-        password: null
+        username: '',
+        password: ''
       }
     });
 
-    this.props.history.push(routes.home);
+    this.props.history.push(routes.pages.home);
   }
 
   _onRegisterSuccess() {
@@ -167,9 +167,9 @@ class Login extends Component {
 
     this.setState({
       registration: {
-        username: null,
-        password: null,
-        conformPassword: null
+        username: '',
+        password: '',
+        conformPassword: ''
       },
       type: this.LOGIN_TYPE
     });

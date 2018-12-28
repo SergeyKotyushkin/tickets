@@ -88,12 +88,12 @@ class Tickets extends Component {
       return;
     }
 
-    this.props.history.push(routes.logIn);
+    this.props.history.push(routes.pages.logIn);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.authStore.isAuthenticated && !this.props.authStore.isAuthenticated) {
-      this.props.history.push(routes.logIn);
+      this.props.history.push(routes.pages.logIn);
       return;
     }
 

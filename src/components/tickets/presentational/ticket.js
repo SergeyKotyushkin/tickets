@@ -184,7 +184,7 @@ class Ticket extends React.Component {
 
     if (error.response.status === statusCodes.unauthenticated) {
       this._authService.dispatchedAuthActions.logOut();
-      this.props.history.push(routes.logIn);
+      this.props.history.push(routes.pages.logIn);
     }
   }
 }

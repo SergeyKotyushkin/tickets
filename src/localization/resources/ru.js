@@ -6,8 +6,7 @@ export default {
         links: {
           home: 'Главная',
           logIn: 'Войти',
-          logOut: 'Выйти',
-          logOutDelimiter: '|'
+          logOut: 'Выйти'
         }
       },
       footer: {

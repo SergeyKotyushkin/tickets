@@ -79,11 +79,13 @@ class App extends Component {
                 <div className="app-languages-title-container">
                   <span>{localizator.translate(localizator.keys.components.app.footer.languagesTitle)}</span>
                 </div>
-                <div>
-                  <a href="javascript:void(0);" onClick={this.onLanguageClick} data-language="en">English</a>
-                </div>
-                <div>
-                  <a href="javascript:void(0);" onClick={this.onLanguageClick} data-language="ru">Русский</a>
+                <div className="app-languages-items-container">
+                  <div>
+                    <a href="javascript:void(0);" onClick={this.onLanguageClick} data-language="en">English</a>
+                  </div>
+                  <div>
+                    <a href="javascript:void(0);" onClick={this.onLanguageClick} data-language="ru">Русский</a>
+                  </div>
                 </div>
               </div>
             </div>
