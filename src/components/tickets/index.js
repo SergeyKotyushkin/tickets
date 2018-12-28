@@ -12,7 +12,6 @@ import * as confirmModalActions from 'stores/confirm-modal/actions';
 import AlertModalService from 'services/alert-modal';
 import ConfirmModalService from 'services/confirm-modal';
 import AuthService from 'services/auth';
-import RouteService from 'services/route';
 import TicketService from 'services/ticket';
 
 import TicketsList from './presentational/tickets-list';
@@ -27,6 +26,7 @@ import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/bad-request-types';
 import modalTypes from 'constants/modal-types';
+import routes from 'constants/routes';
 import storageKeys from 'constants/storageKeys';
 import statusCodes from 'constants/statusCodes';
 
@@ -61,7 +61,6 @@ class Tickets extends Component {
     this._confirmModalService = new ConfirmModalService(
       props.dispatchedConfirmModalActions
     );
-    this._routeService = new RouteService();
     this._ticketService = new TicketService();
 
     this.onNewTicketDigitChange = this._onNewTicketDigitChange.bind(this);
@@ -89,12 +88,12 @@ class Tickets extends Component {
       return;
     }
 
-    this._routeService.redirectToLogin(this.props.history);
+    this.props.history.push(routes.logIn);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.authStore.isAuthenticated && !this.props.authStore.isAuthenticated) {
-      this._routeService.redirectToLogin(this.props.history);
+      this.props.history.push(routes.logIn);
       return;
     }
 

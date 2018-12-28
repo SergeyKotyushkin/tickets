@@ -8,7 +8,6 @@ import * as alertModalActions from 'stores/alert-modal/actions';
 
 import AlertModalService from 'services/alert-modal';
 import AuthService from 'services/auth';
-import RouteService from 'services/route';
 
 import LoggedInBlock from './presentational/logged-in-block';
 import LogInBlock from './presentational/log-in-block';
@@ -18,6 +17,7 @@ import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/bad-request-types';
 import modalTypes from 'constants/modal-types';
+import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
@@ -47,7 +47,6 @@ class Login extends Component {
       props.dispatchedAlertModalActions
     );
     this._authService = new AuthService(props.dispatchedAuthActions);
-    this._routeService = new RouteService();
 
     this.onInputChange = this._onInputChange.bind(this);
     this.onLogInClick = this._onLogInClick.bind(this);
@@ -156,7 +155,7 @@ class Login extends Component {
       }
     });
 
-    this._routeService.redirectToHome(this.props.history)
+    this.props.history.push(routes.home);
   }
 
   _onRegisterSuccess() {

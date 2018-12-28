@@ -15,6 +15,7 @@ import TicketDetails from './ticket-details';
 import localizator from 'localization/localizator';
 
 import badRequestTypes from 'constants/bad-request-types';
+import routes from 'constants/routes';
 import modalTypes from 'constants/modal-types';
 import statusCodes from 'constants/statusCodes';
 
@@ -183,7 +184,7 @@ class Ticket extends React.Component {
 
     if (error.response.status === statusCodes.unauthenticated) {
       this._authService.dispatchedAuthActions.logOut();
-      this._routeService.redirectToLogin(this.props.history);
+      this.props.history.push(routes.logIn);
     }
   }
 }
