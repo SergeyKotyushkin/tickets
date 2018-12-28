@@ -18,6 +18,8 @@ import modalTypes from 'constants/modal-types';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
+import 'static/css/home.css';
+
 class Home extends React.Component {
   constructor(props) {
     super(props);

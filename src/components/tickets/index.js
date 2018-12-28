@@ -30,6 +30,8 @@ import modalTypes from 'constants/modal-types';
 import storageKeys from 'constants/storageKeys';
 import statusCodes from 'constants/statusCodes';
 
+import 'static/css/tickets.css';
+
 class Tickets extends Component {
   _from = 0;
   _size = 10;

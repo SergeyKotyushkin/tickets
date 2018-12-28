@@ -6,9 +6,6 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackIncludeAssetsPlugin = require(
-  'html-webpack-include-assets-plugin'
-);
 
 module.exports = {
   // sets webpack mode
@@ -45,20 +42,10 @@ module.exports = {
     //copies static files
     new CopyWebpackPlugin([
       {
-        from: './src/static'
+        from: './src/static/images',
+        to: './images'
       }
-    ]),
-    // injects css files
-    new HtmlWebpackIncludeAssetsPlugin({
-      assets: [
-        {
-          path: 'css',
-          glob: '*.css',
-          globPath: './src/static/css/'
-        }
-      ],
-      append: true
-    })
+    ])
   ],
 
   module: {
@@ -97,6 +84,7 @@ module.exports = {
       constants: path.resolve(__dirname, 'common', 'constants'),
       localization: path.resolve(__dirname, 'src', 'localization'),
       services: path.resolve(__dirname, 'src', 'services'),
+      static: path.resolve(__dirname, 'src', 'static'),
       stores: path.resolve(__dirname, 'src', 'stores')
     }
   }

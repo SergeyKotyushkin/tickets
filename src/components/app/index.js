@@ -30,6 +30,8 @@ import modalTypes from 'constants/modal-types';
 import routes from 'constants/routes';
 import statusCodes from 'constants/statusCodes';
 
+import 'static/css/app.css';
+
 class App extends Component {
   constructor(props) {
     super(props);

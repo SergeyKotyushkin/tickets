@@ -21,6 +21,8 @@ import modalTypes from 'constants/modal-types';
 import statusCodes from 'constants/statusCodes';
 import storageKeys from 'constants/storageKeys';
 
+import 'static/css/login.css';
+
 class Login extends Component {
   LOGIN_TYPE = 0;
   REGISTRATION_TYPE = 1;
