@@ -10,7 +10,8 @@ export default {
         }
       },
       footer: {
-        languagesTitle: 'Translate site:'
+        languagesTitle: 'Translate site:',
+        sourceCodeLabel: 'Source code:'
       },
       alertModal: {
         successLabel: 'Success!',

@@ -10,7 +10,8 @@ export default {
         }
       },
       footer: {
-        languagesTitle: 'Перевести сайт:'
+        languagesTitle: 'Перевести сайт:',
+        sourceCodeLabel: 'Исходный код:'
       },
       alertModal: {
         successLabel: 'Отлично!',

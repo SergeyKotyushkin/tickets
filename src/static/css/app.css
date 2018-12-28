@@ -101,6 +101,21 @@ body, html {
     text-shadow: 5px 5px 10px #000;
 }
 
+.app-footer-links-container {
+    margin: 10px;
+}
+
+.app-footer-links-title-container {
+    user-select: none;
+    color: #faf6ff;
+    text-shadow: 5px 5px 10px #000;
+    margin-bottom: 10px;
+}
+
+.app-footer-link-items-container {
+    justify-content: flex-end;
+}
+
 .alert-modal-buttons-container {
     justify-content: flex-end;
     user-select: none;

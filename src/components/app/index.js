@@ -88,6 +88,19 @@ class App extends Component {
                   </div>
                 </div>
               </div>
+              <div className="app-footer-links-container flex-container-column">
+                <div className="app-footer-links-title-container">
+                  <span>{localizator.translate(localizator.keys.components.app.footer.sourceCodeLabel)}</span>
+                </div>
+                <div className="app-footer-link-items-container flex-container-row">
+                  <a
+                    href="https://github.com/SergeyKotyushkin/tickets"
+                    target="_blank"
+                    title="GitHub">
+                    <img src="/dist/images/GitHub-Mark-32px.png"/>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
           {this._getAlertModalMarkup()}
