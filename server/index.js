@@ -10,6 +10,8 @@ const MongoStore = require('connect-mongo')(session);
 
 mongoConnector.connect(_onMongoConnected);
 
+console.log('test', 'NODE_PORT', process.env.NODE_PORT);
+console.log('test', 'MONGO_URL', process.env.MONGO_URL);
 function _onMongoConnected(mongooseConnection) {
   const app = express();
 
