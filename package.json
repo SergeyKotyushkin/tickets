@@ -4,10 +4,11 @@
   "description": "The application for storing 6-digit bus tickets",
   "main": "index.js",
   "scripts": {
-    "start": "nf start build && nf start server",
+    "start": "nf start server",
     "start-dev": "nf start build && nf start server-dev",
     "build": "nf start build",
-    "server": "nf start server"
+    "server": "nf start server",
+    "heroku-postbuild": "nf start build"
   },
   "keywords": [
     "react"
