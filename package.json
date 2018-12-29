@@ -27,6 +27,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "compression-webpack-plugin": "^2.0.0",
     "connect-mongo": "^2.0.3",
+    "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.0.1",
     "cssnano": "^4.1.8",
     "express": "^4.16.3",
