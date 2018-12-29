@@ -113,7 +113,7 @@ class Login extends Component {
       login.username,
       login.password,
       this._onLogInSuccess.bind(this),
-      this._onLogInFailure
+      this._onLogInFailure.bind(this)
     );
   }
 
