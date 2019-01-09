@@ -1,6 +1,7 @@
 export default {
   components: {
     app: {
+      siteTitle: 'Мои билеты',
       header: {
         title: 'Билеты',
         links: {

@@ -1,6 +1,7 @@
 export default {
   components: {
     app: {
+      siteTitle: 'My tickets',
       header: {
         title: 'Tickets',
         links: {
