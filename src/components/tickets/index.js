@@ -137,8 +137,7 @@ class Tickets extends Component {
           </div>
           <LoadMoreBlock
             isLoadMoreButtonVisible={this.state.total > this.state.tickets.length}
-            onLoadMoreClick={this.onLoadMoreClick}/>
-          <TotalBlock total={this.state.total}/>
+            onLoadMoreClick={this.onLoadMoreClick}/> {this.state.total >= 0 && <TotalBlock total={this.state.total}/>}
           <DelimiterBlock/>
           <div className="ticket-actions-container flex-container-row">
             <NewTicketBlock
