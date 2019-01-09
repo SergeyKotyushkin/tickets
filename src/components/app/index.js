@@ -48,6 +48,12 @@ class App extends Component {
     this.onLanguageClick = this._onLanguageClick.bind(this);
   }
 
+  componentDidUpdate() {
+    document.title = localizator.translate(
+      localizator.keys.components.app.siteTitle
+    );
+  }
+
   render() {
     return (
       <BrowserRouter>
