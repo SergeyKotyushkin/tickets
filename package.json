@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nf start server",
-    "start-dev": "nf start build && nf start server-dev",
+    "start-dev": "nf start build && nf start server",
+    "start-debug": "nf start build && nf start server-debug",
     "build": "nf start build",
     "server": "nf start server",
     "heroku-postbuild": "nf start build"

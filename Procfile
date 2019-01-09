@@ -1,4 +1,4 @@
 server: node server
-server-dev: node --debug server
+server-debug: node --debug server
 build: webpack
 web: node server
