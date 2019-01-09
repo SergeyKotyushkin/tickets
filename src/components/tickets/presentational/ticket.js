@@ -97,11 +97,14 @@ class Ticket extends React.Component {
   }
 
   _onDeleteTicketDateClick(event) {
+    let button = event.currentTarget || event.srcElement;
+    let dateNode = button.parentElement.previousSibling;
+
     this._confirmModalService.open(
       modalTypes.attention,
       localizator.translate(localizator.keys.components.app.confirmModal.attentionLabel),
       localizator.translate(localizator.keys.messages.tickets.deleteTicketDateConfirm),
-      this._onDeleteTicketDateConfirmYes.bind(this, event)
+      this._onDeleteTicketDateConfirmYes.bind(this, dateNode.dataset.date)
     );
   }
 
@@ -132,14 +135,11 @@ class Ticket extends React.Component {
     this.props.onDeleteTicketCallback && this.props.onDeleteTicketCallback(number);
   }
 
-  _onDeleteTicketDateConfirmYes(event) {
-    let button = event.currentTarget || event.srcElement;
-    let dateNode = button.parentElement.previousSibling;
-
+  _onDeleteTicketDateConfirmYes(date) {
     this._ticketService.deleteDate(
       this.props.number,
-      dateNode.dataset.date,
-      this._onDeleteTicketDateSuccess.bind(this, this.props.number, dateNode.dataset.date),
+      date,
+      this._onDeleteTicketDateSuccess.bind(this, this.props.number, date),
       this._handleError.bind(this)
     );
   }

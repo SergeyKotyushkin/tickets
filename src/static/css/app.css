@@ -116,9 +116,17 @@ body, html {
     justify-content: flex-end;
 }
 
+.alert-modal-container {
+    margin: 20px;
+}
+
 .alert-modal-buttons-container {
     justify-content: flex-end;
     user-select: none;
+}
+
+.confirm-modal-container {
+    margin: 20px;
 }
 
 .confirm-modal-buttons-container {
@@ -129,17 +137,70 @@ body, html {
     margin-right: 20px;
 }
 
-.modal-success button {
+.modal-content {
+    top: 50%;
+    position: relative;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow: auto;
+    background-color: #fff;
+    border: 1px solid rgba(10, 20, 46, 0.7);
+    border-radius: 4px;
+    outline: none;
+    max-width: 400px;
+    max-height: 500px;
+    transform: translateY(-50%);
+    margin: 0px auto;
+    display: flex;
+    flex-direction: column;
+}
+
+@media(max-width: 500px) {
+    .modal-content {
+        position: relative;
+        top: 50%;
+        left: 0px;
+        bottom: 0px;
+        overflow: auto;
+        background-color: #fff;
+        border: 1px solid rgba(10, 20, 46, 0.7);
+        border-radius: 4px;
+        outline: none;
+        transform: translateY(-50%);
+        margin: 0px auto;
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+    }
+}
+
+.modal-content.modal-content-success {
+    background-color: rgb(181, 244, 184);
+    border-color: rgb(54, 160, 0);
+}
+
+.modal-content.modal-content-attention {
+    background-color: rgb(255, 250, 158);
+    border-color: rgb(160, 140, 0);
+}
+
+.modal-content.modal-content-error {
+    background-color: rgb(255, 151, 151);
+    border-color: rgb(160, 0, 0);
+}
+
+.modal-content.modal-content-success button {
     border-color: #046a0a;
     color: #36a000;
 }
 
-.modal-attention button {
+.modal-content.modal-content-attention button {
     border-color: #4d6c24;
     color: #a08c00;
 }
 
-.modal-error button {
+.modal-content.modal-content-error button {
     border-color: #cc3a3d;
     color: #cc3a3d;
 }
