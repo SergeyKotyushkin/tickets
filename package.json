@@ -4,10 +4,12 @@
   "description": "The application for storing 6-digit bus tickets",
   "main": "index.js",
   "scripts": {
-    "start": "nf start build && nf start server",
-    "start-dev": "nf start build && nf start server-dev",
+    "start": "nf start server",
+    "start-dev": "nf start build && nf start server",
+    "start-debug": "nf start build && nf start server-debug",
     "build": "nf start build",
-    "server": "nf start server"
+    "server": "nf start server",
+    "heroku-postbuild": "nf start build"
   },
   "keywords": [
     "react"
@@ -26,6 +28,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "compression-webpack-plugin": "^2.0.0",
     "connect-mongo": "^2.0.3",
+    "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.0.1",
     "cssnano": "^4.1.8",
     "express": "^4.16.3",
