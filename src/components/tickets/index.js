@@ -40,6 +40,7 @@ class Tickets extends Component {
     super(props);
 
     this.state = {
+      isLoading: true,
       isAuthenticated: this.props.authStore.isAuthenticated,
       tickets: [],
       total: 0,
@@ -109,10 +110,11 @@ class Tickets extends Component {
   }
 
   render() {
+    const isLoading = !this.state.isAuthenticated || this.state.isLoading;
     return (
       <React.Fragment>
         {
-          this.state.isAuthenticated
+          !isLoading
             ? this._getAuthenticatedMarkup()
             : <LoadingBlock/>
         }
@@ -241,7 +243,7 @@ class Tickets extends Component {
     });
 
     this._from = tickets.length;
-    this.setState({tickets, total: data.total});
+    this.setState({isLoading: false, tickets, total: data.total});
   }
 
   _onDeleteTicketDateCallback(number, date) {
@@ -320,6 +322,8 @@ class Tickets extends Component {
       localStorage.removeItem(storageKeys.auth);
       this.props.dispatchedAuthActions.logOut();
     }
+
+    this.setState({isLoading: false});
   }
 
   _deleteTicketDate(ticket, date) {
