@@ -151,12 +151,29 @@
     align-self: flex-end;
 }
 
+.ticket-details-container {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ticket-details-container>div {
+    margin: 0px auto;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
 .ticket-details-ticket-container {
-    margin-right: 50px;
+    justify-content: center;
+    flex-basis: 250px;
 }
 
 .ticket-details-dates-container {
     overflow-y: auto;
+    flex-basis: 300px;
+}
+
+.ticket-details-delete-ticket-button-container {
+    margin-bottom: 20px;
 }
 
 .ticket-details-date-container {
@@ -168,4 +185,8 @@
 
 .ticket-details-date {
     margin-right: 30px;
+}
+
+.ticket-details-modal-container {
+    margin: 20px;
 }
