@@ -1,5 +1,6 @@
 .tickets-content {
     text-align: center;
+    width: 90%;
 }
 
 .tickets-content hr {
@@ -36,8 +37,8 @@
 }
 
 .new-ticket-container {
-    border-radius: 2px;
     justify-content: center;
+    flex-basis: 250px;
 }
 
 .new-ticket-number-container,
@@ -116,12 +117,17 @@
     text-transform: lowercase;
 }
 
+.search-ticket-container {
+    flex-basis: 250px;
+}
+
 .search-ticket-container>div {
     text-align: center;
 }
 
 .ticket-actions-container {
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .found-ticket-container {
