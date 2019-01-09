@@ -102,7 +102,7 @@ class Tickets extends Component {
       return;
     }
 
-    if (prevState.total > 0 && !this.state.total) {
+    if (this.state.total < 0) {
       this._loadNextTickets();
       return;
     }
@@ -338,7 +338,7 @@ class Tickets extends Component {
 
     const newState = cloneDeep(this.state);
     newState.tickets = [];
-    newState.total = 0;
+    newState.total = -1;
     newState.newTicket.number = 0;
     newState.newTicket.date = null;
     this.setState(newState);
