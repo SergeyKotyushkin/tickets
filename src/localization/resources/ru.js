@@ -28,9 +28,9 @@ export default {
     },
     home: {
       welcomeText: 'Наконец-то у тебя появился способ следить за своими билетами!',
-      logInPart1Text: 'Тебе необхотимо',
+      logInPart1Text: 'Теперь тебе необходимо',
       logInLinkText: 'войти',
-      logInPart2Text: 'чтобы начать!',
+      logInPart2Text: 'в систему, после чего ты сможешь приступить к исследованию!',
       loggedInPart1Text: 'Отлично! Исследование статистики твоих',
       loggedInTicketsLinkText: 'билетов',
       loggedInPart2Text: 'уже ждет тебя!'
