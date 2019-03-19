@@ -15,7 +15,7 @@ export default function AuthService(dispatchedAuthActions) {
 function _tryLogIn(dispatchedAuthActions, successCallback, failureCallback) {
   axios.get(routes.auth.tryLogIn).then(
     _onTryLogInSuccess.bind(null, dispatchedAuthActions, successCallback),
-    _handleError.bind(null, failureCallback)
+    _onTryLogInFailure.bind(null, dispatchedAuthActions, failureCallback)
   );
 }
 
@@ -26,7 +26,10 @@ function _logIn(
   successCallback,
   failureCallback
 ) {
-  axios.post(routes.auth.logIn, {username, password}).then(
+  axios.post(routes.auth.logIn, {
+    username,
+    password
+  }).then(
     _onLogInSuccess.bind(null, dispatchedAuthActions, username, successCallback),
     _handleError.bind(null, failureCallback)
   );
@@ -39,7 +42,11 @@ function _register(
   successCallback,
   failureCallback
 ) {
-  axios.post(routes.auth.register, {username, password, conformPassword}).then(
+  axios.post(routes.auth.register, {
+    username,
+    password,
+    conformPassword
+  }).then(
     _onRegisterSuccess.bind(null, successCallback),
     _handleError.bind(null, failureCallback)
   );
@@ -58,6 +65,16 @@ function _onTryLogInSuccess(dispatchedAuthActions, successCallback, response) {
   dispatchedAuthActions.logIn(response.data.username);
 
   successCallback && successCallback();
+}
+
+function _onTryLogInFailure(dispatchedAuthActions, failureCallback, error) {
+  if (error.response.status === statusCodes.unauthenticated) {
+    localStorage.removeItem(storageKeys.auth);
+    dispatchedAuthActions.logOut();
+    return;
+  }
+
+  _handleError(failureCallback);
 }
 
 function _onLogInSuccess(dispatchedAuthActions, username, callback) {
