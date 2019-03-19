@@ -11,48 +11,45 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
   // sets webpack mode
-  mode: process.env.NODE_ENV == 'development'
-    ? 'development'
-    : 'production',
+  mode: process.env.NODE_ENV == 'development' ?
+    'development' : 'production',
 
   // start point for the application scripts
   entry: {
-    "bundle": './src/index.js'
+    "bundle": './src/index.jsx'
   },
 
   // built bundle options
   output: {
-    filename: process.env.NODE_ENV == 'development'
-      ? '[name].js'
-      : '[name]-[hash].min.js',
+    filename: process.env.NODE_ENV == 'development' ?
+      '[name].js' : '[name]-[hash].min.js',
     path: path.join(__dirname, 'dist'),
     publicPath: '/dist/'
   },
 
   // creates map file for simplifying debugging
-  devtool: process.env.NODE_ENV == 'development'
-    ? 'source-map'
-    : false,
+  devtool: process.env.NODE_ENV == 'development' ?
+    'source-map' : false,
 
   // plugins are connected on some steps of the compilation process and can do
   // something
   plugins: [
     // copies built bundles into the page
-    new HtmlWebpackPlugin({template: 'index.html', favicon: 'favicon.ico'}),
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+      favicon: 'favicon.ico'
+    }),
     //removes dist folder before build
     new CleanWebpackPlugin(['dist']),
     //copies static files
-    new CopyWebpackPlugin([
-      {
-        from: './src/static/images',
-        to: './images'
-      }
-    ]),
+    new CopyWebpackPlugin([{
+      from: './src/static/images',
+      to: './images'
+    }]),
     // extracts css files imported in the components
     new MiniCssExtractPlugin({
-      filename: process.env.NODE_ENV == 'development'
-        ? 'bundle.css'
-        : 'bundle-[hash].min.css'
+      filename: process.env.NODE_ENV == 'development' ?
+        'bundle.css' : 'bundle-[hash].min.css'
     }),
     // optimizes extracted css
     new OptimizeCssAssetsPlugin({
@@ -73,26 +70,24 @@ module.exports = {
 
   module: {
     // for files match with the test pattern the loader is used
-    rules: [
-      {
-        test: /\.jsx?$/,
-        include: path.join(__dirname, 'src'),
-        use: {
-          loader: 'babel-loader',
-          options: {
-            // rules for files convertation for syntax support
-            presets: [
-              '@babel/preset-env', '@babel/preset-react'
-            ],
-            // prevent code duplication
-            plugins: ['@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
-          }
+    rules: [{
+      test: /\.jsx?$/,
+      include: path.join(__dirname, 'src'),
+      use: {
+        loader: 'babel-loader',
+        options: {
+          // rules for files convertation for syntax support
+          presets: [
+            '@babel/preset-env', '@babel/preset-react'
+          ],
+          // prevent code duplication
+          plugins: ['@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
         }
-      }, {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
       }
-    ]
+    }, {
+      test: /\.css$/,
+      use: [MiniCssExtractPlugin.loader, 'css-loader']
+    }]
   },
 
   resolve: {
@@ -103,7 +98,8 @@ module.exports = {
       services: path.resolve(__dirname, 'src', 'services'),
       static: path.resolve(__dirname, 'src', 'static'),
       stores: path.resolve(__dirname, 'src', 'stores')
-    }
+    },
+    extensions: ['.js', '.jsx']
   }
 }
 
@@ -136,6 +132,11 @@ if (process.env.NODE_ENV == 'production') {
   }));
 
   module.exports.plugins.push(
-    new CompressionPlugin({test: /\.min\.jsx?$/, filename: "[path].gz[query]", algorithm: "gzip", deleteOriginalAssets: true})
+    new CompressionPlugin({
+      test: /\.min\.jsx?$/,
+      filename: "[path].gz[query]",
+      algorithm: "gzip",
+      deleteOriginalAssets: true
+    })
   );
 }
