@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux';
 
 import * as authActions from 'stores/auth/actions';
 import * as alertModalActions from 'stores/alert-modal/actions';
@@ -43,8 +43,8 @@ class Home extends React.Component {
         <div>
           <span>{localizator.translate(localizator.keys.components.home.welcomeText)}</span>
           <div className="home-additional-info">
-            {this.props.authStore.isAuthenticated && <LoggedInSpan/>}
-            {!this.props.authStore.isAuthenticated && <LogInSpan/>}
+            {this.props.authStore.isAuthenticated && <LoggedInSpan />}
+            {!this.props.authStore.isAuthenticated && <LogInSpan />}
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@ class Home extends React.Component {
 }
 
 export default connect(
-  (state, ownProps) => ({authStore: state.auth}),
+  (state, ownProps) => ({ authStore: state.auth }),
   (dispatch, ownProps) => ({
     dispatchedAuthActions: bindActionCreators(authActions, dispatch),
     dispatchedAlertModalActions: bindActionCreators(alertModalActions, dispatch)
